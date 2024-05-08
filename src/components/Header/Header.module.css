@@ -1,0 +1,29 @@
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    background: rgb(17 24 39);
+    user-select: none;
+}
+.logoContainer svg {
+    color: white;
+}
+.headerButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    width: 75%;
+    justify-content: space-evenly;
+    user-select: none;
+}
+.headerButtonsContainer button:hover{
+    color: yellow !important;
+}
+.loginButtonContainer button:hover{
+    color: yellow !important;
+}
+.active h1, .active h2 {
+    color: yellow;
+    user-select: none;
+}

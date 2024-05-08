@@ -1,0 +1,113 @@
+.acceptancePageContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 1%;
+}
+.topContentContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    /* align-items: center; */
+}
+.newAcceptanceContainer {
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    align-items: center;
+    border: 1px solid rgb(17 24 39);;
+}
+.newAcceptanceContainerTitle {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid rgb(17 24 39);;
+    background-color: rgb(17 24 39);;
+    color: #1976d2;
+}
+.newAcceptanceInputsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.topNewAcceptanceInputsContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 3%;
+}
+.bottomNewAcceptanceInputsContainer {
+ composes: topNewAcceptanceInputsContainer;
+}
+.newAcceptanceTableContainer {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 3%;
+  }
+  .newAcceptanceTableContainer span {
+    color: #1976d2 !important;
+  }
+  .newAcceptanceTableContainer svg {
+    color: #1976d2 !important;
+  }
+  
+  .newAcceptanceTableContainer table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .newAcceptanceTableContainer th,
+  .newAcceptanceTableContainer td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .newAcceptanceTableContainer th {
+    background-color: rgb(17 24 39);
+    color: white;
+  }
+  
+  .newAcceptanceTableContainer tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+  
+  .newAcceptanceTableContainer tr:hover {
+    background-color: #ddd;
+  }
+  
+  .newAcceptanceTableContainer th,
+  .newAcceptanceTableContainer td {
+    transition: background-color 0.3s ease;
+  }
+  
+  .newAcceptanceTableContainer tr:hover td {
+    background-color: #f5f5f5;
+  }
+  .newAcceptanceButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    margin: 2% 0;
+  }
+
+  .listOfLastAcceptancesContainer {
+    display: flex;
+    width: 35%;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    border: 1px solid rgb(17 24 39);;
+  }
+  .lastAcceptancesSwiper {
+    max-width: none !important;
+  }

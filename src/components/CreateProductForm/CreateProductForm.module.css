@@ -1,0 +1,150 @@
+
+.addButton {
+    border: 1px solid black !important;
+}
+.detailsAndButtonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 15px;
+}
+.detailsList {
+    
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 20px;
+    max-height: 300px;
+    max-width: 300px;
+    
+    height: 300px;
+    width: 300px;
+
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    margin-top: 80px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 3px 2px 4px rgba(0, 0, 0, 0.1); /* Добавление тени */
+
+}
+
+
+.submitButton {
+    margin-bottom: 100px;
+    color: white;
+}
+
+/*/////////////////////////////*/
+.mainContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    max-height: 750px;
+}
+
+.formGroup {
+    margin-bottom: 15px;
+}
+.formGroup label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.formGroup input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.formGroup select {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    appearance: none;
+}
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid black !important;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.button:hover{
+    background-color: #0056b3;
+}
+.selectedProducts {
+    background-color: #f9f9f9;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.selectedProducts h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.selectedProducts ul {
+    padding: 0;
+}
+.selectedProducts ul li {
+    margin-bottom: 5px;
+}
+.selectedProducts button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.selectedProducts button:hover {
+    background-color: #0056b3;
+}
+.opacity {
+    /*opacity: 0.6;*/
+    display: flex;
+
+    align-content: center;
+}
+
+.deleteForm {
+    width: 300px; /* Задайте нужную ширину формы */
+    padding: 10px;
+   margin-left: -16px;
+}
+
+.detailItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.deleteContainer {
+}
+
+.deleteButton {
+    min-width: 0;
+    padding: 0; /* Убираем внутренние отступы */
+    width: 2px; /* Задаем ширину кнопки */
+    height: 10px; /* Задаем высоту кнопки */
+    margin-left: 10px; /* Регулируем отступ слева */
+}
+
+.deleteButton:hover {
+    background-color: transparent; /* Убираем фон при наведении */
+}
+
+.opacity {
+    /* Ваши стили для прозрачности */
+}

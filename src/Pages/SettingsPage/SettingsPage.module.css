@@ -1,0 +1,446 @@
+/* :root {
+    --background: #1a1a2e;
+    --color: #ffffff;
+    --primary-color: #0f3460;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+} */
+
+body {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "poppins";
+    background: var(--background);
+    color: var(--color);
+    letter-spacing: 1px;
+    transition: background 0.2s ease;
+    -webkit-transition: background 0.2s ease;
+    -moz-transition: background 0.2s ease;
+    -ms-transition: background 0.2s ease;
+    -o-transition: background 0.2s ease;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color);
+}
+
+/* h1 {
+    font-size: 2.5rem;
+} */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 3%;
+}
+
+.topContentContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    justify-content: space-around;
+    /* align-items: center; */
+}
+
+/* .loginContainer {
+    position: relative;
+    width: 22.2rem;
+} */
+.formContainer {
+    /* backdrop-filter: blur(20px); */
+    z-index: 99;
+    margin-left: 20px;
+
+}
+
+.loginContainer form input {
+    display: block;
+    padding: 14.5px;
+    /* width: 100%; */
+    margin: 2rem 0;
+    color: var(--color);
+    outline: none;
+    background-color: #9191911f;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    font-size: 15px;
+    backdrop-filter: blur(15px);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+.loginContainer form select {
+    display: block;
+    padding: 14.5px;
+    /* width: 100%; */
+    margin: 2rem 0;
+    color: var(--color);
+    outline: none;
+    background-color: #9191911f;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    font-size: 15px;
+    backdrop-filter: blur(15px);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.loginContainer form input:focus {
+    box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.2);
+    animation: wobble 0.3s ease-in;
+    -webkit-animation: wobble 0.3s ease-in;
+}
+
+.loginContainer form button {
+    background-color: var(--primary-color);
+    color: var(--color);
+    display: block;
+    padding: 13px;
+    border-radius: 5px;
+    outline: none;
+    font-size: 18px;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+    width: 100%;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    transition: all 0.1s ease-in-out;
+    border: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    -o-transition: all 0.1s ease-in-out;
+}
+
+.loginContainer form button:hover {
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+    -o-transform: scale(1.02);
+}
+
+.circle {
+    width: 8rem;
+    height: 8rem;
+    background: var(--primary-color);
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    position: absolute;
+}
+
+.illustration {
+    position: absolute;
+    top: -14%;
+    right: -2px;
+    width: 90%;
+}
+
+.circle-one {
+    top: 0;
+    left: 0;
+    z-index: -1;
+    transform: translate(-45%, -45%);
+    -webkit-transform: translate(-45%, -45%);
+    -moz-transform: translate(-45%, -45%);
+    -ms-transform: translate(-45%, -45%);
+    -o-transform: translate(-45%, -45%);
+}
+
+.circle-two {
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    transform: translate(45%, 45%);
+    -webkit-transform: translate(45%, 45%);
+    -moz-transform: translate(45%, 45%);
+    -ms-transform: translate(45%, 45%);
+    -o-transform: translate(45%, 45%);
+}
+
+.register-forget {
+    margin: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+}
+.opacity {
+    /*opacity: 0.6;*/
+    display: flex;
+
+    align-content: center;
+}
+
+.themeBtnContainer {
+    position: absolute;
+    left: 0;
+    bottom: 2rem;
+}
+
+.theme-btn {
+    cursor: pointer;
+    transition: all 0.3s ease-in;
+}
+
+.theme-btn:hover {
+    width: 40px !important;
+}
+
+@keyframes wobble {
+    0% {
+        transform: scale(1.025);
+        -webkit-transform: scale(1.025);
+        -moz-transform: scale(1.025);
+        -ms-transform: scale(1.025);
+        -o-transform: scale(1.025);
+    }
+    25% {
+        transform: scale(1);
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        -o-transform: scale(1);
+    }
+    75% {
+        transform: scale(1.025);
+        -webkit-transform: scale(1.025);
+        -moz-transform: scale(1.025);
+        -ms-transform: scale(1.025);
+        -o-transform: scale(1.025);
+    }
+    100% {
+        transform: scale(1);
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        -o-transform: scale(1);
+    }
+}
+
+
+
+.assemblyPageContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 3%;
+    overflow: hidden;
+}
+
+
+.topContentContainer {
+    display: flex;
+    flex-direction: row;
+    width: 60%;
+    height: 100%;
+    justify-content: space-around;
+    /* align-items: center; */
+}
+
+.LeftContainer {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    height: 700px;
+    align-items: center;
+    border: 1px solid rgb(17 24 39);
+}
+
+.RightContainer {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 700px;
+    align-items: center;
+    border: 1px solid rgb(17 24 39);
+}
+
+/* .newRightContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 70px;
+    margin-left: 70px;
+
+} */
+
+
+/* .newRightContainer > div {
+    flex: 1;
+} */
+
+
+
+
+.newAssemblyContainerInContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 700px;
+  align-items: center;
+  overflow-y: auto;
+  margin-top: 10px;
+  
+}
+
+.newAssemblyContainerInContainer2 {
+  display: flex;
+  flex-direction: column;
+  width:93%;
+  height: 700px;
+  align-items: center;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.newAssemblyContainerInContainer3 {
+  display: flex;
+  flex-direction: column;
+  width:100%;
+  height: 700px;
+  align-items: center;
+  overflow-y: auto;
+  margin-top: 45px;
+}
+
+
+.newAssemblyContainerSctoll {
+  overflow-y: auto;
+  margin: 10px;
+  
+}
+.newAssemblyContainerTitle {
+    width: 100%;
+    display: flex;  
+    justify-content: center;
+    border-bottom: 1px solid rgb(17 24 39);;
+    background-color: rgb(17 24 39);;
+    color: #1976d2;
+    font-family: 'YourFontName', sans-serif;
+}
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+
+.buttonsContainer button {
+    padding: 35px;
+    border-bottom: 2px solid transparent; /* Добавляем границу кнопкам */
+    border-top: 2px solid transparent; /* Добавляем границу кнопкам */
+    background-color: #1976d2; /* Прозрачный фон */
+    color: #1976d2;    
+    border-color: rgb(228, 231, 233); /* Цвет границы при наведении */
+    border-radius: 0%;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Анимация перехода цвета */
+}
+
+.buttonsContainer button:hover {
+    background-color: rgb(138, 141, 146); /* Цвет фона при наведении */
+    color: #1976d2; /* Цвет текста при наведении */
+    border-color: rgb(29, 96, 196); /* Цвет границы при наведении */
+}
+
+.buttonsContainer button:focus {
+    outline: none; /* Убираем фокусировку при нажатии */
+    border-color: #1976d2; /* Цвет границы при активации */
+    border: 2px solid transparent; /* Добавляем границу кнопкам */
+    border-left: 8px solid transparent; /* Добавляем границу кнопкам */
+    border-right: 8px solid transparent; /* Добавляем границу кнопкам */
+
+    color: #1976d2; /* Цвет текста при активации */
+
+}
+
+.buttonsContainer button:active {
+    background-color: #1976d2; /* Цвет фона при активации */
+    color: #1976d2; /* Цвет текста при активации */
+    border-color: #1976d2; /* Цвет границы при активации */
+    
+}
+
+.container {
+  display: flex;
+  justify-content: center; /* Центрирование по горизонтали */
+  align-items: center; /* Центрирование по вертикали */
+  gap: 16px; /* Пространство между элементами */
+}
+
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* .image {
+  width: 200px;
+  height: 150px;
+  justify-content: center; 
+  align-items: center; 
+} */
+
+.createUserBackground {
+    background-image: url('https://www.tilelook.com/system/tile_picture/resource/6743426/d3d_default_0003483_4.jpg');
+    background-size: cover; /* Растягиваем изображение на весь контейнер */
+    background-position: center; /* Выравниваем изображение по центру */
+}
+
+.newRightContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 90px;
+    position: relative; /* Добавляем относительное позиционирование для корректного позиционирования дочерних элементов */
+}
+
+
+
+.image {
+    width: 400px;
+    height: 300px;
+    position: absolute; /* Позиционируем изображение абсолютно внутри контейнера */
+    top: 115px; /* Помещаем изображение вверху контейнера */
+    right: -82px; /* Помещаем изображение вправо контейнера */
+    transform: translate(50%, -50%); /* Центрируем изображение относительно правого верхнего угла */
+    z-index: 50; /* Помещаем изображение ниже содержимого формы регистрации */
+    margin-bottom: 5px;
+    margin-left: 5px;
+
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}

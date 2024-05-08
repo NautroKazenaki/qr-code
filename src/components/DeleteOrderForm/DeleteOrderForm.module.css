@@ -1,0 +1,63 @@
+.container {
+    max-width: 600px;
+    max-height: 500px;
+
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    margin-bottom: 400px;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+#orderSelect {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.selectedOrderInfo {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow-y: auto;
+    max-width: 650px;
+    max-height: 300px;
+}
+
+
+
+.selectedOrderInfo h3 {
+    margin-top: 0;
+}
+
+.selectedOrderInfo p {
+    margin: 5px 0;
+}
+
+.deleteButton {
+    padding: 10px 20px;
+    background-color: #ff4444;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    background-color: #cc0000;
+}
+
+.pageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}

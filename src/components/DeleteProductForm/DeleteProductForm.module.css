@@ -1,0 +1,38 @@
+.container {
+    max-width: 400px;
+    margin: 150px;
+    padding: 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+.container h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+}
+.formGroup {
+    margin-bottom: 20px;
+}
+.formGroup select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: none;  
+}
+.deleteButton {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.deleteButton:hover {
+    background-color: #c0392b;
+}

@@ -1,0 +1,36 @@
+/* OrdersAssembly.module.css */
+.container {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.container p {
+    margin-top: 20px;
+    font-style: italic;
+}
+
+.ordersList {
+    list-style-type: none;
+    padding: 0;
+}
+
+.orderItem {
+    margin-bottom: 10px;
+}
+
+.orderLabel {
+    display: flex;
+    align-items: center;
+}
+
+.orderRadio {
+    margin-right: 10px;
+}

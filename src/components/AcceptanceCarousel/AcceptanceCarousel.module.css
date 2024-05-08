@@ -1,0 +1,58 @@
+.acceptanceCarouselTitle {
+    color: #1976d2 !important;
+    background-color: rgb(17 24 39);;
+    width: 100%;
+}
+.acceptanceCarouselContainer {
+    width: 500px;
+    /* height: 300px; */
+}
+
+
+/*///////////////////////////*/
+
+.containerFilter { 
+    width: 400px;
+    max-width: 100%;
+    color: #222;
+    border-radius: 8px; 
+    border-color: #222;
+    border: 1px;    
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.125em;
+    padding: 5px;
+   }
+
+.filterData {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 3%; }
+
+
+.filter {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 3%;
+    
+
+}
+
+.filterSelect {
+    width: 160px;
+}
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+}
+.button {
+    border: 1px solid black !important;
+    margin-bottom: 4% !important;
+}

@@ -1,0 +1,175 @@
+.assemblyPageContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 3%;
+}
+
+
+.topContentContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    justify-content: space-around;
+    /* align-items: center; */
+}
+.newAssemblyContainer {
+    display: flex;
+    flex-direction: column;
+    width: 28%;
+    height: 700px;
+    align-items: center;
+    border: 1px solid rgb(17 24 39);
+}
+
+.newAssemblyContainerInContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 700px;
+  align-items: center;
+  overflow-y: auto;
+  margin-top: 10px;
+  
+}
+
+.newAssemblyContainerInContainer2 {
+  display: flex;
+  flex-direction: column;
+  width:93%;
+  height: 700px;
+  align-items: center;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.newAssemblyContainerInContainer3 {
+  display: flex;
+  flex-direction: column;
+  width:100%;
+  height: 700px;
+  align-items: center;
+  overflow-y: auto;
+  margin-top: 45px;
+}
+
+
+.newAssemblyContainerSctoll {
+  overflow-y: auto;
+  margin: 10px;
+  
+}
+.newAssemblyContainerTitle {
+    width: 100%;
+    display: flex;  
+    justify-content: center;
+    border-bottom: 1px solid rgb(17 24 39);;
+    background-color: rgb(17 24 39);;
+    color: #1976d2;
+    font-family: 'YourFontName', sans-serif;
+
+    
+}
+.newAssemblyInputsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.topNewAssemblyInputsContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    /*justify-content: space-evenly;*/
+    align-items: center;
+    margin-top: 3%;
+    /*justify-content: space-between;*/
+    justify-content: space-evenly;
+
+}
+.bottomNewAssemblyInputsContainer {
+ composes: topNewAssemblyInputsContainer;
+}
+.newAssemblyTableContainer {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 3%;
+  }
+  .newAssemblyTableContainer span {
+    color: #1976d2 !important;
+  }
+  .newAssemblyTableContainer svg {
+    color: #1976d2 !important;
+  }
+  
+  .newAssemblyTableContainer table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .newAssemblyTableContainer th,
+  .newAssemblyTableContainer td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .newAssemblyTableContainer th {
+    background-color: rgb(17 24 39);
+    color: white;
+  }
+  
+  .newAssemblyTableContainer tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+  
+  .newAssemblyTableContainer tr:hover {
+    background-color: #ddd;
+  }
+  
+  .newAssemblyTableContainer th,
+  .newAssemblyTableContainer td {
+    transition: background-color 0.3s ease;
+  }
+  
+  .newAssemblyTableContainer tr:hover td {
+    background-color: #f5f5f5;
+  }
+  .newAssemblyButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    margin: 3% 0;
+    font-family: 'YourFontName', sans-serif;
+
+    
+  }
+
+  .listOfLastAssemblysContainer {
+    display: flex;
+    width: 35%;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    border: 1px solid rgb(17 24 39);;
+  }
+  .lastAssemblysSwiper {
+    max-width: none !important;
+  }
+
+/*---------------------------------------------------------------------------------------*/
+
+
+.APStyles.topNewAssemblyInputsContainer Button {
+  visibility: hidden;  
+}
+
+.APStyles.topNewAssemblyInputsContainer.active Button {
+  visibility: visible; 
+}

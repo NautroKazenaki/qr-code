@@ -1,0 +1,312 @@
+
+/*//////////////////////new disagn///////////////////////////*/
+
+.containersContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 50px;
+}
+
+/* .main_background {
+
+} */
+
+    
+.card:hover {
+    transform: scale(1.1);
+    background-color: rgb(22, 27, 39); /* Новый цвет фона объекта при наведении */
+    color: #1976d2;
+}
+
+.card:hover::before {
+    transform: scale(1. );
+    background-color: rgb(22, 27, 39); /* Новый цвет фона псевдоэлементов при наведении */
+    border: 2px solid #1976d2;
+}
+
+.card:hover::after {
+    transform: scale(1.1);
+    background-color: rgb(22, 27, 39); /* Новый цвет фона псевдоэлементов при наведении */
+    border: 2px solid #1976d2;
+}
+
+.card {
+    flex-wrap: flex;
+    box-sizing: border-box;
+    padding: 10px;
+    /*background: linear-gradient(90deg, #cacaca, #ebebf7);		*/
+    text-align: center;
+    margin-bottom: 5px;
+    margin-right: 25px;
+    margin-left: 25px;
+    margin-top: 5px;
+    
+    position: relative;     
+    border:1px solid #a9aab8;
+    border-radius: 10px;
+    z-index: 1;
+    background: #ffffff;
+
+}
+
+.card::before { 
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    height: 12px;
+    width: 12px;
+
+    background-color: #1976d2;
+    box-shadow: 0 2px 4px rgba(182, 69, 69, 0.2);
+    border-radius: 50%;
+    border: 2px solid #030101; 
+
+}
+
+.card::after { 
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 30px; 
+    height: 5px;
+    width: 5px; 
+    background-color: #1976d2;
+    box-shadow: 0 2px 4px rgba(182, 69, 69, 0.2);
+    border-radius: 50%;
+    border: 2px solid #030101; 
+}
+
+.cardText { 
+    font-weight: bold;
+    font-size: 18px;
+    color: #09090f;
+    text-align: center;
+}
+
+.cardBG {
+    height: 12px;
+    width: 12px;
+    background-color: #000000;
+    border-radius: 50%;
+    /*transition: all .5s ease;Плавное изменение цвета */
+    transition: background-color 0.9s ease; /* Плавное изменение цвета фона */
+
+}
+
+.card.active {
+    background-color: #c72b2b;
+}
+
+.textText1 {
+    font-size: 18px;
+    color: #010103;
+    text-align: center;
+    margin: 5px;
+    display: column ;
+}
+
+.textText2 {
+    font-size: 18px;
+    color: #000000;
+    text-align: center;
+    display: column ;
+
+}
+        
+button{
+    border-radius: 5px;
+    background-color: #070c11;
+    color: rgb(0, 0, 0);
+    margin: 10px;
+    padding: 10px;
+    text-align: center; 
+    top: 10px;        
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Vollkorn&display=swap");
+
+img {
+    width: 100%;
+    height: auto;
+}
+
+.l_card {
+    background: #f5f5f5;
+    max-width: 502px;
+    height: 252px;
+    color: #272727;
+    border: 1px solid rgb(199, 195, 195); /* Ширина и цвет рамки */
+    /*box-shadow: 0px 7px 24px rgba(0, 0.7, 0, 0.7);*/
+    border-radius: 10px;
+    margin-left: 61px;
+    /*background: linear-gradient(90deg, #f7f7f7, #e9dddd);*/
+    z-index: 0;
+    overflow-y: auto;
+  }
+  
+.upper_section {
+    height: 25%; /* Высота верхней части контейнера */
+    /*background: #3f3c3c;*/
+    display: flex;
+    justify-content: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: rgb(17 24 39);;
+    color: #1976d2;
+    border: 1px solid rgb(199, 195, 195); /* Ширина и цвет рамки */
+}
+
+.lower_section {
+    height: 86%; /* Высота нижней части контейнера */
+    overflow-y: auto; /* Включаем вертикальную прокрутку при необходимости */
+    z-index: 1;
+}
+
+.container_cap {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 50px;
+}
+
+.l-card__text p {
+  font-size: 30px;
+  font-family: "Vollkorn", serif;
+  font-weight: 400;
+  color: #3f3f55;
+  text-align: left;
+}
+
+.l_card1 {
+    width: 100%;
+    max-width: 410px;
+    max-height: 160px;
+    background: #f5f5f5;
+    color: #692929;
+    padding: 40px;
+    border-radius: 10px;
+    align-items: center;
+    border: 1px solid #030518;
+    border-left: 50px solid #030518;;
+    align-items: center; /* Выравнивание содержимого по центру по вертикали */
+    margin: 0 auto; /* Автоматический отступ слева и справа для центрирования по горизонтали */
+    }
+
+.containersContainer1 {
+    display: flex;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 50px;
+    }
+    
+.lower_section::-webkit-scrollbar { width: 0; }
+
+.scrollBar {
+    overflow-y: scroll !important;
+    max-width: 400px;
+    max-height: 150px;
+}
+
+.stickyTitle {
+    position: sticky;
+    top: 0;
+    font-weight: bold; /* Жирный шрифт */
+    z-index: 10; /* Для наложения поверх других элементов */
+    width: auto;
+    max-width: auto;
+    height: auto;
+    border-radius: 10px;
+    margin-left: 61px;
+    overflow: hidden;
+}
+
+.leftSide {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.rightSide {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.QRCodeImage {
+    max-width: 100%;
+    height: 125px;
+    width: 125px;
+    display: block;
+    margin: 0 auto; /* Центрирует изображение по горизонтали */
+    border: 2px solid #ccc; /* Добавляет рамку вокруг изображения */
+    border-radius: 8px; /* Закругляет углы рамки */
+    margin-top: 5px;
+    box-sizing: border-box;
+    transition: transform 0.2s ease; /* Добавляет плавный эффект при изменении размера */
+    
+}
+
+.QRCodeImage:hover {
+    transform: scale(1.1); /* Увеличивает изображение при наведении на него курсора */
+}
+
+
+.container-wrapper {
+    position: relative;
+}
+    
+.container-title {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Цвет фона, если нужно */
+    z-index: 1; /* Чтобы заголовок находился выше контейнера */
+}
+
+.container-scroll {
+    overflow-y: auto; /* Разрешить вертикальную прокрутку */
+    max-height: 400px; /* Максимальная высота контейнера, чтобы активировать прокрутку */
+}
+
+.hiddenTitle  {
+    visibility: 'hidden';
+    background-color: #ffffff;
+}
+
+.marginTop15 {
+    margin-top: 15px;
+}
+
+.draggableItem {
+    opacity: 1;
+    cursor: move;
+}
+
+.draggableItem.dragging {
+    opacity: 0.5;
+}
+
+
+.newAcceptanceContainerTitle {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    border-radius: 15px;
+    border-bottom: 1px solid rgb(17 24 39);;
+    background-color: rgb(17 24 39);;
+    color: #1976d2;
+}
+
+.textCenter {
+    text-align: center;
+
+}
+
+
+.dropArea {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
