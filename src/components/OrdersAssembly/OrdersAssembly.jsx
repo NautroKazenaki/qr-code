@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from '@mui/material';
-import OAStyles from './OrdersAssembly.module.css'
+import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
+import React, { useState, useEffect, useRef } from 'react';
+import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import OAStyles from './OrdersAssembly.module.css';
+
 const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isFirstOrderVisible, setIsFirstOrderVisible] = useState(false);
+    const [isLastOrderVisible, setIsLastOrderVisible] = useState(true);
+    const [scrollPosition, setScrollPosition] = useState(0);
+
+    const containerRef = useRef(null);
+    const firstOrderRef = useRef(null);
+    const lastOrderRef = useRef(null);  
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -18,38 +27,122 @@ const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
         fetchOrders();
     }, []);
 
+
+    useEffect(() => {
+        // Функция обработки события прокрутки
+        const handleScroll = () => {
+            // Получаем ссылку на контейнер
+            const container = containerRef.current;
+            if (container) {
+                // Проверяем видимость первого элемента
+                if (firstOrderRef.current) {
+                    // Получаем прямоугольник (bounding rect) первого элемента и контейнера
+                    const firstOrderRect = firstOrderRef.current.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+                    // Устанавливаем состояние isFirstOrderVisible в зависимости от видимости первого элемента в контейнере
+                    setIsFirstOrderVisible(
+                        !(firstOrderRect.top >= containerRect.top && firstOrderRect.bottom <= containerRect.bottom)
+                    );
+                }
+                // Проверяем видимость последнего элемента
+                if (lastOrderRef.current) {
+                    // Получаем прямоугольник (bounding rect) последнего элемента и контейнера
+                    const lastOrderRect = lastOrderRef.current.getBoundingClientRect();
+
+                    const containerRect = container.getBoundingClientRect();
+                    // Устанавливаем состояние isLastOrderVisible в зависимости от видимости последнего элемента в контейнере
+                    setIsLastOrderVisible(
+                        !(lastOrderRect.top >= containerRect.top && lastOrderRect.bottom <= containerRect.bottom)
+                    );
+                }
+            }
+        };
+        // Получаем ссылку на контейнер
+        const container = containerRef.current;
+        if (container) {
+            // Добавляем слушатель события прокрутки к контейнеру
+            container.addEventListener('scroll', handleScroll);
+            // Возвращаем функцию очистки слушателя события при размонтировании компонента или обновлении зависимостей
+            return () => {
+                container.removeEventListener('scroll', handleScroll);
+            };
+        }
+    }, [orders]); // Зависимость от изменения переменной orders
+    
+
     const handleOrderSelect = (orderId) => {
-        onOrderSelect(orderId); // Notify parent component about the selected order
+        onOrderSelect(orderId);
     };
 
+    const scrollToTop = () => {
+        containerRef.current.scrollTo({ top: scrollPosition - 100, behavior: 'smooth' });
+    }
+
+    const scrollToBottom = () => {
+        const container = containerRef.current;
+        const containerHeight = container.clientHeight;
+        container.scrollTo({ top: container.scrollHeight - containerHeight, behavior: 'smooth' });
+    }
+    
     return (
-        <div className={OAStyles.container}>
-            <h2>Заказы</h2>
-            {isLoading ? (
-                <p>Загружаю...</p>
-            ) : (
-                <FormControl component="fieldset">
-                    <FormLabel component="legend">Выберите заказ</FormLabel>
-                    <RadioGroup aria-label="orders" name="orders" value={selectedOrder} onChange={(e) => handleOrderSelect(e.target.value)}>
-                        {orders.length === 0 ? (
-                            <p>На данный момент нет заказов</p>
-                        ) : (
-                            <ul className={OAStyles.ordersList}>
-                                {orders.map(order => (
-                                    <li key={order.id} className={OAStyles.orderItem}>
-                                        <FormControlLabel
-                                        className={OAStyles.orderLabel}
-                                            value={order.id}
-                                            control={<Radio className={OAStyles.orderRadio} />}
-                                            label={`Создатель заказа: ${order.userName}, Дата создания заказа: ${order.startDate}, Получатель: ${order.orderTo}`}
-                                        />
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </RadioGroup>
-                </FormControl>
-            )}
+        <div>
+            {isFirstOrderVisible &&
+                <div className={OAStyles.arrowTop} onClick={scrollToTop}>
+                <ArrowUpward  />
+                </div>
+            }
+            <div className={OAStyles.container} ref={containerRef}>
+                {isLoading ? (
+                    <p>Загружаю...</p>
+                ) : (
+                    <FormControl component="fieldset">
+                        <RadioGroup aria-label="orders" name="orders" value={selectedOrder} onChange={(e) => handleOrderSelect(e.target.value)}>
+                            {orders.length === 0 ? (
+                                <p>На данный момент нет заказов</p>
+                            ) : (
+                                <div className={OAStyles.scrollableContainer}>
+                                    {orders.map((order, index) => (
+                                        <div
+                                            key={order.id}
+                                            className={`${OAStyles.orderCard} ${selectedOrder === order.id ? OAStyles.selected : ''}`}
+                                            ref={index === 0 ? firstOrderRef : index === orders.length - 1 ? lastOrderRef : null}
+                                            onClick={() => handleOrderSelect(order.id)}
+                                        >
+                                            <FormControlLabel
+                                                control={<Radio />}
+                                                value={order.id}
+                                                label={
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Создатель заказа:</td>
+                                                                <td>{order.userName}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Дата создания заказа:</td>
+                                                                <td>{order.startDate}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Получатель:</td>
+                                                                <td>{order.orderTo}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </RadioGroup>
+                    </FormControl>
+                )}
+            </div>
+            {isLastOrderVisible &&
+                <div className={OAStyles.arrowBottom} onClick={scrollToBottom}>
+                    <ArrowDownward  />
+                </div>
+            }
         </div>
     );
 };

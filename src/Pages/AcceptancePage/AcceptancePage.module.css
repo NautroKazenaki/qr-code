@@ -1,113 +1,175 @@
-.acceptancePageContainer {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 1%;
-}
-.topContentContainer {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-around;
-    /* align-items: center; */
-}
-.newAcceptanceContainer {
-    display: flex;
-    flex-direction: column;
-    width: 35%;
-    align-items: center;
-    border: 1px solid rgb(17 24 39);;
-}
-.newAcceptanceContainerTitle {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    border-bottom: 1px solid rgb(17 24 39);;
-    background-color: rgb(17 24 39);;
-    color: #1976d2;
-}
-.newAcceptanceInputsContainer {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-}
-.topNewAcceptanceInputsContainer {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 3%;
-}
-.bottomNewAcceptanceInputsContainer {
- composes: topNewAcceptanceInputsContainer;
-}
-.newAcceptanceTableContainer {
-    width: 100%;
-    overflow-x: auto;
-    margin-top: 3%;
-  }
-  .newAcceptanceTableContainer span {
-    color: #1976d2 !important;
-  }
-  .newAcceptanceTableContainer svg {
-    color: #1976d2 !important;
-  }
-  
-  .newAcceptanceTableContainer table {
-    width: 100%;
-    border-collapse: collapse;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  }
-  
-  .newAcceptanceTableContainer th,
-  .newAcceptanceTableContainer td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .newAcceptanceTableContainer th {
-    background-color: rgb(17 24 39);
-    color: white;
-  }
-  
-  .newAcceptanceTableContainer tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-  }
-  
-  .newAcceptanceTableContainer tr:hover {
-    background-color: #ddd;
-  }
-  
-  .newAcceptanceTableContainer th,
-  .newAcceptanceTableContainer td {
-    transition: background-color 0.3s ease;
-  }
-  
-  .newAcceptanceTableContainer tr:hover td {
-    background-color: #f5f5f5;
-  }
-  .newAcceptanceButtonsContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    width: 100%;
-    margin: 2% 0;
-  }
 
-  .listOfLastAcceptancesContainer {
-    display: flex;
-    width: 35%;
-    flex-direction: column;
-    align-items: center;
-    /* justify-content: center; */
-    border: 1px solid rgb(17 24 39);;
+* {
+  font-family: 'RussianRail G Pro', sans-serif !important;
+}
+
+
+.acceptancePageContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 1%;
+}
+
+.topContentContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.newAcceptanceContainer {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+  align-items: center;
+  border: 2px solid rgb(17 24 39);;
+
+}
+
+.newAcceptanceContainerTitle {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgb(17 24 39);;
+  background-color: #172D13;
+  color: #d2e0c9;
+}
+
+.newAcceptanceInputsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.topNewAcceptanceInputsContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 3%;
+}
+
+.bottomNewAcceptanceInputsContainer {
+  composes: topNewAcceptanceInputsContainer;
+}
+
+.newAcceptanceTableContainer {
+  width: 100%;
+}
+
+.newAcceptanceTableContainer span {
+  color: #d2e0c9 !important; /* Заменяем синий на зеленый */
+}
+
+.newAcceptanceTableContainer svg {
+  color: rgb(0, 0, 0) !important; /* Заменяем синий на зеленый */
+}
+
+.newAcceptanceTableContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.newAcceptanceTableContainer th,
+.newAcceptanceTableContainer td {
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.newAcceptanceTableContainer th {
+  background-color: #172D13;
+  color: white;
+}
+
+.newAcceptanceTableContainer tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.newAcceptanceTableContainer tr:hover {
+  background-color: #ddd;
+}
+
+.newAcceptanceTableContainer th,
+.newAcceptanceTableContainer td {
+  transition: background-color 0.3s ease;
+}
+
+.newAcceptanceTableContainer tr:hover td {
+  background-color: #f5f5f5;
+}
+
+.newAcceptanceButtonsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+  margin: 2% 0;
+}
+
+.listOfLastAcceptancesContainer {
+  display: flex;
+  /* width: 45%; */
+  flex-direction: column;
+  align-items: center;
+  /* height: 920px; */
+  /* justify-content: center; */
+  border: 2px solid rgb(17 24 39);;
+}
+
+.lastAcceptancesSwiper {
+  max-width: none !important;
+}
+
+.blackButton {
+  background-color: #172D13 !important;
+  color: #d2e0c9 !important;
+  width: 222px !important;
+  transition: background-color 0.5s, color 0.5s !important; /* Увеличиваем время анимации до 0.5 секунды */
+  border: 2px solid #d2e0c9 !important; /* Добавляем зеленый бордер */
+  margin-left: 20px !important;
+  text-transform: none !important;
+  
+}
+
+.blackButton:active {
+  background-color: green !important; /* При нажатии изменяем цвет фона на зеленый */
+  color: #172D13 !important; /* При нажатии изменяем цвет текста на черный */
+
+}
+
+.blackButton:focus {
+  outline: none; /* Убираем стандартный контур фокуса */
+}
+
+.blackButton.clicked {
+  animation: clickEffect 0.5s linear; /* Изменяем время анимации для эффекта нажатия */
+}
+
+@keyframes clickEffect {
+  0% {
+      transform: scale(1); /* Начальное значение масштаба */
   }
-  .lastAcceptancesSwiper {
-    max-width: none !important;
+  50% {
+      transform: scale(0.9); /* Уменьшаем масштаб до 90% */
   }
+  100% {
+      transform: scale(1); /* Возвращаем масштаб к исходному */
+  }
+}
+
+.greenIcon {
+  color: green !important;
+}
+
+fieldset {
+  outline: none !important;
+  border-color: green !important; 
+  color: green !important;
+}

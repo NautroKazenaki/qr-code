@@ -1,9 +1,8 @@
-import { Dialog, DialogTitle, DialogContent, Button, TextField } from '@mui/material'
+import { Button, TextField, Tooltip } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import APStyles from './AcceptancePage.module.css'
 import { EnhancedTable } from '../../components/AcceptanceTable/AcceptanceTable'
 import SwipeableTextMobileStepper from '../../components/AcceptanceCarousel/AcceptanceCarousel'
-import NewProduct from '../../components/AcceptanceTable/AcceptanceTable'
 import ProvidersSelect from '../../components/ProvidersSelect/ProvidersSelect'
 import { toast, ToastContainer } from 'react-toastify';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -39,7 +38,7 @@ const useLocalStorageState = (key, defaultValue) => {
 };
 
 
-const AcceptancePage = () => {
+const AcceptancePage = ({userLevel}) => {
 
     let userName = JSON.parse(localStorage.getItem('user'))
     const [currentDateTime, setCurrentDateTime] = useState('');
@@ -56,113 +55,77 @@ const AcceptancePage = () => {
     const [selected, setSelected] = useState('');
 
     useEffect(() => {
-        // Установка текущей даты и времени в состояние
-        setCurrentDateTime(getCurrentDateTime());
-
-        // Обновление даты и времени каждую секунду
+        const fetchData = async () => {
+            try {
+                const providersResult = await window.api.getAllProviders();
+                setProvidersList(providersResult.map(provider => provider.name));
+            } catch (error) {
+                console.error('Error fetching providers:', error);
+                toast.error('Произошла ошибка при загрузке списка поставщиков');
+            }
+        };
+    
+        fetchData();
+    }, []);
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const acceptanceResult = await window.api.getStuff(); 
+                setAcceptanceData(acceptanceResult);
+                const usersResult = await window.api.getAllUsers();
+                setUsersData(usersResult);
+                const savedRows = JSON.parse(localStorage.getItem('rows'));
+                if (savedRows) {
+                    setRows(savedRows);
+                }
+            } catch (error) {
+                console.error('Error fetching acceptance data:', error);
+                toast.error('Произошла ошибка при загрузке данных о приемке или пользователях');
+            }
+        };
+    
+        fetchData();
+    }, []);
+    
+    useEffect(() => {
         const intervalId = setInterval(() => {
             setCurrentDateTime(getCurrentDateTime());
         }, 1000);
-
-        // Очистка интервала при размонтировании компонента
+    
         return () => clearInterval(intervalId);
     }, []);
-
-    useEffect(() => {
-        const savedRows = JSON.parse(localStorage.getItem('rows'));
-        if (savedRows) {
-            setRows(savedRows);
-        }
-    }, []);
-
-    /*useEffect(() => {
-        // Check if provider list exists in local storage
-        const storedProvidersList = localStorage.getItem('providersList');
-        if (storedProvidersList) {
-            // Ensure "Добавить нового поставщика" is always last
-            const parsedList = JSON.parse(storedProvidersList);
-            const index = parsedList.indexOf('Добавить нового поставщика');
-            if (index !== -1) {
-                parsedList.splice(index, 1);
-                parsedList.push('Добавить нового поставщика');
-            }
-            setProvidersList(parsedList);
-        } else {
-            // Initialize with default list if not found
-            setProvidersList(['Поставщик 1', 'Поставщик 2']);
-        }
-    }, []);*/
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const result = await window.api.getAllProviders();
-                setProvidersList(result.map(provider => provider.name));
-            } catch (error) {
-                console.error('Error fetching providers data:', error);
-            }
-        };
-        fetchData();
-    }, []);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const result = await window.api.getStuff(); // Fetch all acceptance data
-                setAcceptanceData(result);
-            } catch (error) {
-                console.error('Error fetching acceptance data:', error);
-            }
-        };
-        fetchData();
-    }, [rows]);
     
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await window.api.getAllUsers();
-            setUsersData(result);
-        };
-        fetchData();
-    }, [rows]);
-    
-    /*
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await window.api.getProducts();
-        };
-        fetchData();
-    }, [rows]);
 
-    */
 
     const handleAddProvider = async () => {
-    let trimmedName = newProviderName.trim();
-    trimmedName = trimmedName.replace(/\s{2,}/g, ' ', '  ', '   ');
-    trimmedName = trimmedName.slice(0, 25);
+        let trimmedName = newProviderName.trim();
+        trimmedName = trimmedName.replace(/\s{2,}/g, ' ', '  ', '   ');
+        trimmedName = trimmedName.slice(0, 25);
 
-    if (trimmedName.length > 0) {
-        if (!/^\s/.test(trimmedName)) {
-            const isExistingProvider = providersList.some(provider => provider.trim() === trimmedName);
-            if (!isExistingProvider) {
-                try {
-                    await window.api.addProvider(trimmedName);
-                    const result = await window.api.getAllProviders();
-                    setProvidersList(result.map(provider => provider.name));
-                    setNewProviderName('');
-                } catch (error) {
-                    console.error('Error adding provider:', error);
-                    toast.error('Произошла ошибка при добавлении поставщика');
+        if (trimmedName.length > 0) {
+            if (!/^\s/.test(trimmedName)) {
+                const isExistingProvider = providersList.some(provider => provider.trim() === trimmedName);
+                if (!isExistingProvider) {
+                    try {
+                        await window.api.addProvider(trimmedName);
+                        const result = await window.api.getAllProviders();
+                        setProvidersList(result.map(provider => provider.name));
+                        setNewProviderName('');
+                    } catch (error) {
+                        console.error('Error adding provider:', error);
+                        toast.error('Произошла ошибка при добавлении поставщика');
+                    }
+                } else {
+                    toast.error("Поставщик с таким именем уже существует!");
                 }
             } else {
-                toast.error("Поставщик с таким именем уже существует!");
+                toast.error("Имя поставщика не должно начинаться с пробела!");
             }
         } else {
-            toast.error("Имя поставщика не должно начинаться с пробела!");
+            toast.error("Введите имя добавляемого поставщика!");
         }
-    } else {
-        toast.error("Введите имя добавляемого поставщика!");
-    }
-};
+    };
 
 
 const handleRemoveProvider = async (providerNameToRemove) => {
@@ -170,21 +133,23 @@ const handleRemoveProvider = async (providerNameToRemove) => {
         await window.api.deleteProvider(providerNameToRemove);
         const updatedProvidersList = providersList.filter(provider => provider !== providerNameToRemove);
         setProvidersList(updatedProvidersList);
-        toast.success('Поставщик успешно удален');
     } catch (error) {
         console.error('Error deleting provider:', error);
         toast.error('Произошла ошибка при удалении поставщика');
     }
 
-    setSelectedProvider(null);
-};
-
-    useEffect(() => {
         setSelectedProvider(null);
-    }, [providersList]);
-
+    };
 
     const additionTo = (name, quantity, selectedProvider) => {
+        // console.log(acceptanceData);
+        while (quantity.startsWith('0')) {
+            quantity = quantity.slice(1); 
+        }
+        if (quantity === '') {
+            toast.error("Нельзя добавить 0 деталей!");
+            return;
+        }
         if (name && quantity && selectedProvider && selectedProvider !== "Добавить нового поставщика") {
             const uniqueIndex = counter + 1;
             setCounter(uniqueIndex);
@@ -211,7 +176,7 @@ const handleRemoveProvider = async (providerNameToRemove) => {
             toast.error("Заполните все поля!");
         }
     };
-    
+
 
     const addAcceptanceToDB = async () => {
         try {
@@ -229,12 +194,13 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                 await window.api.setStuff(userName.email, currentDateTime, name, quantity, selectedProvider, acceptanceCounter);
                 await window.api.addDetail(name, quantity, selectedProvider);
             }
-
+            const acceptanceResult = await window.api.getStuff(); 
+            setAcceptanceData(acceptanceResult);
             setRows(prevRows => prevRows.filter(row => !selected.includes(row.id)));
             toast.success('Приёмка успешно завершена');
             setSelected([]);
             localStorage.removeItem('rows');
-
+            
         } catch (error) {
             console.error('Ошибка:', error);
             toast.error('Произошла ошибка при завершении приёмки');
@@ -251,6 +217,7 @@ const handleRemoveProvider = async (providerNameToRemove) => {
         if (inputValue.length === 5) {
             toast.error('Достигнута максимальная длина имени (5 символов).');
         }
+        
     };
 
     return (
@@ -262,56 +229,60 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                     </div>
                     <div className={APStyles.newAcceptanceInputsContainer}>
                         <div className={APStyles.topNewAcceptanceInputsContainer}>
-                            <TextField id="standard-basic" label="Дата" variant="standard" value={currentDateTime}
+                            <TextField color="success" id="standard-basic" label="Дата" variant="standard" value={currentDateTime}
                                 InputProps={{
                                     readOnly: true,
                                 }} />
-                            <TextField id="standard-basic" label="Имя" variant="standard" value={userName?.email} />
+                            <TextField color="success" id="standard-basic" label="Имя" variant="standard" value={userName?.email} />
                         </div>
                         <div className={APStyles.bottomNewAcceptanceInputsContainer}>
-                        <TextField
-                            id="standard-basic"
-                            label="Название продукта"
-                            variant="standard"
-                            type="text"
-                            value={newProductName}
-                            inputProps={{ maxLength: 150 }} 
-                            onChange={(e) => {
-                                setProductName(e.target.value);
-                                if (e.target.value.length === 150) {
-                                    toast.error("Достигнута максимальная длина имени (15 символов).");
-                                }
-                            }}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        {newProductName && (
-                                            <IconButton
-                                                onClick={() => setProductName('')}
-                                                size="small" 
-                                                sx={{ marginTop: '-18px' }} 
-                                            >
-                                                <ClearIcon sx={{ fontSize: '16px' }} />
-                                            </IconButton>
-                                        )}
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
                             <TextField
+                                color="success"
+                                id="standard-basic"
+                                label="Название продукта"
+                                variant="standard"
+                                type="text"
+                                value={newProductName}
+                                inputProps={{ maxLength: 150 }}
+                                onChange={(e) => {
+                                    setProductName(e.target.value);
+                                    if (e.target.value.length === 150) {
+                                        toast.error("Достигнута максимальная длина имени (15 символов).");
+                                    }
+                                }}
+                                
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            {newProductName && (
+                                                <IconButton
+                                                    onClick={() => setProductName('')}
+                                                    size="small"
+                                                    sx={{ marginTop: '-18px' }}
+                                                    className={APStyles.greenIcon}
+                                                >
+                                                    <ClearIcon sx={{ fontSize: '16px' }} />
+                                                </IconButton>
+                                            )}
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <TextField
+                                color="success"
                                 id="standard-basic"
                                 label="Количество"
                                 variant="standard"
                                 type="text"
                                 value={newQuantity}
-                                
                                 onChange={handleQuantityChange}
                                 inputProps={{ maxLength: 5 }}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
                                             {newQuantity && (
-                                                <IconButton onClick={() => setQuantity('')} size="small" sx={{ marginTop: '-18px' }}>
+                                                <IconButton className={APStyles.greenIcon} onClick={() => setQuantity('')} size="small" sx={{ marginTop: '-18px' }}>
+                                                    
                                                     <ClearIcon sx={{ fontSize: '16px' }} />
                                                 </IconButton>
                                             )}
@@ -321,7 +292,7 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                             />
                         </div>
                         <div className={APStyles.bottomNewAcceptanceInputsContainer}>
-                            <ProvidersSelect
+                            <ProvidersSelect 
                                 ProvidersList={providersList}
                                 selectedProvider={selectedProvider}
                                 setSelectedProvider={setSelectedProvider}
@@ -329,18 +300,37 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                                 setNewProviderName={setNewProviderName}
                                 handleAddProvider={handleAddProvider}
                                 handleRemoveProvider={handleRemoveProvider}
-
+                                userLevel={userLevel}
                             />
                         </div>
                     </div>
                     <div className={APStyles.newAcceptanceButtonsContainer}>
-                        <Button variant="contained" onClick={() => additionTo(newProductName, newQuantity, selectedProvider)}>Добавить в приёмку</Button>
+                        <Button
+                            className={APStyles.blackButton}
+                            style={{ fontSize: '14px'}}
+                            disabled={userLevel < 2 ? false : true}
+                            variant="contained"
+                            onClick={() => additionTo(newProductName, newQuantity, selectedProvider)}
+                        >
+                            Добавить в приёмку
+                        </Button>                    
                     </div>
                     <div className={APStyles.newAcceptanceTableContainer}>
                         <EnhancedTable rows={rows} setRows={setRows} selected={selected} setSelected={setSelected} />
                     </div>
                     <div className={APStyles.newAcceptanceButtonsContainer}>
-                        <Button variant="outlined" onClick={addAcceptanceToDB}>Завершить приёмку</Button>
+                        <Tooltip title="Добавить выбранные детали в базу данных">
+                            <Button 
+                                disabled={userLevel < 2 ? false : true} 
+                                variant="outlined" 
+                                onClick={addAcceptanceToDB}
+                                style={{ fontSize: '14px'}}
+
+                                class={APStyles.blackButton}
+                                >
+                                    Завершить приёмку
+                            </Button>
+                        </Tooltip>
                     </div>
                 </div>
                 <div className={APStyles.listOfLastAcceptancesContainer}>

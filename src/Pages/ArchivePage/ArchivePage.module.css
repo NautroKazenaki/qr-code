@@ -1,0 +1,165 @@
+.rootContainer {
+    font-family: 'RussianRail G Pro', sans-serif !important;
+}
+
+
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.navigationContainer {
+    display: flex;
+    flex-direction: row;
+    width: 99.6%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 1% 0 0 0.1%;
+    /* border: 3px solid black; */
+
+}
+.archiveConteiner  {
+    border: 2px solid black;
+    height: 78vh;
+    overflow-y: hidden;
+}
+
+.archiveConteiner table thead tr th {
+    color: #d2e0c9 !important;
+
+}
+
+.filterContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.filterButtonContainer {
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+}
+.searchContainer {
+    display: flex;
+    /* width: 50%; */
+    justify-content: center;
+    align-items: center;
+}
+
+.newAcceptanceTableContainer {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 3%;
+}   
+.customTableHead {
+    width: 30%;
+    margin: 5vh;
+    color: #d2e0c9 !important;
+    background-color: #172D13;
+}
+
+.containerFilter {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    color: #222;
+    border-radius: 8px;
+    border-color: #222;
+    border: 1px;
+    line-height: 1.125em;
+    padding: 5px;
+}
+
+.filterData {
+    display: flex;
+    flex-direction: row;
+    width: 40%;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.filter {
+    display: flex;
+    flex-direction: row;
+    width: 40%;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.filterSelect {
+    width: 160px !important;
+}
+.footerContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    height: 1%;
+    /* margin-top: 1%; */
+}
+.footerButtonContainer {
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.footerButton {
+    /* margin: 0 auto !important; */
+    padding: 0 !important;
+    position: 0 !important;
+}
+.searchButtonContainer button {
+    display: contents;
+    position: 0 !important;
+}
+
+.serch {
+    width: 10vw;
+}
+.tableRow {
+    cursor: pointer !important;
+
+}
+.inputContainer input {
+    padding: 10px 10px;
+    margin-top: 1px;
+}
+
+.blackButton {
+    background-color: #172D13 !important;
+    color: #d2e0c9 !important;
+    transition: background-color 0.5s, color 0.5s !important; /* Увеличиваем время анимации до 0.5 секунды */
+    border: 2px solid #d2e0c9 !important; /* Добавляем зеленый бордер */
+    margin-left: 20px !important;
+    
+}
+
+.blackButton:active {
+    background-color: green !important; /* При нажатии изменяем цвет фона на зеленый */
+    color: black !important; /* При нажатии изменяем цвет текста на черный */
+}
+
+.blackButton:focus {
+    outline: none; /* Убираем стандартный контур фокуса */
+}
+
+.blackButton.clicked {
+    animation: clickEffect 0.5s linear; /* Изменяем время анимации для эффекта нажатия */
+}
+
+@keyframes clickEffect {
+    0% {
+        transform: scale(1); /* Начальное значение масштаба */
+    }
+    50% {
+        transform: scale(0.9); /* Уменьшаем масштаб до 90% */
+    }
+    100% {
+        transform: scale(1); /* Возвращаем масштаб к исходному */
+    }
+}
+

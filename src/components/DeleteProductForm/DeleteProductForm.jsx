@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import DPFStyles from './DeleteProductForm.module.css';
 import { toast } from 'react-toastify';
-import { TextField, IconButton , Button, InputAdornment } from '@mui/material';
+import { TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
+// import withStyles from '@mui/styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
-import Clear from '@mui/icons-material/Clear';
 
-const DeleteProductForm = ({currentUser}) => {
+const DeleteProductForm = ({ currentUser, userLevel }) => {
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
-
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -17,7 +16,7 @@ const DeleteProductForm = ({currentUser}) => {
                 setProducts(result);
             } catch (error) {
                 console.error('Error fetching products:', error);
-                toast.error('Неудалось загрузить платы');
+                toast.error('Не удалось загрузить платы');
             }
         };
 
@@ -33,10 +32,10 @@ const DeleteProductForm = ({currentUser}) => {
             toast.error("У вас маловато прав для выполнения этой операции!");
             return;
         }
-        
+
         if (selectedProduct && selectedProduct.productName) {
             try {
-                await window.api.deleteProduct(selectedProduct.id);
+                await window.api.deleteProduct(selectedProduct.productName);
                 setSelectedProduct(null);
                 const updatedProducts = await window.api.getProducts();
                 setProducts(updatedProducts);
@@ -54,32 +53,55 @@ const DeleteProductForm = ({currentUser}) => {
         <div className={DPFStyles.container}>
             <h2>Удалить плату</h2>
             <div className={DPFStyles.formGroup}>
-            <Box width={224}>
-                <Autocomplete
-                    disablePortal
-                    id="productSelect"
-                    options={products}
-                    getOptionLabel={(product) => product.productName} // Функция для отображения наименования продукта в автокомплекте
-                    value={selectedProduct}  
-                    onChange={(event, newValue) => {
-                        handleProductChange(newValue);
-                    }}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Выберите плату"
-                            variant="outlined"
-                            style={{ marginBottom: '10px' }}
-                            required
-
-                        />
-                    )}
-                    clearIcon={null}  
-
-                />
-            </Box>
+                <Box width={224}>
+                    <Autocomplete
+                        disablePortal
+                        disabled={userLevel > 0}
+                        id="productSelect"
+                        options={products}
+                        getOptionLabel={(product) => product.productName} // Функция для отображения наименования продукта в автокомплекте
+                        value={selectedProduct}
+                        onChange={(event, newValue) => {
+                            handleProductChange(newValue);
+                        }}
+                        renderInput={(params) => (
+                            <TextField
+                                color="success"
+                                {...params}
+                                label="Выберите плату"
+                                variant="outlined"
+                                style={{ marginBottom: '10px' }}
+                                required
+                            />
+                        )}
+                        clearIcon={null}
+                    />
+                </Box>
+                {selectedProduct !== null && (
+                    <div className={DPFStyles.includedDetailsContainer}>
+                        <p>В состав платы входит:</p>
+                        <TableContainer component={Paper} style={{ maxHeight: '300px' }}>
+                            <Table>
+                                <TableHead sx={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: 'white', width: '100%' }}>
+                                    <TableRow>
+                                        <TableCell  >Деталь</TableCell>
+                                        <TableCell>Количество</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody sx={{width: '100%' }}>
+                                        {JSON.parse(selectedProduct.includedDetails).map((detail, index) => (
+                                            <TableRow>
+                                                <TableCell>{detail.detailName}</TableCell>
+                                                <TableCell>{detail.quantity} шт</TableCell>
+                                            </TableRow>
+                                        ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+                )}
             </div>
-            <Button variant="contained" className={DPFStyles.deleteButton} style={{ width: '224px'}} type="button" onClick={handleDelete}>Удалить плату</Button>
+            <Button variant="contained" class={DPFStyles.deleteButton} style={{fontSize: '18px'}} type="button" onClick={handleDelete}>Удалить плату</Button>
         </div>
     );
 };

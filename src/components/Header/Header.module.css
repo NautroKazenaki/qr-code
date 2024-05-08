@@ -1,11 +1,20 @@
+* {
+    font-family: 'RussianRail G Pro', sans-serif;
+  }
+
 .headerContainer {
     display: flex;
     flex-direction: row;
     width: 100%;
     justify-content: space-around;
-    align-items: center;
-    background: rgb(17 24 39);
+    /* align-items: center; */
+    background: #172D13;
     user-select: none;
+    -webkit-app-region: drag;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    height: 8vh;
 }
 .logoContainer svg {
     color: white;
@@ -16,14 +25,29 @@
     width: 75%;
     justify-content: space-evenly;
     user-select: none;
+    -webkit-app-region: no-drag;
 }
 .headerButtonsContainer button:hover{
-    color: yellow !important;
+    color: rgb(0, 108, 42) !important;
+}
+.loginButtonContainer {
+    -webkit-app-region: no-drag;
 }
 .loginButtonContainer button:hover{
-    color: yellow !important;
+    color: rgb(0, 108, 42) !important;
 }
 .active h1, .active h2 {
-    color: yellow;
+    color: green;
     user-select: none;
 }
+
+.userName {
+    color: green;
+}
+
+.userWelcomeContainer {
+    display: flex;
+    align-items: center;
+}
+
+

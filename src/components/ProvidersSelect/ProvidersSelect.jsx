@@ -1,13 +1,14 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { Dialog, DialogTitle,DialogActions, DialogContent, Button, IconButton } from '@mui/material';
+import { Dialog, DialogTitle, DialogActions, DialogContent, Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
 import InputAdornment from '@mui/material/InputAdornment';
 import ClearIcon from '@mui/icons-material/Clear';
+import APStyles from '../../Pages/AcceptancePage/AcceptancePage.module.css';
 
-export default function ProvidersSelect({ ProvidersList, selectedProvider, setSelectedProvider, newProviderName, setNewProviderName, handleAddProvider, handleRemoveProvider }) {
+export default function ProvidersSelect({ ProvidersList, selectedProvider, setSelectedProvider, newProviderName, setNewProviderName, handleAddProvider, handleRemoveProvider, userLevel }) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [providerToDelete, setProviderToDelete] = React.useState(null);
 
@@ -49,79 +50,74 @@ export default function ProvidersSelect({ ProvidersList, selectedProvider, setSe
   return (
     <>
       <Autocomplete
+        disabled={userLevel < 2 ? false : true}
         disablePortal
         id="combo-box-demo"
         options={updatedProvidersList}
         sx={{
           width: 300,
-          "& .MuiAutocomplete-option": {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          },
-          "& .MuiAutocomplete-optionText": {
-            display: "flex",
-            alignItems: "center",
-            marginTop: "-8px",
-          },
+          
         }}
         value={selectedProvider}
         onChange={handleProviderChange}
-        renderInput={(params) => <TextField {...params} label="Поставщики" />}
+        renderInput={(params) => <TextField color="success" {...params} label="Поставщики" disabled={userLevel < 2 ? false : true} />}
         renderOption={(props, option) => (
           <li {...props}>
             <span className="MuiAutocomplete-optionText">{option}</span>
             {option !== 'Добавить нового поставщика' && (
-              <IconButton onClick={() => {
+              <IconButton className={APStyles.greenIcon} disabled={userLevel < 2 ? false : true} onClick={() => {
                 setOpenDialog(true);
                 setProviderToDelete(option);
-              }} size="small" sx={{ marginTop: '-20px',  marginLeft: '20px'}} >
+
+              }} size="small" sx={{ marginTop: '-20px', marginLeft: 'auto', marginRight: 0 }} >
                 <DeleteIcon />
               </IconButton>
             )}
           </li>
         )}
-        
+
       />
-      
+
       {selectedProvider === 'Добавить нового поставщика' && (
         <>
-          <TextField 
-            id="standard-basic" 
-            label="Новый поставщик" 
-            variant='standard' 
+          <TextField
+            color="success"
+            id="standard-basic"
+            label="Новый поставщик"
+            variant='standard'
             type="text"
-            value = {newProviderName}
-            inputProps={{ maxLength: 25 }} 
-            
+            value={newProviderName}
+            inputProps={{ maxLength: 25 }}
+
 
             onChange={(e) => {
-                setNewProviderName(e.target.value);
-                if (e.target.value.length === 25) {
-                    toast.error("Достигнута максимальная длина имени (25 символов).");
-                }
-            }} 
+              setNewProviderName(e.target.value);
+              if (e.target.value.length === 25) {
+                toast.error("Достигнута максимальная длина имени (25 символов).");
+              }
+            }}
             InputProps={{
               endAdornment: (
-                  <InputAdornment position="end">
-                      {newProviderName && (
-                          <IconButton
-                              onClick={() => setNewProviderName('')}
-                              size="small" 
-                              sx={{ marginTop: '-18px' }} 
-                          >
-                              <ClearIcon sx={{ fontSize: '16px' }} />
-                          </IconButton>
-                      )}
-                  </InputAdornment>
+                <InputAdornment position="end">
+                  {newProviderName && (
+                    <IconButton
+                        className={APStyles.greenIcon}
+                        onClick={() => setNewProviderName('')}
+                        size="small"
+                    >
+                        <ClearIcon sx={{ fontSize: '16px' }} />
+                    </IconButton>
+                
+                  )}
+                </InputAdornment>
               ),
-          }}                  
+            }}
           />
-          <Button onClick={handleAddProvider}>Добавить</Button>
+          <Button class={APStyles.blackButton} onClick={handleAddProvider}>Добавить</Button>
         </>
       )}
 
-      <Dialog open={openDialog} onClose={handleDialogClose}>
+      <Dialog open={openDialog} onClose={handleDialogClose} sx={{ '& .MuiDialog-container': { '& .MuiPaper-root': { overflowY: 'hidden' } } }}>
         <DialogTitle>Вы уверены?</DialogTitle>
         <DialogContent>
           <p>Вы уверены, что хотите удалить: "{providerToDelete}"?</p>

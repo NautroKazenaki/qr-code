@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import SPStyles from './SettingsPage.module.css'
 import { toast, ToastContainer } from 'react-toastify';
-import deleteUser from '../../images/deleteUser.png';
 import CreateProductForm from '../../components/CreateProductForm/CreateProductForm';
 import DeleteProductForm from '../../components/DeleteProductForm/DeleteProductForm'
 import CreateOrderForm from '../../components/CreateOrderForm/CreateOrderForm';
 import DeleteOrderForm from '../../components/DeleteOrderForm/DeleteOrderForm';
-import { TextField, IconButton , Button, InputAdornment } from '@mui/material';
+import { TextField, IconButton, Button, InputAdornment, Tooltip } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Clear from '@mui/icons-material/Clear';
 
-
-const SettingsPage = () => {
+const SettingsPage = ({userLevel}) => {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [level, setLevel] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [option, setOption] = useState('');
     const [currentUser, setCurrentUser] = useState('');
-    const [selectedOption, setSelectedOption] = useState('');
+
 
     useEffect(() => {
         // Fetch all users from the database when the component mounts
@@ -30,15 +27,12 @@ const SettingsPage = () => {
 
     const fetchAllUsers = async () => {
         try {
-            setIsLoading(true);
             // Fetch all users from the API
             const response = await window.api.getAllUsers();
             setUsers(response);
         } catch (error) {
             console.error('Error occurred while fetching users:', error);
             toast.error('Неудалось получить список пользователей');
-        } finally {
-            setIsLoading(false);
         }
     };
     const handleNameChange = (e) => {
@@ -57,12 +51,11 @@ const SettingsPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (name === '' || password === '' || level === '') {
             toast.error('Вы забыли заполнить все поля!');
             return;
         }
-        if (currentUser.level !== 0){
+        if (currentUser.level >= level) {
             toast.error("У вас мало прав!");
             return;
         }
@@ -89,26 +82,24 @@ const SettingsPage = () => {
 
 
     const handleDeleteUser = async (e) => {
+        // debugger
         e.preventDefault();
-        console.log(selectedUser);
-    
-        if (currentUser.level !== 0) {
+        if (currentUser.level >= selectedUser.level) {
             toast.error("У вас мало прав!");
             return;
         }
-        
+
         if (!selectedUser || selectedUser.name === null) {
             toast.error('Пожалуйста, выберите пользователя для удаления');
             return;
         }
-        
+
         if (selectedUser.name === currentUser.email) {
             toast.error('Вы пытаетесь удалить себя!');
             return;
         }
-        
+
         try {
-            setIsLoading(true);
             // Call the API to delete the selected user
             await window.api.deleteUser(selectedUser.name);
             toast.success('Пользователь успешно удалён');
@@ -118,8 +109,6 @@ const SettingsPage = () => {
         } catch (error) {
             console.error('Error occurred while deleting user:', error);
             toast.error('Возникла ошибка при удалении пользователя');
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -136,15 +125,14 @@ const SettingsPage = () => {
         setPassword('');
     };
 
+    const checkForUpdate = async () => {
+        await window.api.checkForUpdate();
+    }
+
     return (
         <div className={SPStyles.assemblyPageContainer}>
             <div className={SPStyles.topContentContainer}>
                 <div className={SPStyles.LeftContainer}>
-                    <div className={SPStyles.newAssemblyContainerTitle}>
-                        {/* <h2>Выберите действие:</h2> */}
-                        <h1> </h1>
-
-                        </div>
                     <div className={SPStyles.buttonsContainer}>
                         <Button className={SPStyles.button} onClick={() => handleOptionChange('createUser')} style={{ backgroundColor: option === 'createUser' ? 'rgb(22, 27, 39)' : 'initial' }}>Создать пользователя</Button>
                         <Button className={SPStyles.button} onClick={() => handleOptionChange('deleteUser')} style={{ backgroundColor: option === 'deleteUser' ? 'rgb(22, 27, 39)' : 'initial' }}>Удалить пользователя</Button>
@@ -152,168 +140,181 @@ const SettingsPage = () => {
                         <Button className={SPStyles.button} onClick={() => handleOptionChange('deleteProduct')} style={{ backgroundColor: option === 'deleteProduct' ? 'rgb(22, 27, 39)' : 'initial' }}>Удалить продукт</Button>
                         <Button className={SPStyles.button} onClick={() => handleOptionChange('createOrder')} style={{ backgroundColor: option === 'createOrder' ? 'rgb(22, 27, 39)' : 'initial' }}>Создать заказ</Button>
                         <Button className={SPStyles.button} onClick={() => handleOptionChange('deleteOrder')} style={{ backgroundColor: option === 'deleteOrder' ? 'rgb(22, 27, 39)' : 'initial' }}>Удалить заказ</Button>
+                        <Button className={SPStyles.button} onClick={() => handleOptionChange('AboutUs')} style={{ backgroundColor: option === 'AboutUs' ? 'rgb(22, 27, 39)' : 'initial' }}>О продукте</Button>
+
                     </div>
-                
-            </div>
-            <div className={`${SPStyles.RightContainer} ${SPStyles.createUserBackground}`}>
-                <div className={SPStyles.newAssemblyContainerTitle}>
-                    {/* <h2>option </h2> */}
-                    <h1> </h1>
-                </div >
-                {option && (
-                    <div  >
+
+                </div>
+                <div className={`${SPStyles.RightContainer} ${SPStyles.createUserBackground}`}>
+                    {option && (
+                        <div >
                             {option === 'createUser' && (
                                 <>
-                                <div className={SPStyles.newRightContainer}>
-                                    <div className={SPStyles.formContainer}>
-                                        <h1 className={SPStyles.opacity}>Регистрация</h1>
-                                        <form onSubmit={handleSubmit}>
-                                            <div className={SPStyles.column}>
-                                                <TextField
-                                                    type="text"
-                                                    value={name}
-                                                    onChange={handleNameChange}
-                                                    style={{ marginBottom: '10px', maxWidth: '222px' }}
-                                                    inputProps={{ maxLength: 25 }} 
-                                                    label="Имя"
-                                                    InputProps={{
-                                                        endAdornment: name && ( // Проверяем, есть ли текст в поле ввода
-                                                            <InputAdornment position="end">
-                                                                <IconButton
-                                                                    onClick={handleClearName}
-                                                                    edge="end"
-                                                                    size="small"
-                                                                >
-                                                                    <Clear fontSize="small" />
-                                                                </IconButton>
-                                                            </InputAdornment>
-                                                        ),
-                                                    }}
-                                                    required
+                                    <div className={SPStyles.newRightContainer}>
+                                        <div className={SPStyles.formContainer}>
+                                            <h1 className={SPStyles.opacity}>Регистрация</h1>
+                                            <form onSubmit={handleSubmit}>
+                                                <div className={SPStyles.column}>
+                                                    <TextField
+                                                        color="success"
+                                                        type="text"
+                                                        value={name}
+                                                        onChange={handleNameChange}
+                                                        className={SPStyles.textFieldStyled}
+                                                        inputProps={{ maxLength: 25 }}
+                                                        variant="outlined"
 
-                                                />
-                                                
-                                                <TextField
-                                                    type="password"
-                                                    value={password}
-                                                    onChange={handlePasswordChange}
-                                                    style={{ marginBottom: '10px', maxWidth: '222px' }}
-                                                    inputProps={{ maxLength: 25 }} 
-                                                    label="Пароль"
+                                                        label="Имя"
+                                                        InputProps={{
+                                                            endAdornment: name && ( // Проверяем, есть ли текст в поле ввода
+                                                                <InputAdornment position="end">
+                                                                    <IconButton
+                                                                        onClick={handleClearName}
+                                                                        edge="end"
+                                                                        size="small"
+                                                                    >
+                                                                        <Clear fontSize="small" />
+                                                                    </IconButton>
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                        required
+                                                    />
 
-                                                    InputProps={{
-                                                        endAdornment: password && ( // Проверяем, есть ли текст в поле ввода
-                                                            <InputAdornment position="end">
-                                                                <IconButton
-                                                                    onClick={handleClearPassword}
-                                                                    edge="end"
-                                                                    size="small"
-                                                                >
-                                                                    <Clear fontSize="small"  />
-                                                                </IconButton>
-                                                            </InputAdornment>
-                                                        ),
-                                                    }}
-                                                    required
-                                                /> 
-                                            </div>                                           
-                                            <Box width={224} >
-                                                <Autocomplete
-                                                    disablePortal
-                                                    id="combo-box-demo"
-                                                    options={['0', '1', '2']} 
-                                                    value={level}  
-                                                    onChange={(event, newValue) => {
-                                                        handleLevelChange(newValue);
-                                                    }}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            label="Выберите уровень"
-                                                            variant="outlined"
-                                                            style={{ marginBottom: '10px'}}
-                                                            required
+                                                    <TextField
+                                                        color="success"
+                                                        type="password"
+                                                        value={password}
+                                                        onChange={handlePasswordChange}
+                                                        className={SPStyles.textFieldStyled}
+                                                        inputProps={{ maxLength: 25 }}
+                                                        label="Пароль"
 
-                                                        />
-                                                    )}
-                                                    clearIcon={null}  
+                                                        InputProps={{
+                                                            endAdornment: password && ( // Проверяем, есть ли текст в поле ввода
+                                                                <InputAdornment position="end">
+                                                                    <IconButton
+                                                                        onClick={handleClearPassword}
+                                                                        edge="end"
+                                                                        size="small"
+                                                                    >
+                                                                        <Clear fontSize="small" />
+                                                                    </IconButton>
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                        required
+                                                    />
+                                                </div>
+                                                <Box width={224} >
                                                     
-                                                />
-                                                
-                                            </Box>
+                                                    <Autocomplete
+                                                        disablePortal
+                                                        
+                                                        id="combo-box-demo"
+                                                        options={['0', '1', '2']}
+                                                        value={level}
+                                                        onChange={(event, newValue) => {
+                                                            handleLevelChange(newValue);
+                                                        }}
+                                                        renderInput={(params) => (
+                                                            <Tooltip title="Админ | Пользователь | Гость">
+                                                                <TextField
+                                                                    color="success"
+                                                                    {...params}
+                                                                    label="Выберите уровень"
+                                                                    variant="outlined"
+                                                                    style={{ marginBottom: '10px' }}
+                                                                    required
+    
+                                                                />
+                                                            </Tooltip>
+                                                        )}
+                                                        clearIcon={null}
+                                                        className={SPStyles.textFieldStyled}
 
-                                            <Button variant="contained" className={SPStyles.opacity} style={{ width: '222px' }} type='submit'>Зарегистрировать</Button>
-
-                                        </form>
+                                                    />
+                                                </Box>
+                                            </form>    
+                                        </div>
+                                        <div className={SPStyles.image}>
+                                            <img
+                                                src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png"
+                                                alt="illustration"
+                                                className="illustration"
+                                            />
+                                        </div>
                                     </div>
+                                    <Button variant="contained" style= {{fontSize: '18px'}} class={` ${SPStyles.blackButton}`} type='submit' onClick={handleSubmit} >Зарегистрировать</Button>
 
-                                    <div className={SPStyles.image}>
-                                        <img
-                                            src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png"
-                                            alt="illustration"
-                                            className="illustration"
-                                        />
-                                    </div>
-                                </div>
-                            </>
+                                </>
                             )}
 
                             {option === 'deleteUser' && (
                                 <>
-                                <div className={SPStyles.newRightContainer}>
-                                    <div className={SPStyles.formContainer}>
-                                        <h1 className={SPStyles.opacity} style={{ alignItems: "center", marginLeft: '-60px', marginTop: '60px'}} >Удалить пользователя</h1>
-                                        <form onSubmit={handleDeleteUser}>
-                                            <Box width={224}>
-                                            <Autocomplete
-                                                disablePortal
-                                                id="combo-box-demo"
-                                                options={users}
-                                                getOptionLabel={(user) => user.name.toString()}
-                                                value={selectedUser}
-                                                onChange={(event, newValue) => {
-                                                    handleUserChange(newValue);
-                                                }}
-                                                renderInput={(params) => (
-                                                    <TextField
-                                                        {...params}
-                                                        label="Выберите пользователя"
-                                                        variant="outlined"
-                                                        style={{ marginBottom: '10px' }}
-                                                        required
+                                    <div className={SPStyles.newRightContainer}>
+                                        <div className={SPStyles.formContainer}>
+                                            <h1 className={SPStyles.opacity} style={{ alignItems: "center", marginLeft: '-60px', marginTop: '60px' }} >Удалить пользователя</h1>
+                                            <form onSubmit={handleDeleteUser}>
+                                                <Box width={224}>
+                                                    <Autocomplete
+                                                        disablePortal
+                                                        id="combo-box-demo"
+                                                        options={users}
+                                                        getOptionLabel={(user) => user.name.toString()}
+                                                        value={selectedUser}
+                                                        onChange={(event, newValue) => {
+                                                            handleUserChange(newValue);
+                                                        }}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                color="success"
+                                                                {...params}
+                                                                label="Выберите пользователя"
+                                                                variant="outlined"
+                                                                style={{ marginBottom: '10px' }}
+                                                                required
+                                                            />
+                                                        )}
+                                                        clearIcon={null}
+                                                        
                                                     />
-                                                )}
-                                                clearIcon={null}  
-                                            />
-                                            </Box>
-                                            <Button variant="contained" className={SPStyles.opacity} style={{ width: '222px' }} type='submit'>Удалить</Button>
-                                        </form>
+                                                </Box>
+                                            </form>
+                                        </div>
+
                                     </div>
-                                    <img 
-                                            src={deleteUser} 
-                                            alt="illustration" 
-                                            className="illustration" 
-                                            style={{ width: '200px', height: '150px', alignItems: "center", marginTop: '100px'}} 
-                                        />
+                                    <Button variant="contained" style={{fontSize: '18px'}} class={` ${SPStyles.blackButton}`} onClick={handleDeleteUser} type='submit'>Удалить</Button>
+
+                                </>
+                            )}
+                            {option === 'createProduct' && (
+                                <CreateProductForm currentUser={currentUser} />
+                            )}
+                            {option === 'deleteProduct' && (
+                                <DeleteProductForm currentUser={currentUser} userLevel={userLevel} />
+                            )}
+                            {option === 'createOrder' && (
+                                <CreateOrderForm currentUser={currentUser} />
+                            )}
+                            {option === 'deleteOrder' && (
+                                <DeleteOrderForm currentUser={currentUser} userLevel={userLevel} />
+                            )}
+                            {option === 'AboutUs' && (
+                                <>
+                                <div> 
+                                    <h3>Если вы хотите обновить ПО, то нажмите кнопку: </h3>
+                                </div>
+                               <div style={{ display: 'grid', placeItems: 'center' }}>
+                                    <Button class={` ${SPStyles.blackButton}`} style={{fontSize: '18px'}} type='submit' variant="contained" onClick={checkForUpdate}> Проверить обновления</Button>
                                 </div>
                             </>
                             )}
-                            {option === 'createProduct' && (
-                                <CreateProductForm currentUser={currentUser}/>
-                            )}
-                            {option === 'deleteProduct' && (
-                                <DeleteProductForm currentUser={currentUser}/>
-                            )}
-                            {option === 'createOrder' && (
-                                <CreateOrderForm currentUser={currentUser}/>
-                            )}
-                            {option === 'deleteOrder' && (
-                                <DeleteOrderForm currentUser={currentUser}/>
-                            )}
+                           
                         </div>
-                )}
-                <div className={SPStyles.themeBtnContainer}></div>
-                <ToastContainer />
+                    )}
+                    <div className={SPStyles.themeBtnContainer}></div>
+                    <ToastContainer />
                 </div>
             </div>
         </div>

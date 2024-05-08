@@ -3,7 +3,7 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DPStyles from './Development.module.css';
 import QRCode from 'qrcode';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Tooltip } from '@mui/material';
 import { Menu, Item, Separator, useContextMenu, } from "react-contexify";
 import 'react-contexify/dist/ReactContexify.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -22,63 +22,126 @@ const Card = ({ data, className }) => {
     });
 
     return (
-        <div ref={drag} className={`${className} ${DPStyles.draggableItem} ${isDragging ? DPStyles.dragging : ''}`}>
-            {`${data.id} | ${data.productName} | ${data.part} | ${data.partOfOrder}`}
-        </div>
+        <Tooltip title="Нажмите правую клавишу, чтобы открыть меню">
+            <div ref={drag} className={`${className} ${DPStyles.draggableItem} ${isDragging ? DPStyles.dragging : ''}`}>
+                {`${data.id} | ${data.productName} | ${data.part} | ${data.partOfOrder}`}
+            </div>
+        </Tooltip>
     );
 };
-let selectedCardId = 0;
-const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDrop }) => {
-    const [openDialog, setOpenDialog] = React.useState(false); 
-    const [comment, setComment] = React.useState({}); 
+let cardIdTest = 0
+const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDrop, details, userLevel }) => {
+    const [openDialog, setOpenDialog] = React.useState(false);
+    const [addPartDialog, setAddPartDialog] = React.useState(false);
+    const [selectedCardId, setSelectedCardId] = React.useState(null);
+    const [comment, setComment] = React.useState([]);
+    const [cardBack, setCardBack] = React.useState(false);
+    const [selectedDetail, setSelectedDetail] = React.useState(null);
+    const [selectedDetailQuantity, setSelectedDetailQuantity] = React.useState(1);
+    const [reason, setReason] = React.useState('');
+
     const MENU_ID = "menu-id";
     const { show } = useContextMenu({
         id: MENU_ID
     });
-  
+
+    
     const displayMenu = (cardId) => (e) => {
         e.preventDefault(); // Prevent the default context menu behavior
+        if (userLevel > 1)  return;
         show({
             event: e,
         });
-
-        selectedCardId = cardId;
+        cardIdTest = cardId
+        console.log(`КардАйдиТест в меню: ${cardIdTest}`)
+        setSelectedCardId(cardId);
+        console.log(`СелектедКардАйди в меню после юзСтейт: ${selectedCardId}`)
     }
-    const handleItemClick = (action, ) => {
+    const handleItemClick = (action,) => {
         if (action === 'addComment') {
             // Open the dialog only if "Добавить комментарий" is clicked
-            setOpenDialog(true); 
-            // setSelectedCardId(cardId);
+            setOpenDialog(true);
         } else if (action === 'addPart') {
-            // Handle "Добавить запасную деталь" action
+            setAddPartDialog(true);
         } else if (action === 'nextPhase') {
-            handleMoveToNextPhase(selectedCardId);
+            handleMoveToNextPhase(cardIdTest);
         } else if (action === 'previousPhase') {
-            handleMoveToPreviousPhase(selectedCardId);
+            setCardBack(true);
         } else if (action === 'generateQR') {
-           handleDrop(selectedCardId);
+            handleDrop(cardIdTest, undefined, false);
+            console.log(`СелектедКардАйди после клика: ${selectedCardId}`)
+            setSelectedCardId(null)
         }
-         else {
+        else {
             console.error("Invalid action:", action);
         }
     }
     const handleDialogClose = React.useCallback(() => {
         setOpenDialog(false);
+        setCardBack(false);
     }, []);
 
-    const handleCommentSubmit = React.useCallback(async (e) => {
-        e.preventDefault();
+    const handleAddPartDialogClose = React.useCallback(() => {
+        setAddPartDialog(false);
+    })
+
+    const handleCommentSubmit = React.useCallback(async () => {
         try {
-            await window.api.addCommentToDatabase(selectedCardId, comment[selectedCardId]);
-            const updatedComments = { ...comment };
-            updatedComments[selectedCardId] = '';
-            setComment(updatedComments);
-            setOpenDialog(false);
-            toast.success('Комментарий успешно добавлен!');
+            const userData = localStorage.getItem('user');
+            const user = JSON.parse(userData);
+            if (user && user.email) {
+                const newComment = `${user.email}: ${comment[selectedCardId]}`;
+                await window.api.addCommentToDatabase(cardIdTest, newComment);
+                const newCommentArray = [...comment];
+                newCommentArray[selectedCardId] = '';
+                setComment(newCommentArray);
+                
+                setOpenDialog(false);
+                toast.success('Комментарий успешно добавлен!');
+                cardIdTest = 0;
+            } else {
+                console.error('User email not found');
+            }
         } catch (error) {
             console.error('Error adding comment:', error);
         }
-    }, [comment, selectedCardId]);
+    }, [comment, cardIdTest, selectedCardId]);
+    
+    const handleAddDetailSubmit = async () => {
+        // debugger
+        const userData = localStorage.getItem('user');
+        const user = JSON.parse(userData);
+        let modifiedReason = ''
+        if (!selectedDetail) {
+            toast.error('Выберите деталь');
+            return;
+        }
+        // Validate the quantity
+        if (parseInt(selectedDetailQuantity) <= 0) {
+           toast.error('Количество должно быть больше нуля');
+            return;
+        }
+
+        if (parseInt(selectedDetailQuantity) > selectedDetail.quantity) {
+            toast.error('Количество не может превышать доступное количество');
+            return;
+        }
+
+        if (reason === '') {
+            toast.error('Укажите причину');
+            return;
+        } else {
+            modifiedReason = `${user.email}: Причина добавления детали ${selectedDetail.detailName}: ${reason}`;
+        }
+        await window.api.subtractAdditionalDetails(selectedDetail.detailName, selectedDetailQuantity);
+        await window.api.addAdditionalDetails(cardIdTest, selectedDetail.detailName, selectedDetailQuantity);
+        await window.api.addAdditionalComment(cardIdTest, modifiedReason);
+        toast.success('Деталь успешно добавлена');
+        setSelectedDetail(null);
+        setSelectedDetailQuantity(1)
+        setReason('');
+        handleAddPartDialogClose()
+    };
 
     const handleMoveToNextPhase = async (cardId) => {
         try {
@@ -94,25 +157,37 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
         }
     }
 
-    const handleMoveToPreviousPhase = React.useCallback(async (cardId) => {
+    const handleMoveToPreviousPhase = React.useCallback(async (cardIdTest) => {
         try {
-            const card = dataForCards.find(card => card.id === cardId);
-            if (!card) {
+            const cardIndex = dataForCards.findIndex(card => card.id === cardIdTest);
+            if (cardIndex === -1) {
                 console.error('Card not found');
                 return;
             }
+            setCardBack(false);
+
+            const card = dataForCards[cardIndex];
             const previousPhase = Math.max(1, card.phase - 1);
             if (previousPhase === card.phase) return;
-            const updatedDataForCards = dataForCards.map(card => card.id === cardId ? { ...card, phase: previousPhase } : card);
+
+            // Create a copy of dataForCards and update the specific card's phase
+            const updatedDataForCards = [...dataForCards];
+            updatedDataForCards[cardIndex] = { ...card, phase: previousPhase };
+
+            // Update state with the new data
             setDataForContainers(updatedDataForCards);
-            await window.api.updatePhase(cardId, previousPhase);
+
+            // Now, call the API to update the phase in the database
+            await window.api.updatePhase(cardIdTest, previousPhase);
         } catch (error) {
             console.error('Error moving card to previous phase:', error);
         }
     }, [dataForCards, setDataForContainers]);
-    
+
+
 
     const onDropCallback = React.useCallback((item, monitor) => {
+        if (userLevel > 1)  return;
         const draggedCardPhase = item.phase;
         if (draggedCardPhase + 1 === phase) {
             onDrop(item.id, phase);
@@ -128,9 +203,9 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
     return (
         <div ref={drop} className={DPStyles.lower_section}>
             {filteredCards.map((card) => (
-                
-                  <div onContextMenu={displayMenu(card.id)} key={card.id}>
-                    <Card  data={card} className={DPStyles.card} />
+
+                <div onContextMenu={displayMenu(card.id)} key={card.id}>
+                    <Card data={card} className={DPStyles.card} />
                     <Menu id={MENU_ID}>
                         <Item onClick={() => handleItemClick('addComment')}>Добавить комментарий</Item>
                         <Separator />
@@ -140,14 +215,17 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
                         <Separator />
                         <Item onClick={() => handleItemClick('previousPhase')}>Перевести на предыдущий этап</Item>
                         <Separator />
-                        <Item onClick={() => handleItemClick('generateQR')}>Сгенерировать QR</Item>
+                        <Tooltip title="Только для готовых плат">
+                            <Item onClick={() => handleItemClick('generateQR')}>Сгенерировать QR</Item>
+                        </Tooltip>
                     </Menu>
                 </div>
             ))}
-            <Dialog open={openDialog} onClose={handleDialogClose}>
+            <Dialog open={openDialog} onClose={handleDialogClose}  sx={{ '& .MuiDialog-container': { '& .MuiPaper-root': { overflowY: 'hidden' } } }}>
                 <DialogTitle>Добавить комментарий</DialogTitle>
                 <DialogContent>
                     <TextField
+                        color="success"
                         autoFocus
                         margin="dense"
                         id="comment"
@@ -155,7 +233,11 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
                         type="text"
                         fullWidth
                         value={comment[selectedCardId] || ''}
-                        onChange={(e) => setComment({ ...comment, [selectedCardId]: e.target.value })}
+                        onChange={(e) => {
+                            const newCommentArray = [...comment];
+                            newCommentArray[selectedCardId] = e.target.value;
+                            setComment(newCommentArray);
+                        }}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -163,18 +245,79 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
                     <Button onClick={handleCommentSubmit}>Добавить</Button>
                 </DialogActions>
             </Dialog>
+
+            <Dialog open={cardBack} onClose={handleDialogClose}  sx={{ '& .MuiDialog-container': { '& .MuiPaper-root': { overflowY: 'hidden' } } }}>
+                <DialogTitle>Подтвердить перевод</DialogTitle>
+                <DialogContent>
+                    <p>Вы уверены, что хотите перевести карту на предыдущий этап?</p>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>Отмена</Button>
+                    <Button onClick={() => handleMoveToPreviousPhase(cardIdTest)}>Да</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={addPartDialog} onClose={handleAddPartDialogClose} className={DPStyles.addPartDialog} 
+                sx={{ '& .MuiDialog-container': { '& .MuiPaper-root': { overflowY: 'hidden' } } }}
+            >
+                <DialogTitle>Добавить дополнительную деталь</DialogTitle>
+                <DialogContent >
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Выберите деталь</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={selectedDetail}
+                            label="Выберите деталь"
+                            onChange={(e) => setSelectedDetail(e.target.value)}
+                            margin='dense'
+                        >
+                            { details?.map((detail, index) => <MenuItem value={detail} key={index}>{detail.detailName}</MenuItem>)}
+                        </Select>
+                    </FormControl>
+                    <TextField 
+                        color="success"
+                        margin="dense" 
+                        disabled 
+                        value={`Доступно: ${selectedDetail ? details?.find(detail => detail.detailName === selectedDetail?.detailName)?.quantity : " "}`}
+                    />
+                    <TextField
+                        color="success"
+                        autoFocus
+                        margin="dense"
+                        label="Укажите количество"
+                        type="number"
+                        fullWidth
+                        value={selectedDetailQuantity}
+                        onChange={(e) => setSelectedDetailQuantity( e.target.value )}
+                    />
+                    <TextField 
+                        color="success"
+                        margin="dense"
+                        label="Укажите причину добавления детали"
+                        type="text"
+                        fullWidth
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleAddPartDialogClose}>Отмена</Button>
+                    <Button disabled={!selectedDetail} onClick={handleAddDetailSubmit}>Добавить</Button>
+                </DialogActions>
+            </Dialog>
         </div >
     );
 };
 
 
-const DevelopmentPage = () => {
+const DevelopmentPage = ({userLevel}) => {
     const [dataForContainers, setDataForContainers] = useState([]);
     const [qrCode, setQrCode] = useState('');
     const [transcript, setTranscript] = useState('');
+    const [details, setDetails] = useState([]);
 
     function getTextForIndex(index) {
-        switch(index) {
+        switch (index) {
             case 1:
                 return "Начальный этап";
             case 2:
@@ -191,6 +334,7 @@ const DevelopmentPage = () => {
 
     useEffect(() => {
         fetchData();
+        fetchDetails()
     }, []);
 
     const fetchData = async () => {
@@ -201,6 +345,15 @@ const DevelopmentPage = () => {
             console.error('Error fetching data:', error);
         }
     };
+
+    const fetchDetails = async () => {
+        try {
+            const result = await window.api.getDetails();
+            setDetails(result);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
 
 
 
@@ -213,33 +366,84 @@ const DevelopmentPage = () => {
         }
     };
 
-    const handleDrop = async (cardId, newPhase) => {
+    const getCurrentDateTimeString = () => {
+        const now = new Date();
+        const dateString = now.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        const timeString = now.toLocaleTimeString('en-US', {
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        return `${dateString} ${timeString}`;
+    };
+
+    const saveManufacturingData = async (_cardIdTest) => {
         try {
-            if (newPhase !== undefined) {
-                await window.api.updatePhase(cardId, newPhase);
-            }
-            const card = dataForContainers.find(card => card.id === cardId);
-            if (newPhase === 4 || card.phase === 4) {
-                // Generate QR code when card is integrated into the 4th container
-                const qrData = `${card.id} | ${card.productName} | ${card.part} | ${card.partOfOrder}`;
-                const qrCode = await generateQR(qrData);
-                setQrCode(qrCode);
-            } else {
-                setQrCode(''); // Clear QR code if card is not in the 4th container
-                toast.error('Плата еще неизготовлена');
-            }
-            fetchData(); // Refresh data after successful update
+            const manufacturingData = {
+                id: _cardIdTest,
+                endDateOfManufacturer: getCurrentDateTimeString(),
+            };
+            await window.api.setManufacturingData(manufacturingData);
+
         } catch (error) {
-            console.error('Error updating phase in SQL table:', error);
+            console.error('Error saving manufacturing data:', error);
         }
     };
 
+    const handleDrop = async (_cardIdTest, newPhase, isDragNDrop) => {
+        console.log(`кардАйдиТест после дропа/вызова: ${cardIdTest}`)
+        // debugger
+        const card = dataForContainers.find(c => c.id === _cardIdTest);
+        if (!card) return;
+
+        let qrData, qrCode;
+        if (newPhase === 4 || card.phase === 4) {
+            qrData = `${card.id} | ${card.productName} | ${card.part} | ${card.partOfOrder}`;
+            qrCode = await generateQR(qrData);
+            setTranscript(_cardIdTest);
+            if (card.endDateOfManufacturer === null) {
+                saveManufacturingData(_cardIdTest);
+            }
+        }
+
+        if (isDragNDrop === false) {
+            newPhase = card.phase;
+        }
+
+        try {
+            if (qrData) {
+                setQrCode(qrCode);
+                if (newPhase !== 4 && isDragNDrop !== undefined) {
+                    toast.error('Плата еще не изготовлена');
+                }
+            } else if (isDragNDrop === undefined) {
+                console.log('kek')
+                
+            } else {
+                toast.error('Плата еще не изготовлена');
+            }
+            if (newPhase !== undefined) {
+                await window.api.updatePhase(_cardIdTest, newPhase);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            fetchData();
+        }
+    };
+
+
     const russianToEnglishMap = {
         'й': 'q', 'ц': 'w', 'у': 'e', 'к': 'r', 'е': 't', 'н': 'y', 'г': 'u', 'ш': 'i', 'щ': 'o', 'з': 'p', 'х': '[', 'ъ': ']',
-        'ф': 'a', 'ы': 's', 'в': 'd', 'а': 'f', 'п': 'g', 'р': 'h', 'о': 'j', 'л': 'k', 'д': 'l', 'ж': ';', 'э': '\'', 
-        'я': 'z', 'ч': 'x', 'с': 'c', 'м': 'v', 'и': 'b', 'т': 'n', 'ь': 'm', 'б': ',', 'ю': '.', 
+        'ф': 'a', 'ы': 's', 'в': 'd', 'а': 'f', 'п': 'g', 'р': 'h', 'о': 'j', 'л': 'k', 'д': 'l', 'ж': ';', 'э': '\'',
+        'я': 'z', 'ч': 'x', 'с': 'c', 'м': 'v', 'и': 'b', 'т': 'n', 'ь': 'm', 'б': ',', 'ю': '.',
         'Й': 'Q', 'Ц': 'W', 'У': 'E', 'К': 'R', 'Е': 'T', 'Н': 'Y', 'Г': 'U', 'Ш': 'I', 'Щ': 'O', 'З': 'P', 'Х': '{', 'Ъ': '}',
-        'Ф': 'A', 'Ы': 'S', 'В': 'D', 'А': 'F', 'П': 'G', 'Р': 'H', 'О': 'J', 'Л': 'K', 'Д': 'L', 'Ж': ':', 'Э': '"', 
+        'Ф': 'A', 'Ы': 'S', 'В': 'D', 'А': 'F', 'П': 'G', 'Р': 'H', 'О': 'J', 'Л': 'K', 'Д': 'L', 'Ж': ':', 'Э': '"',
         'Я': 'Z', 'Ч': 'X', 'С': 'C', 'М': 'V', 'И': 'B', 'Т': 'N', 'Ь': 'M', 'Б': '<', 'Ю': '>', '/': '|'
     };
 
@@ -252,6 +456,42 @@ const DevelopmentPage = () => {
         const englishValue = translateToEnglish(value);
         setTranscript(englishValue);
     };
+
+    const handlePrint = () => {
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print QR Code</title>
+                        <style>
+                            body { margin: 0; }
+                            @media print { 
+                                body * { visibility: hidden; }
+                                #qrCodeImage, #qrCodeImage * { visibility: visible; }
+                                #qrCodeImage { position: absolute; left: 0; top: 0; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div>
+                            <img id="qrCodeImage" src="${qrCode}" alt="QR Code">
+                        </div>
+                        <script>
+                            window.onload = () => {
+                                window.print();
+                                setTimeout(() => {
+                                    window.close(); // Закрываем окно через 1 секунду после печати
+                                }, 1000);
+                            };
+                        </script>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+    };
+
 
     return (
         <DndProvider backend={HTML5Backend}>
@@ -271,6 +511,8 @@ const DevelopmentPage = () => {
                                         onDrop={handleDrop}
                                         setDataForContainers={setDataForContainers}
                                         handleDrop={handleDrop}
+                                        details={details}
+                                        userLevel={userLevel}
                                     />
                                 </div>
                             </div>
@@ -280,6 +522,7 @@ const DevelopmentPage = () => {
                 <div className={DPStyles.containersContainer1}>
                     <div className={DPStyles.l_card1}>
                         <TextField
+                            color="success"
                             id="standard-basic"
                             type="text"
                             value={qrCode}
@@ -288,6 +531,7 @@ const DevelopmentPage = () => {
                         />
                         <div className={DPStyles.button}>
                             <TextField
+                                color="success"
                                 className={DPStyles.marginTop15}
                                 id="standard-basic"
                                 type="text"
@@ -303,7 +547,7 @@ const DevelopmentPage = () => {
                         {qrCode !== '' && (
                             <div>
                                 <h5 className={DPStyles.textCenter}>Нажмите на QR-код, чтобы распечатать</h5>
-                                <img id="qrCodeImage" src={qrCode} alt="QR Code" className={DPStyles.QRCodeImage} onClick={() => window.print()} />
+                                <img id="qrCodeImage" src={qrCode} alt="QR Code" className={DPStyles.QRCodeImage} onClick={handlePrint} />
                             </div>
                         )}
                     </div>
@@ -315,4 +559,3 @@ const DevelopmentPage = () => {
 };
 
 export default DevelopmentPage;
-

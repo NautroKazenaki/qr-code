@@ -16,14 +16,14 @@ function App() {
     await window.api.addDefaultUserIfNeeded()
   }
 
-  useEffect(() => {
-    firstTimeStart()
-    // Check if user is already logged in (e.g., by checking local storage)
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(isLoggedIn);
-    const user = JSON.parse(localStorage.getItem('user'));
-    setUserLevel(user?.level)
-  }, []);
+  // useEffect(() => {
+  //   firstTimeStart()
+  //   // Check if user is already logged in (e.g., by checking local storage)
+  //   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  //   setIsLoggedIn(isLoggedIn);
+  //   const user = JSON.parse(localStorage.getItem('user'));
+  //   setUserLevel(user?.level)
+  // }, []);
 
   return (
     <div className="App">

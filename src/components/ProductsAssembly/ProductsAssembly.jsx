@@ -1,50 +1,148 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip, Checkbox, Select, MenuItem } from '@mui/material';
 import PAStyles from './ProductsAssembly.module.css';
 import { toast } from 'react-toastify';
+import { Slider } from '@mui/material';
 
-const ProductsAssembly = ({ selectedOrder }) => {
+const ProductsAssembly = ({ selectedOrder, userLevel }) => {
     const [productsAssembly, setProductsAssembly] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [orders, setOrders] = useState([]);
-
-    const memoizedAPICalls = React.useMemo(() => ({
-        products: window.api.getProducts(),
-        details: window.api.getDetails(),
-        manufacturingStatusForOrder: window.api.getManufacturingStatusForOrder(selectedOrder),
-        orderData: window.api.getOrderById(selectedOrder),
-        allOrders: window.api.getAllOrders(),
-    }), [selectedOrder]);
-
-    
+    const [selectedSuppliers, setSelectedSuppliers] = useState({});
+    const [filteredSuppliers, setFilteredSuppliers] = useState({});
 
     const handleClickOpenDialog = (product) => {
         setSelectedProduct(product);
         setOpenDialog(true);
-    };
+        fetchData();
+        };
 
     const handleCloseDialog = () => {
         setSelectedProduct(null);
         setOpenDialog(false);
+        setSelectedSuppliers({});
     };
+
 
     const isQuantityAvailable = (product) => {
         return product.includedDetails.every(detail => detail.quantityAvailable >= detail.quantityNeeded);
     };
 
-    const handleStartManufacturing = useCallback(async () => {
-        if (!selectedProduct || !isQuantityAvailable(selectedProduct)) return; // Check if enough quantity is available
-        console.log(selectedProduct)
-        // if (!selectedProduct) return;
+    const handleSupplierCheckboxChange = (detailName, provider, checked, quantity) => {
+        setSelectedSuppliers(prevState => {
+            const detail = window.api.getDetails();
+            const updatedSelectedSuppliers = { ...prevState };
+            const existingDetailSuppliers = updatedSelectedSuppliers[detailName] || [];
+            
+            const existingSupplierIndex = existingDetailSuppliers.findIndex(supplier => supplier.provider === provider);
+    
+            // Если чекбокс отмечен, добавляем поставщика или переключаем его isChecked
+            if (checked) {
+                if (existingSupplierIndex !== -1) {
+                    existingDetailSuppliers[existingSupplierIndex].isChecked = true;
+                } else {
+                    const newSupplier = { provider, quantity, isChecked: true };
+                    existingDetailSuppliers.push(newSupplier);
+                }
+            } else { // Если чекбокс снят, удаляем поставщика или переключаем его isChecked
+                if (existingSupplierIndex !== -1) {
+                    existingDetailSuppliers.splice(existingSupplierIndex, 1);
+                }
+            }
+    
+            updatedSelectedSuppliers[detailName] = existingDetailSuppliers;
+    
+            const totalAvailable = updatedSelectedSuppliers[detailName]?.reduce((acc, curr) => {
+                if (curr.isChecked) {
+                    acc += curr.quantity;
+                }
+                return acc;
+            }, 0);
+    
+            const updatedIncludedDetails = selectedProduct.includedDetails.map(detail => {
+                if (detail.detailName === detailName) {
+                    return {
+                        ...detail,
+                        quantityAvailable: totalAvailable
+                    };
+                }
+                return detail;
+            });
+    
+            setSelectedProduct(prevProduct => ({
+                ...prevProduct,
+                includedDetails: updatedIncludedDetails
+            }), () => {
+                fetchData();
+            });
+    
+            setProductsAssembly(prevProducts => {
+                const updatedProducts = prevProducts.map(product => {
+                    if (product.id === selectedProduct.id) {
+                        return {
+                            ...product,
+                            includedDetails: selectedProduct.includedDetails
+                        };
+                    }
+                    return product;
+                });
+                return updatedProducts;
+            });
+    
+            const filteredSuppliers = existingDetailSuppliers.filter(supplier => supplier.isChecked);
 
+            // Создать копию selectedProduct с обновленными отфильтрованными suppliers
+            const updatedSelectedProduct = {
+                ...selectedProduct,
+                includedDetails: selectedProduct.includedDetails.map(detail => {
+                    if (detail.detailName === detailName) {
+                        return {
+                            ...detail,
+                            suppliers: filteredSuppliers // Заменяем suppliers на отфильтрованных поставщиков
+                        };
+                    }
+                    return detail;
+                })
+            };
+            setFilteredSuppliers(updatedSelectedProduct);
+
+            return updatedSelectedSuppliers;
+        });
+    };
+
+    useEffect(() => {
+        if (selectedProduct) {
+            setProductsAssembly(prevProducts => {
+                const updatedProducts = prevProducts.map(product => {
+                    if (product.id === selectedProduct.id) {
+                        return {
+                            ...product,
+                            includedDetails: selectedProduct.includedDetails
+                        };
+                    }
+                    return product;
+                });
+                
+                return updatedProducts;
+            });
+        }
+    }, [selectedProduct]);
+    
+
+    
+    const handleStartManufacturing = useCallback(async () => {
+
+        if (!selectedProduct || !isQuantityAvailable(selectedProduct)) return; // Check if enough quantity is available
+        // if (!selectedProduct) return;
         try {
-            debugger
-            await window.api.subtractDetails(selectedOrder, selectedProduct.productName, selectedProduct.includedDetails);
+            await window.api.subtractDetails(selectedOrder, selectedProduct.productName, filteredSuppliers.includedDetails);
             await window.api.updateProductManufactured(selectedOrder, selectedProduct.productName, true);
             toast.success('Продукт отправлен в разработку')
-            fetchData()
+            fetchData();
+            setSelectedSuppliers({});
+
         } catch (error) {
             console.error('Error starting manufacturing:', error);
             toast.error('Что-то пошло не так :(')
@@ -52,18 +150,16 @@ const ProductsAssembly = ({ selectedOrder }) => {
     }, [selectedOrder, selectedProduct]);
 
     const getManufactureStatus = useCallback((productName) => {
-        /*debugger*/
         selectedOrder = parseInt(selectedOrder, 10);
         const order = orders.find(order => order.id === selectedOrder);
         if (order && order.includedProducts) {
             const includedProduct = order.includedProducts.find(product => product.productName === productName);
             return includedProduct ? includedProduct.manufactured : false;
-            
+
         }
 
         return false;
     }, [orders, selectedOrder]);
-
 
 
     const statusTexts = ['Не изготовлено', 'Изготовлено'];
@@ -76,52 +172,65 @@ const ProductsAssembly = ({ selectedOrder }) => {
     };
 
     const fetchData = async () => {
+        // debugger
         try {
             if (selectedOrder) {
                 const [products, details, manufacturingStatus, orderData] = await Promise.all([
-
                     window.api.getProducts(),
                     window.api.getDetails(),
-                    window.api.getManufacturingStatusForOrder(selectedOrder), // Fetch manufacturing status for the selected order
+                    window.api.getManufacturingStatusForOrder(selectedOrder),
                     window.api.getOrderById(selectedOrder),
                 ]);
+    
                 const ordersData = await window.api.getAllOrders();
                 setOrders(ordersData);
+    
                 const orderId = parseInt(selectedOrder, 10);
                 const order = ordersData.find(order => order.id === orderId);
+    
                 if (!order || !order.includedProducts) {
                     setIsLoading(false);
                     return;
                 }
-
+    
                 const orderProducts = new Map(order.includedProducts.map(({ productName, quantity }) => [productName, parseInt(quantity, 10)]));
                 const includedProducts = new Set(order.includedProducts.map(({ productName }) => productName));
-
+    
                 const assembledProducts = Array.from(includedProducts).reduce((assembled, productName) => {
                     const orderQuantity = orderProducts.get(productName);
                     const product = products.find(p => p.productName === productName);
+    
                     if (product) {
                         const includedDetails = typeof product.includedDetails === 'string' ? JSON.parse(product.includedDetails) : product.includedDetails;
-                        const includedDetailsMap = new Map(includedDetails.map(detail => [detail.detailName, { ...detail, quantityNeeded: orderQuantity * detail.quantity, quantityAvailable: 0 }]));
-                        const detailsInOrder = details.filter(d => includedDetailsMap.has(d.detailName));
-                        detailsInOrder.forEach(d => includedDetailsMap.get(d.detailName).quantityAvailable = d.quantity);
+                        const includedDetailsMap = new Map(includedDetails.map(detail => [detail.detailName, { ...detail, quantityNeeded: orderQuantity * detail.quantity, quantityAvailable: 0, suppliers: [] }]));
+    
                         const productDetails = Array.from(includedDetailsMap.values());
-
-                        // Retrieve manufacturing status for the current product
+    
                         const manufacturingStatusForProduct = manufacturingStatus.find(status => status.productId === product.id);
-
                         assembled.push({
                             ...product,
                             totalQuantityNeeded: orderQuantity,
                             totalDetailsNeeded: productDetails.reduce((total, detail) => total + detail.quantityNeeded, 0),
                             includedDetails: productDetails,
-                            // Add manufacturing status to the product object
                             manufactured: manufacturingStatusForProduct ? manufacturingStatusForProduct.manufactured === 1 : false
                         });
                     }
                     return assembled;
                 }, []);
-
+    
+                details.forEach(detail => {
+                    const { detailName, provider, quantity } = detail;
+    
+                    assembledProducts.forEach(product => {
+                        const includedDetail = product.includedDetails.find(includedDetail => includedDetail.detailName === detailName);
+                        if (includedDetail) {
+                            includedDetail.suppliers.push({ provider, quantity, isChecked: false });
+                        }
+                    });
+                });
+    
+                console.log('Suppliers by Detail:', assembledProducts);
+    
                 setProductsAssembly(assembledProducts);
                 setIsLoading(false);
             }
@@ -129,12 +238,12 @@ const ProductsAssembly = ({ selectedOrder }) => {
             console.error('Error fetching data:', error);
         }
     };
-
+    
     useEffect(() => {
         fetchData();
     }, [selectedOrder]);
-    
-    let userName =  JSON.parse(localStorage.getItem("user"))
+
+    let userName = JSON.parse(localStorage.getItem("user"))
 
     const getCurrentDateTimeString = () => {
         const now = new Date();
@@ -166,7 +275,7 @@ const ProductsAssembly = ({ selectedOrder }) => {
                 phase: 1,
                 partOfOrder: selectedOrder
             };
-             await window.api.setManufacturingData(manufacturingData);
+            await window.api.setManufacturingData(manufacturingData);
 
         } catch (error) {
             console.error('Error saving manufacturing data:', error);
@@ -175,10 +284,9 @@ const ProductsAssembly = ({ selectedOrder }) => {
 
     return (
         <div className={PAStyles.productsAssemblyContainer}>
-            <Typography variant="h2" className={PAStyles.title}>Продукты</Typography>
-            {isLoading ? (
+            {isLoading ?  (
                 <Typography variant="body1">Заказ не выбран</Typography>
-            ) : productsAssembly.length === 0 ? (
+            ) : productsAssembly.length === 0 || userLevel > 1 ? (
                 <Typography variant="body1">Нет данных для отображения</Typography>
             ) : (
                 <React.Fragment>
@@ -195,22 +303,24 @@ const ProductsAssembly = ({ selectedOrder }) => {
                             </TableHead>
                             <TableBody>
                                 {productsAssembly.map((product, index) => (
-                                    <TableRow key={index} onClick={() => handleClickOpenDialog(product)} className={`${PAStyles.row} ${getRowBorderClass(product)}`}>
-                                        <TableCell>{product.productName}</TableCell>
-                                        <TableCell>{product.totalQuantityNeeded}</TableCell>
-                                        <TableCell>{product.totalDetailsNeeded}</TableCell>
-                                        <TableCell>
-                                            {product.includedDetails.every(detail => detail.quantityAvailable >= detail.quantityNeeded) ? 'Да' : 'Нет'}
-                                        </TableCell>
-                                        <TableCell>
-                                            {getManufactureStatusText(product.productName)}
-                                        </TableCell>
-                                    </TableRow>
+                                    <Tooltip title="Нажмите левую клавишу мыши, чтобы открыть диалог">
+                                        <TableRow key={index} onClick={() => handleClickOpenDialog(product)} className={`${PAStyles.row} ${getRowBorderClass(product)}`}>
+                                            <TableCell>{product.productName}</TableCell>
+                                            <TableCell>{product.totalQuantityNeeded}</TableCell>
+                                            <TableCell>{product.totalDetailsNeeded}</TableCell>
+                                            <TableCell>
+                                                {product.includedDetails.every(detail => detail.quantityAvailable >= detail.quantityNeeded) ? 'Да' : 'Нет'}
+                                            </TableCell>
+                                            <TableCell>
+                                                {getManufactureStatusText(product.productName)}
+                                            </TableCell>
+                                        </TableRow>
+                                    </Tooltip>
                                 ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Dialog open={openDialog} onClose={handleCloseDialog} className={PAStyles.dialog}>
+                    <Dialog open={openDialog} onClose={handleCloseDialog} className={PAStyles.dialog}  sx={{ '& .MuiDialog-container': { '& .MuiPaper-root': { overflowY: 'hidden' } } }}>
                         <DialogTitle className={PAStyles.dialogTitle}>{selectedProduct ? selectedProduct.productName : ''}</DialogTitle>
                         <DialogContent className={PAStyles.dialogContent}>
                             {selectedProduct && (
@@ -220,6 +330,7 @@ const ProductsAssembly = ({ selectedOrder }) => {
                                             <TableCell>Название</TableCell>
                                             <TableCell>Требуется компонентов:</TableCell>
                                             <TableCell>В наличии:</TableCell>
+                                            <TableCell>Поставщики</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -228,15 +339,34 @@ const ProductsAssembly = ({ selectedOrder }) => {
                                                 <TableCell>{detail.detailName}</TableCell>
                                                 <TableCell>{detail.quantityNeeded}</TableCell>
                                                 <TableCell>{detail.quantityAvailable}</TableCell>
+                                                <TableCell>
+                                                    {detail.suppliers && detail.suppliers.map((supplier, index) => (
+                                                        <div key={index}>
+                                                            <Checkbox
+                                                                checked={selectedSuppliers[detail.detailName]?.some(s => s.provider === supplier.provider && s.isChecked)}
+                                                                onChange={(event) => handleSupplierCheckboxChange(detail.detailName, supplier.provider, event.target.checked, supplier.quantity)} 
+                                                            />
+
+                                                            {supplier.provider} ({supplier.quantity} шт.)
+                                                        </div>
+                                                    ))}
+                                                </TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
                                 </Table>
                             )}
                         </DialogContent>
+
                         <DialogActions className={PAStyles.dialogActions}>
-                            <Button disabled={!selectedProduct || !isQuantityAvailable(selectedProduct)}  onClick={() => { handleStartManufacturing(); saveManufacturingData(); }}>Начать разработку</Button>
-                            <Button onClick={handleCloseDialog} className={PAStyles.dialogButton}>Закрыть</Button>
+                            <Tooltip title="Если кнопка заблокирована, значит плата уже в разработке или вам не хватает компонентов">
+                                <Button disabled={!selectedProduct ||
+                                    orders.find(order => order.id === selectedOrder).includedProducts.find(product => product.productName === selectedProduct.productName).manufactured ||
+                                    !isQuantityAvailable(selectedProduct)} onClick={() => { handleStartManufacturing(); saveManufacturingData(); }}>Начать разработку
+                                </Button>
+                            </Tooltip>
+                            <Button onClick={() => { handleCloseDialog()}} className={PAStyles.dialogButton}>Закрыть</Button>
+
                         </DialogActions>
                     </Dialog>
                 </React.Fragment>

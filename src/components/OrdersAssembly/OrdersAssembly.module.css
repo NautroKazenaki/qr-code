@@ -1,36 +1,136 @@
-/* OrdersAssembly.module.css */
 .container {
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.container h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.container p {
-    margin-top: 20px;
-    font-style: italic;
-}
-
-.ordersList {
-    list-style-type: none;
-    padding: 0;
-}
-
-.orderItem {
-    margin-bottom: 10px;
-}
-
-.orderLabel {
     display: flex;
-    align-items: center;
+    justify-content: space-around;
+    /* padding: 20px; */
+    border-radius: 12px;
+    width: 40vh;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    height: 60vh;
+    overflow-y: auto;
+    position: relative;
+    margin-left: auto;
+    /* border:1px solid #ddd7d7; */
 }
 
-.orderRadio {
-    margin-right: 10px;
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+.shadow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.legend {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+    .orderCard {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 0.5vh;
+        margin-bottom: 16px;
+        width: 36vh;
+        transition: background-color 0.3s ease; /* Анимация перехода цвета */
+        border: 1px solid #dddada; /* Исправил свойство border */
+    }
+
+    .orderCard:hover {
+        background-color: #f0f0f0; /* Изменение цвета при наведении */
+        border: 1px solid #333; /* Исправил свойство border */
+    }
+
+   
+    .selected {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 0.5vh;
+        margin-bottom: 16px;
+        width: 36vh;
+        border: 1px solid #dddada; /* Исправил свойство border */
+        margin-left: vh;
+        
+    }
+    
+    .orderCard.selected label span {
+        color: green;
+
+    }
+    .orderCard.selected {
+        background-color: #172D13; /* Цвет выбранной карты */
+        border: 3px solid #0e0c0c; /* Исправил свойство border */
+        color: green;
+
+    }
+    
+    .orderLabel {
+        font-size: 16px;
+        color: #555;
+    }
+    
+    .orderLabel.selected {
+        font-weight: bold; /* Увеличение шрифта для выбранного чекбокса */
+        color: #fff; /* Изменение цвета текста для выбранного чекбокса */
+    }
+    
+
+.orderTable {
+    width: 100%;
+}
+
+.orderTable td {
+    padding: 4px;
+}
+
+.orderTable tr:nth-child(even) {
+    background-color: rgb(77, 72, 72);
+}
+
+.arrowTop, .arrowBottom {
+    position: absolute;
+    cursor: pointer;
+    z-index: 2;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.arrowTop {
+    top: 21vh;
+    left: calc(25% - 2vh);
+    background-color: rgba(150, 144, 144, 0.8);
+}
+
+.arrowBottom {
+    bottom: 7vh;
+    left: calc(25% - 2vh);
+    background-color: rgba(150, 144, 144, 0.8);
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.arrowTop {
+    margin-left: -6vh;
+}
+.arrowBottom {
+    margin-left: -6vh;
+    margin-bottom: 3vh;
+
 }

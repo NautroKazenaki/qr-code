@@ -63,3 +63,92 @@
 .selectedProducts ul li {
     margin-bottom: 5px;
 }
+
+
+.detailsAndButtonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 15px;
+}
+
+.detailsList {
+    
+    background-color: #f9f9f9;
+    padding: 20px;
+    max-height: 300px;
+    max-width: 300px;
+    
+    height: 30vh;
+    width: 30vh;
+
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    margin-top: 0;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 3px 2px 4px rgba(0, 0, 0, 0.1); /* Добавление тени */
+
+}
+
+.detailItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.deleteButton {
+    min-width: 0;
+    padding: 0; /* Убираем внутренние отступы */
+    width: 2px; /* Задаем ширину кнопки */
+    height: 10px; /* Задаем высоту кнопки */
+    margin-left: 10px; /* Регулируем отступ слева */
+}
+
+.deleteButton:hover {
+    background-color: transparent; /* Убираем фон при наведении */
+}
+
+.opacity {
+    /*opacity: 0.6;*/
+    display: flex;
+
+    align-content: center;
+}
+
+.blackButton {
+    background-color: #172D13 !important;
+    color: #d2e0c9 !important;
+    width: 19vh !important;
+    transition: background-color 0.5s, color 0.5s !important;
+    border: 2px solid #d2e0c9 !important;
+}
+
+.blackButton:active {
+    background-color: green !important;
+    color: black !important;
+}
+
+.blackButton:focus {
+    outline: none;
+}
+
+.blackButton.clicked {
+    animation: clickEffect 0.5s linear;
+}
+
+@keyframes clickEffect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

@@ -1,13 +1,13 @@
 .container {
     max-width: 600px;
-    max-height: 500px;
+    max-height: 58vh;
 
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #f9f9f9;
-    margin-bottom: 400px;
+    /* margin-bottom: 30vh; */
 }
 
 .formGroup {
@@ -43,21 +43,41 @@
 }
 
 .deleteButton {
-    padding: 10px 20px;
-    background-color: #ff4444;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: #172D13 !important;
+    color: #d2e0c9 !important;
+    width: 19vh !important;
+    transition: background-color 0.5s, color 0.5s !important;
+    border: 2px solid #d2e0c9 !important; /* Добавляем зеленый бордер */
 }
 
-.deleteButton:hover {
-    background-color: #cc0000;
+.deleteButton:active {
+    background-color: green !important;
+    color: black !important;
+}
+
+.deleteButton:focus {
+    outline: none;
+}
+
+.deleteButton.clicked {
+    animation: clickEffect 0.5s linear;
+}
+
+@keyframes clickEffect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .pageContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100%;
 }

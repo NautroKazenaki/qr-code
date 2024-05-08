@@ -1,5 +1,6 @@
-
-/*//////////////////////new disagn///////////////////////////*/
+* {
+    font-family: 'RussianRail G Pro', sans-serif;
+  }
 
 .containersContainer {
     display: grid;
@@ -8,77 +9,31 @@
     margin-top: 50px;
 }
 
-/* .main_background {
-
-} */
-
-    
 .card:hover {
     transform: scale(1.1);
-    background-color: rgb(22, 27, 39); /* Новый цвет фона объекта при наведении */
-    color: #1976d2;
-}
-
-.card:hover::before {
-    transform: scale(1. );
-    background-color: rgb(22, 27, 39); /* Новый цвет фона псевдоэлементов при наведении */
-    border: 2px solid #1976d2;
-}
-
-.card:hover::after {
-    transform: scale(1.1);
-    background-color: rgb(22, 27, 39); /* Новый цвет фона псевдоэлементов при наведении */
-    border: 2px solid #1976d2;
+    background-color: #172D13;
+    /* Новый цвет фона объекта при наведении */
+    color: #d2e0c9;
 }
 
 .card {
     flex-wrap: flex;
     box-sizing: border-box;
     padding: 10px;
-    /*background: linear-gradient(90deg, #cacaca, #ebebf7);		*/
     text-align: center;
     margin-bottom: 5px;
     margin-right: 25px;
     margin-left: 25px;
     margin-top: 5px;
-    
-    position: relative;     
-    border:1px solid #a9aab8;
+    position: relative;
+    border: 1px solid #a9aab8;
     border-radius: 10px;
     z-index: 1;
     background: #ffffff;
 
 }
 
-.card::before { 
-    content: "";
-    position: absolute;
-    top: 5px;
-    left: 8px;
-    height: 12px;
-    width: 12px;
-
-    background-color: #1976d2;
-    box-shadow: 0 2px 4px rgba(182, 69, 69, 0.2);
-    border-radius: 50%;
-    border: 2px solid #030101; 
-
-}
-
-.card::after { 
-    content: "";
-    position: absolute;
-    top: 5px;
-    left: 30px; 
-    height: 5px;
-    width: 5px; 
-    background-color: #1976d2;
-    box-shadow: 0 2px 4px rgba(182, 69, 69, 0.2);
-    border-radius: 50%;
-    border: 2px solid #030101; 
-}
-
-.cardText { 
+.cardText {
     font-weight: bold;
     font-size: 18px;
     color: #09090f;
@@ -90,9 +45,8 @@
     width: 12px;
     background-color: #000000;
     border-radius: 50%;
-    /*transition: all .5s ease;Плавное изменение цвета */
-    transition: background-color 0.9s ease; /* Плавное изменение цвета фона */
-
+    transition: background-color 0.9s ease;
+    /* Плавное изменение цвета фона */
 }
 
 .card.active {
@@ -104,25 +58,25 @@
     color: #010103;
     text-align: center;
     margin: 5px;
-    display: column ;
+    display: column;
 }
 
 .textText2 {
     font-size: 18px;
     color: #000000;
     text-align: center;
-    display: column ;
+    display: column;
 
 }
-        
-button{
+
+button {
     border-radius: 5px;
     background-color: #070c11;
     color: rgb(0, 0, 0);
     margin: 10px;
     padding: 10px;
-    text-align: center; 
-    top: 10px;        
+    text-align: center;
+    top: 10px;
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Vollkorn&display=swap");
@@ -137,31 +91,38 @@ img {
     max-width: 502px;
     height: 252px;
     color: #272727;
-    border: 1px solid rgb(199, 195, 195); /* Ширина и цвет рамки */
-    /*box-shadow: 0px 7px 24px rgba(0, 0.7, 0, 0.7);*/
+    border: 1px solid rgb(199, 195, 195);
+    /* Ширина и цвет рамки */
     border-radius: 10px;
     margin-left: 61px;
-    /*background: linear-gradient(90deg, #f7f7f7, #e9dddd);*/
     z-index: 0;
-    overflow-y: auto;
-  }
-  
+}
+
 .upper_section {
-    height: 25%; /* Высота верхней части контейнера */
-    /*background: #3f3c3c;*/
+    height: 25%;
+    /* Высота верхней части контейнера */
     display: flex;
     justify-content: center;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    background-color: rgb(17 24 39);;
-    color: #1976d2;
-    border: 1px solid rgb(199, 195, 195); /* Ширина и цвет рамки */
+    background-color: #172D13;
+    color: #d2e0c9;
+    border: 1px solid rgb(199, 195, 195);
+    /* Ширина и цвет рамки */
 }
 
 .lower_section {
-    height: 86%; /* Высота нижней части контейнера */
-    overflow-y: auto; /* Включаем вертикальную прокрутку при необходимости */
+    height: 86%;
+    /* Высота нижней части контейнера */
+    overflow-y: auto;
+    /* Включаем вертикальную прокрутку при необходимости */
     z-index: 1;
+}
+
+.styleDialog {
+    overflow-y: auto;
+    /* Включаем вертикальную прокрутку при необходимости */
+    z-index: 100;
 }
 
 .container_cap {
@@ -172,11 +133,11 @@ img {
 }
 
 .l-card__text p {
-  font-size: 30px;
-  font-family: "Vollkorn", serif;
-  font-weight: 400;
-  color: #3f3f55;
-  text-align: left;
+    font-size: 30px;
+    font-family: "Vollkorn", serif;
+    font-weight: 400;
+    color: #3f3f55;
+    text-align: left;
 }
 
 .l_card1 {
@@ -189,18 +150,23 @@ img {
     border-radius: 10px;
     align-items: center;
     border: 1px solid #030518;
-    border-left: 50px solid #030518;;
-    align-items: center; /* Выравнивание содержимого по центру по вертикали */
-    margin: 0 auto; /* Автоматический отступ слева и справа для центрирования по горизонтали */
-    }
+    border-left: 50px solid #030518;
+    ;
+    align-items: center;
+    /* Выравнивание содержимого по центру по вертикали */
+    margin: 0 auto;
+    /* Автоматический отступ слева и справа для центрирования по горизонтали */
+}
 
 .containersContainer1 {
     display: flex;
     grid-template-columns: repeat(2, 1fr);
     margin-top: 50px;
-    }
-    
-.lower_section::-webkit-scrollbar { width: 0; }
+}
+
+.lower_section::-webkit-scrollbar {
+    width: 0;
+}
 
 .scrollBar {
     overflow-y: scroll !important;
@@ -211,8 +177,10 @@ img {
 .stickyTitle {
     position: sticky;
     top: 0;
-    font-weight: bold; /* Жирный шрифт */
-    z-index: 10; /* Для наложения поверх других элементов */
+    font-weight: bold;
+    /* Жирный шрифт */
+    z-index: 10;
+    /* Для наложения поверх других элементов */
     width: auto;
     max-width: auto;
     height: auto;
@@ -236,37 +204,44 @@ img {
     height: 125px;
     width: 125px;
     display: block;
-    margin: 0 auto; /* Центрирует изображение по горизонтали */
-    border: 2px solid #ccc; /* Добавляет рамку вокруг изображения */
-    border-radius: 8px; /* Закругляет углы рамки */
+    margin: 0 auto;
+    /* Центрирует изображение по горизонтали */
+    border: 2px solid #ccc;
+    /* Добавляет рамку вокруг изображения */
+    border-radius: 8px;
+    /* Закругляет углы рамки */
     margin-top: 5px;
     box-sizing: border-box;
-    transition: transform 0.2s ease; /* Добавляет плавный эффект при изменении размера */
-    
+    transition: transform 0.2s ease;
+    /* Добавляет плавный эффект при изменении размера */
 }
 
 .QRCodeImage:hover {
-    transform: scale(1.1); /* Увеличивает изображение при наведении на него курсора */
+    transform: scale(1.1);
+    /* Увеличивает изображение при наведении на него курсора */
 }
-
 
 .container-wrapper {
     position: relative;
 }
-    
+
 .container-title {
     position: sticky;
     top: 0;
-    background-color: #fff; /* Цвет фона, если нужно */
-    z-index: 1; /* Чтобы заголовок находился выше контейнера */
+    background-color: #fff;
+    /* Цвет фона, если нужно */
+    z-index: 1;
+    /* Чтобы заголовок находился выше контейнера */
 }
 
 .container-scroll {
-    overflow-y: auto; /* Разрешить вертикальную прокрутку */
-    max-height: 400px; /* Максимальная высота контейнера, чтобы активировать прокрутку */
+    overflow-y: auto;
+    /* Разрешить вертикальную прокрутку */
+    max-height: 400px;
+    /* Максимальная высота контейнера, чтобы активировать прокрутку */
 }
 
-.hiddenTitle  {
+.hiddenTitle {
     visibility: 'hidden';
     background-color: #ffffff;
 }
@@ -290,14 +265,13 @@ img {
     display: flex;
     justify-content: center;
     border-radius: 15px;
-    border-bottom: 1px solid rgb(17 24 39);;
-    background-color: rgb(17 24 39);;
+    border-bottom: 1px solid rgb(17 24 39);
+    background-color: rgb(17 24 39);
     color: #1976d2;
 }
 
 .textCenter {
     text-align: center;
-
 }
 
 
@@ -309,4 +283,6 @@ img {
     left: 0;
     z-index: 1;
 }
-
+.MuiDialog-paper {
+    overflow-y: hidden !important; /* Override any existing overflow-y settings */
+}

@@ -15,14 +15,11 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import React from 'react'
 
-function createData(name, quantity, id, selectedProvider ) {
+function createData(name, quantity, id, selectedProvider) {
   return {
     name,
     quantity,
@@ -32,9 +29,7 @@ function createData(name, quantity, id, selectedProvider ) {
 }
 
 export default function NewProduct(name, quantity, uniqueIndex, selectedProvider, setRows) {
-
   const newArr = createData(name, quantity, uniqueIndex, selectedProvider);
-  // rows.push(newArr);
   setRows((prevRows) => [...prevRows, newArr])
 }
 
@@ -50,21 +45,17 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
 function stableSort(array, comparator) {
-  
   const stabilizedThis = array.map((el, index) => [el, index]);
-  
   stabilizedThis.sort((a, b) => {
-
     const order = comparator(a[0], b[0]);
     if (order !== 0) {
-      return order; 
+      return order;
     }
     return a[1] - b[1];
   });
@@ -99,7 +90,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {  order, orderBy, onSelectAllClick,numSelected, onRequestSort, rowCount } =
+  const { order, orderBy, onSelectAllClick, numSelected, onRequestSort, rowCount } =
     props;
 
   const createSortHandler = (property) => (event) => {
@@ -109,37 +100,41 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+        <Tooltip title="Выбрать всё">
+          <TableCell padding="checkbox">
+            <Checkbox
+              color="primary"
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{
+                'aria-label': 'select all desserts',
+              }}
+            />
           </TableCell>
+        </Tooltip>
+        {headCells.map((headCell) => (
+          <Tooltip title="Нажмите, чтобы отсортировать по параметру">
+            <TableCell
+              key={headCell.id}
+              align={headCell.numeric ? 'right' : 'left'}
+              padding={headCell.disablePadding ? 'none' : 'normal'}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
+          </Tooltip>
         ))}
       </TableRow>
     </TableHead>
@@ -149,18 +144,13 @@ function EnhancedTableHead(props) {
 EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  // onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, rows, setRows, DeleteRows } = props;
-
-  
-
-    
+  const { numSelected, DeleteRows } = props;
   return (
     <Toolbar
       sx={{
@@ -193,7 +183,7 @@ function EnhancedTableToolbar(props) {
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete" onClick={() => DeleteRows()}>
+        <Tooltip title="Удалить" onClick={() => DeleteRows()}>
           <IconButton>
             <DeleteIcon />
           </IconButton>
@@ -213,16 +203,15 @@ EnhancedTableToolbar.propTypes = {
 };
 
 
-export function EnhancedTable({rows, setRows, selected, setSelected}) {
+export function EnhancedTable({ rows, setRows, selected, setSelected }) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('id');
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc'); 
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property); // name, Amount, ID
 
   };
@@ -230,6 +219,7 @@ export function EnhancedTable({rows, setRows, selected, setSelected}) {
   const DeleteRows = async () => {
     const updatedRows = rows.filter(row => !selected.includes(row.id));
     await setRows(updatedRows);
+    localStorage.removeItem('rows');
     setSelected([]); // Сбросить выбранные элементы после удаления всех строк
   };
 
@@ -242,12 +232,12 @@ export function EnhancedTable({rows, setRows, selected, setSelected}) {
     setSelected([]);
   };
 
- 
-  
+
+
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
-  
+
     if (selectedIndex === -1) {
       newSelected = [...selected, id];
     } else if (selectedIndex === 0) {
@@ -275,11 +265,6 @@ export function EnhancedTable({rows, setRows, selected, setSelected}) {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
-
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -297,17 +282,17 @@ export function EnhancedTable({rows, setRows, selected, setSelected}) {
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-      <EnhancedTableToolbar 
-        numSelected={selected.length} 
-        rows={rows} 
-        setRows={setRows} 
-        DeleteRows={DeleteRows}
-      />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          rows={rows}
+          setRows={setRows}
+          DeleteRows={DeleteRows}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 350 }}
             aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
+            size={'medium'}
           >
             <EnhancedTableHead
               numSelected={selected.length}
@@ -333,16 +318,20 @@ export function EnhancedTable({rows, setRows, selected, setSelected}) {
                     selected={isItemSelected}
                     sx={{ cursor: 'pointer' }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
+                    <Tooltip title="Поставьте галочку, чтобы добавить в приёмку или удалить из нее">
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+
+                        />
+                      </TableCell>
+                    </Tooltip>
                     <TableCell
+                      sx={{ padding: '0px' }}
                       component="th"
                       id={labelId}
                       scope="row"
@@ -350,16 +339,16 @@ export function EnhancedTable({rows, setRows, selected, setSelected}) {
                     >
                       {row.name}
                     </TableCell>
-                    <TableCell align="right">{row.quantity}</TableCell>
-                    <TableCell align="right">{row.id}</TableCell>
-                    <TableCell align="right">{row.selectedProvider}</TableCell>
+                    <TableCell sx={{ padding: '0px' }} align="right">{row.quantity}</TableCell>
+                    <TableCell sx={{ padding: '0px' }} align="right">{row.id}</TableCell>
+                    <TableCell sx={{ padding: '0px' }} align="right">{row.selectedProvider}</TableCell>
                   </TableRow>
                 );
               })}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: (dense ? 33 : 53) * emptyRows,
+                    height: (53) * emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} />
@@ -369,20 +358,17 @@ export function EnhancedTable({rows, setRows, selected, setSelected}) {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5]}
           component="div"
-          count={rows.length}           
+          count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Элементов на странице:"
           labelDisplayedRows={({ from, to, count }) => `${from}-${to} из ${count}`}
-
-
+          sx={{ overflow: 'hidden' }}
         />
       </Paper>
-      
     </Box>
   );
 }

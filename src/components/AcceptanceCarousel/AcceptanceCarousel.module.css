@@ -1,37 +1,31 @@
+
+/* приколько смотрится color: #BFD2BC !important; background-color: #0D2F07 !important; и color: #32AE32 !important; background-color: black !important; */
+
+
 .acceptanceCarouselTitle {
-    color: #1976d2 !important;
-    background-color: rgb(17 24 39);;
+    color: #d2e0c9 !important; /* Заменяем синий на зеленый */
+    background-color: #172D13 !important;
     width: 100%;
+
 }
+
 .acceptanceCarouselContainer {
     width: 500px;
-    /* height: 300px; */
+}
+
+.containerFilter {
+    width: 400px;
+    max-width: 100%;
+    color: black; /* Заменяем темно-синий на черный */
+    border-radius: 8px;
+    border: 1px solid #222; /* Уточняем цвет границы */
+    line-height: 1.125em;
+    padding: 5px;
+
 }
 
 
-/*///////////////////////////*/
-
-.containerFilter { 
-    width: 400px;
-    max-width: 100%;
-    color: #222;
-    border-radius: 8px; 
-    border-color: #222;
-    border: 1px;    
-    font-family: Arial, Helvetica, sans-serif;
-    line-height: 1.125em;
-    padding: 5px;
-   }
-
-.filterData {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 3%; }
-
-
+.filterData,
 .filter {
     display: flex;
     flex-direction: row;
@@ -39,20 +33,102 @@
     justify-content: space-evenly;
     align-items: center;
     margin-top: 3%;
-    
-
 }
 
 .filterSelect {
     width: 160px;
 }
+
 .buttonContainer {
     display: flex;
     flex-direction: row;
     width: 100%;
     justify-content: space-evenly;
 }
+
+.buttonContainer button {
+    padding: 5px !important;
+}
+
+.table {
+    max-width: none;
+    flex-grow: 1;
+    margin-top: 20vh;
+    height: 60vh;
+    border: 1px solid rgb(192, 191, 191);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carouselTable {
+    width: 40vh;
+    height: 30vh;
+    overflow-y: auto;
+    background-color: #f4f5f4;
+}
+
 .button {
     border: 1px solid black !important;
-    margin-bottom: 4% !important;
+    margin-bottom: 2% !important;
+}
+
+.blackButton {
+    color: #d2e0c9 !important; /* Заменяем синий на зеленый */
+    background-color: #172D13 !important;
+    transition: background-color 0.5s, color 0.5s !important; /* Увеличиваем время анимации до 0.5 секунды */
+    border: 2px solid #d2e0c9 !important;
+    margin-bottom: 20px !important;
+    text-transform: none !important;
+    margin: 5px;
+    
+}
+
+.blackButton:active {
+    background-color: green !important; /* При нажатии изменяем цвет фона на зеленый */
+    color: black !important; /* При нажатии изменяем цвет текста на черный */
+}
+
+.blackButton:focus {
+    outline: none; /* Убираем стандартный контур фокуса */
+}
+
+.blackButton.clicked {
+    animation: clickEffect 0.5s linear; /* Изменяем время анимации для эффекта нажатия */
+}
+
+@keyframes clickEffect {
+    0% {
+        transform: scale(1); /* Начальное значение масштаба */
+    }
+    50% {
+        transform: scale(0.9); /* Уменьшаем масштаб до 90% */
+    }
+    100% {
+        transform: scale(1); /* Возвращаем масштаб к исходному */
+    }
+}
+  .customClass {
+    color: #0a0a09 !important; /* Заменяем синий на зеленый */
+    background-color: #abadab !important;
+    transition: background-color 0.5s, color 0.5s !important; /* Увеличиваем время анимации до 0.5 секунды */
+    border: 2px solid #d2e0c9 !important;
+    margin-bottom: 20px !important;
+    text-transform: none !important;
+    margin: 5px;
+    
+}
+
+.customClass:active {
+    background-color: green !important; /* При нажатии изменяем цвет фона на зеленый */
+    color: black !important; /* При нажатии изменяем цвет текста на черный */
+}
+
+.customClass:focus {
+    outline: none; /* Убираем стандартный контур фокуса */
+}
+
+.customClass.clicked {
+    animation: clickEffect 0.5s linear; /* Изменяем время анимации для эффекта нажатия */
 }

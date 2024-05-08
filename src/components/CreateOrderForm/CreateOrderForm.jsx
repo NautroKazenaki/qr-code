@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import COFStyles from './CreateOrderForm.module.css';
 import { toast } from 'react-toastify';
-import { Button, TextField } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from '@mui/icons-material/Clear';
+import { Autocomplete, TextField, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const CreateOrderForm = ({ currentUser }) => {
     let userFormLocalStorage = JSON.parse(localStorage.getItem("user"));
     let userName = userFormLocalStorage ? userFormLocalStorage.email : '';
-    
+
     const getCurrentDateTimeString = () => {
         const now = new Date();
         const dateString = now.toLocaleDateString('en-GB', {
@@ -56,29 +58,24 @@ const CreateOrderForm = ({ currentUser }) => {
     const handleAddProduct = async () => {
         try {
             const orders = await window.api.getAllOrders(); // Ожидаем разрешения обещания
-    
+
             if (!Array.isArray(orders)) {
                 console.error('Orders is not an array:', orders);
                 toast.error("Ошибка при получении данных о заказах");
                 return;
             }
-    
+
             if (currentUser.level === 2) {
                 toast.error("У вас маловато прав для выполнения этой оперции!");
                 return;
             }
     
-            if (selectedProduct === null || quantity === '' || quantity === '0' || orderTo === '') {
+            if (selectedProduct === null || quantity === '' || quantity <= 0 || orderTo === '') {
                 toast.error("Вы забыли заполнить все поля!");
                 return;
             } else {
-                // Перебираем заказы и проверяем совпадение имен
-                const existingOrder = orders.some(order => order.orderTo === orderTo);
-                if (existingOrder) {
-                    toast.error("Для данного имени уже создан заказ!");
-                    return;
-                }
-    
+              
+
                 const index = selectedProducts.findIndex(product => product.productName === selectedProduct);
                 if (index !== -1) {
                     const updatedSelectedProducts = [...selectedProducts];
@@ -98,8 +95,8 @@ const CreateOrderForm = ({ currentUser }) => {
             toast.error("Ошибка при получении данных о заказах");
         }
     };
-    
-    
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -109,21 +106,17 @@ const CreateOrderForm = ({ currentUser }) => {
                 toast.error("Ошибка при получении данных о заказах");
                 return;
             }
-    
+
             if (currentUser.level === 2) {
                 toast.error("У вас маловато прав для выполнения этой оперции!");
                 return;
             }
-    
+
             // Проверка, что заказ для данного имени уже существует
-            const existingOrder = orders.some(order => order.orderTo === orderTo);
-            if (existingOrder) {
-                toast.error("Для данного имени уже создан заказ!");
-                return;
-            }
-    
+           
+
             if (selectedProducts.length > 0) {
-                try {                
+                try {
                     await window.api.addOrder(startDate, orderTo, selectedProducts, userName);
                     setStartDate(getCurrentDateTimeString());
                     setOrderTo('');
@@ -146,6 +139,13 @@ const CreateOrderForm = ({ currentUser }) => {
             toast.error("Ошибка при получении данных о заказах");
         }
     };
+
+    const handleDeleteProduct = (index) => {
+        const updatedSelectedProducts = [...selectedProducts];
+        updatedSelectedProducts.splice(index, 1);  
+        setSelectedProducts(updatedSelectedProducts);  
+        localStorage.setItem("selectedProducts", JSON.stringify(updatedSelectedProducts)); 
+    };
     
 
     return (
@@ -155,6 +155,7 @@ const CreateOrderForm = ({ currentUser }) => {
                 <form onSubmit={handleSubmit}>
                     <div className={COFStyles.formGroup}>
                         <TextField
+                            color="success"
                             id="startDate"
                             label="Дата начала"
                             value={startDate}
@@ -164,6 +165,7 @@ const CreateOrderForm = ({ currentUser }) => {
                     </div>
                     <div className={COFStyles.formGroup}>
                         <TextField
+                            color="success"
                             id="userName"
                             label="Составитель заказа"
                             value={userName}
@@ -173,12 +175,24 @@ const CreateOrderForm = ({ currentUser }) => {
                     </div>
                     <div >
                         <TextField
+                            color="success"
                             id="orderTo"
                             label="Заказ для"
                             value={orderTo}
                             onChange={handleOrderToChange}
                             required
-                            style={{ width: 283, marginBottom: '15px'}}
+                            style={{ width: 283, marginBottom: '15px' }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        {orderTo && (
+                                            <IconButton onClick={() => setOrderTo('')}>
+                                                <ClearIcon style={{marginTop: "-15px"}}/>
+                                            </IconButton>
+                                        )}
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                     </div>
                     <div>
@@ -187,13 +201,15 @@ const CreateOrderForm = ({ currentUser }) => {
                             options={products.map((product) => product.productName)}
                             value={selectedProduct}
                             onChange={handleProductChange}
-                            renderInput={(params) => <TextField {...params} label="Выберите продукт" />}
+                            renderInput={(params) => <TextField color="success" {...params} label="Выберите продукт" />}
                             required
-                            style={{ width: 283, marginBottom: '15px'}}
+                            style={{ width: 283, marginBottom: '15px' }}
+                            
                         />
                     </div>
                     <div >
                         <TextField
+                            color="success"
                             id="quantityOfProducts"
                             label="Укажите количество"
                             type="number"
@@ -201,28 +217,46 @@ const CreateOrderForm = ({ currentUser }) => {
                             onChange={handeltQuantityChange}
                             required
                             InputProps={{ inputProps: { min: 1 } }}
-                            style={{ width: 283, marginBottom: '15px'}}
+                            style={{ width: 283}}
                         />
                     </div>
-                    <Button type="button" className={`${COFStyles.button} ${COFStyles.blueBackground}`} variant="contained" onClick={handleAddProduct}>Добавить продукт</Button>
+                    <Button type="button" className={COFStyles.blackButton} variant="contained" onClick={handleAddProduct}>Добавить продукт</Button>
                 </form>
-            </div>
-            <div className={COFStyles.selectedProducts1}>
-                <div className={COFStyles.selectedProducts}>
-                    <h3>Выбранные продукты:</h3>
-                    <ul>
-                        {selectedProducts.map((product, index) => (
-                            <li key={index}>{product.productName} - {product.quantity}шт</li>
-                        ))}
-                    </ul>
+            </div>  
 
+
+            <div className={COFStyles.detailsAndButtonContainer}>
+                <div className={COFStyles.detailsAndButtonContainer}>
+                    <h3 >Список выбранных продуктов:</h3>
+                    <div className={COFStyles.detailsList}>
+                        <TableContainer >
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell style={{ position: 'sticky', top: 0, backgroundColor: '#f9f9f9' }}>Название</TableCell>
+                                        <TableCell style={{ position: 'sticky', top: 0, backgroundColor: '#f9f9f9' }}>Количество</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {selectedProducts.map((product, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{product.productName}</TableCell>
+                                            <TableCell>{product.quantity}шт</TableCell>
+                                            <IconButton onClick={() => handleDeleteProduct(index)}><ClearIcon /></IconButton>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
                 </div>
-                <Button type="button" variant="contained" className={`${COFStyles.button} ${COFStyles.blueBackground}`} onClick={handleSubmit}>Завершить создание заказа</Button>
+
+                <Button class={COFStyles.blackButton} style={{fontSize: '18px'}} type="submit" variant="contained" onClick={handleSubmit}>
+                    Внести плату в базу
+                </Button>
 
             </div>
-
         </div>
-        
     );
 };
 
