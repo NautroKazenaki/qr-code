@@ -10,26 +10,49 @@ const Login = ({ setIsLoggedIn }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    // const testFunc = async (e) => {
+    //     e.preventDefault();
 
+    //     try {
+    //         const response = await axios.get('http://192.168.0.124:3001/users')
+    //         console.log(response.data)
+    //     } catch (error) {
+    //         console.error('Error fetching users:', error);
+    //     }
+    // };
     const getUsersAndAuthenticate = async (e, email, password) => {
         e.preventDefault();
         try {
-            if (email !== '' && password !== '') {
-                fetch('http://192.168.0.124:3001/users', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        name: email,
-                        password: password
-                    })
-                } ).then(response => {
-                    if (!response.ok) {
-                      throw new Error('Network response was not ok');
-                    }
-                    return response.body; // Parse response body as JSON
-                  })
-                  .then(data => {
-                    console.log(data); // Handle response data
-                  })
+          if (email !== '' && password !== '') {
+            const response = await axios.post('http://localhost:3001/users', {
+              name: email,
+              password: password
+            });
+      
+            // Check if response is successful (status code 2xx)
+            if (response.status >= 200 && response.status < 300) {
+              const data = response.data;
+              if (data.length > 0) {
+                    localStorage.setItem("user", JSON.stringify(data[0]));
+                    localStorage.setItem('isLoggedIn', 'true')
+                  setIsLoggedIn(true)
+                  navigate("/acceptance-page");
+              } else {
+                toast.error('Неверный email или пароль!');
+              }
+            } else {
+              // Handle unsuccessful response
+              throw new Error('Network response was not ok');
+            }
+          } else {
+            // Authentication failed
+            toast.error('Неверный email или пароль!');
+          }
+        } catch (error) {
+          console.error('Ошибка при аутентификации пользователя:', error);
+          throw error; // Rethrow the error for handling elsewhere
+        }
+      };
                 // axios.post('http://192.168.0.139:3001/users', { email, password }).then(
                 //     res => {
                 //         console.log(res.data)
@@ -43,23 +66,15 @@ const Login = ({ setIsLoggedIn }) => {
                 // setEmail("");
                 // setPassword("");
                 // navigate("/acceptance-page");
-            } else {
-                // Authentication failed
-                toast.error('Неверный email или пароль!');
-            }
-        } catch (error) {
-            console.error('Ошибка при аутентификации пользователя:', error);
-            throw error; // Rethrow the error for handling elsewhere
-        }
-    };
+           
 
     return (
         <>
             <div className={LPStyles.container}>
                 <div className={LPStyles.screen}>
                     <div className={LPStyles.screen__content}>
-                        {/* <form className={LPStyles.login} onSubmit={(e) => alert('evrything is fine')}> */}
                          <form className={LPStyles.login} onSubmit={(e) => getUsersAndAuthenticate(e, email, password)}>
+                         {/* <form className={LPStyles.login} onSubmit={(e) => testFunc(e)}> */}
                             <div className={LPStyles.login__field}>
                                 <input type="text" className={LPStyles.login__input} placeholder="ВВЕДИТЕ ФИО" onChange={(e) => setEmail(e.target.value)} />
                             </div>
