@@ -15,7 +15,7 @@ const Login = ({ setIsLoggedIn }) => {
         e.preventDefault();
         try {
             if (email !== '' && password !== '') {
-                fetch('http://192.168.0.139:3001/users', {
+                fetch('http://192.168.0.124:3001/users', {
                     method: 'POST',
                     body: JSON.stringify({
                         name: email,
