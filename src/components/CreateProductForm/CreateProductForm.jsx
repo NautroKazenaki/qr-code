@@ -8,6 +8,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
 import * as XLSX from 'xlsx/xlsx.mjs'
+import axios from 'axios';
 
 
 
@@ -26,11 +27,12 @@ const CreateProductForm = ({ currentUser }) => {
     const [flagReduct, setFlagReduct] = useState(false);
     const [selectedName, setSelectedProductName] = useState([]);
     const fetchDetailsData = async () => {
-        // debugger
         try {
-            const result = await window.api.getDetails();
+            // const result = await window.api.getDetails();
+            const result = await axios.get('http://localhost:3001/details')
             setDetailsToSelect(result);
-            const result1 = await window.api.getProducts();
+            // const result1 = await window.api.getProducts();
+            const result1 = await axios.get('http://localhost:3001/products')
             setUpdatedProducts(result1);
         } catch (error) {
             console.log(error);
@@ -65,7 +67,7 @@ const CreateProductForm = ({ currentUser }) => {
         const selectedProductName = event.target.value;
         setSelectedProductName(selectedProductName);
         // Find the selected product from the products list
-        const selectedProduct = updatedProducts.find(product => product.productName === selectedProductName);
+        const selectedProduct = updatedProducts.data?.find(product => product.productName === selectedProductName);
         if (selectedProduct) {
             localStorage.setItem('isEditMode', 'true');
             setFlagReduct(true);
@@ -95,7 +97,8 @@ const CreateProductForm = ({ currentUser }) => {
 
     const handleUpload = async () => {
         if (fileData) {
-            await window.api.sendDataFromExcel(fileData);
+            // await window.api.sendDataFromExcel(fileData);
+            await axios.post(`http://localhost:3001/products/excel`, fileData);
             fileData = null
         } else {
             console.error("No file selected");
@@ -114,7 +117,6 @@ const CreateProductForm = ({ currentUser }) => {
     const handleNameChange = (e,) => {
         setName(e.target.value);
         console.log(e.target.value);
-        // debugger;
         setIsNameDuplicate(false); // Reset the flag when the name changes
     };
 
@@ -128,9 +130,7 @@ const CreateProductForm = ({ currentUser }) => {
     };
 
     const handleAddDetail = async () => {
-        // debugger;
-
-        const isDuplicate = updatedProducts.some(product => product.productName === name);
+        const isDuplicate = updatedProducts.data?.some(product => product.productName === name);
         
         if (isDuplicate && !flagReduct) {
             setIsNameDuplicate(true);
@@ -174,20 +174,14 @@ const CreateProductForm = ({ currentUser }) => {
 
 
     const handleSubmit = async (e) => {
-        // debugger
         e.preventDefault();
-        // const updatedProducts = await window.api.getProducts();
-        // const isDuplicate = updatedProducts.some(product => product.productName === name);
-        // if (isDuplicate) {
-        //     toast.error("Product with this name already exists!");
-        //     return;
-        // }
         if (currentUser.level === 2) {
             toast.error("У вас недостаточно прав для выполнения этой операции");
             return;
         }
 
         try {
+            debugger
             const savedDetails = JSON.parse(localStorage.getItem('selectedDetails'));
             let nameToSend = name + "_" + formatDate();
 
@@ -198,8 +192,7 @@ const CreateProductForm = ({ currentUser }) => {
             
             if (flagReduct === true) {
                 setFlagReduct(false);
-                await window.api.updateNewProduct(selectedName, nameToSend, savedDetails); // Я думаю что менять лучше время на текушее у более новой версии или лучше добавлять ред
-
+                await axios.put(`http://localhost:3001/products/${selectedName}`, {nameToSend, savedDetails})
                 toast.success('Плата успешно обновлена в базе данных');
                 localStorage.removeItem('selectedDetails');
                 localStorage.removeItem('isEditMode');
@@ -210,7 +203,8 @@ const CreateProductForm = ({ currentUser }) => {
                 fetchDetailsData(); 
                 return;
             }
-            await window.api.addProduct(nameToSend, savedDetails);
+            
+            await axios.post('http://localhost:3001/products', {nameToSend, savedDetails })
             localStorage.removeItem('selectedDetails');
             localStorage.removeItem('isEditMode');
             setName('');
@@ -295,7 +289,7 @@ const CreateProductForm = ({ currentUser }) => {
                             style={{ marginBottom: '10px', width: '200px' }}
                             disablePortal
                             id="detailName"
-                            options={detailsToSelect || []}
+                            options={detailsToSelect?.data || []}
                             value={selectedDetail}
                             onChange={(event, newValue) => {
                                 handleDetailChange(newValue);
@@ -344,7 +338,7 @@ const CreateProductForm = ({ currentUser }) => {
                         onChange={handleProductChange}
                     >
                         <MenuItem key='defaultValue' selected value="Выберите плату">Выберите плату</MenuItem>
-                        {updatedProducts && updatedProducts?.map((product) => (
+                        {updatedProducts && updatedProducts?.data?.map((product) => (
                             <MenuItem key={product.id} value={product.productName}> {product.productName} </MenuItem>
                         ))}
                     </Select>
