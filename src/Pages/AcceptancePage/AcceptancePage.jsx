@@ -55,20 +55,6 @@ const AcceptancePage = ({userLevel}) => {
     const [usersData, setUsersData] = useState([]);
     const [selected, setSelected] = useState('');
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             // const providersResult = await window.api.getAllProviders();
-    //             // setProvidersList(providersResult.map(provider => provider.name));
-    //         } catch (error) {
-    //             console.error('Error fetching providers:', error);
-    //             toast.error('Произошла ошибка при загрузке списка поставщиков');
-    //         }
-    //     };
-    
-    //     fetchData();
-    // }, []);
-
     useEffect(() => {
         const fetchProviders = async () => {
             try {
@@ -206,7 +192,22 @@ const handleRemoveProvider = async (providerNameToRemove) => {
 
             for (const row of selectedRows) {
                 const { name, quantity, selectedProvider } = row;
+                let username = JSON.parse(localStorage.getItem('user')).name
                 // await window.api.setStuff(userName.name, currentDateTime, name, quantity, selectedProvider, acceptanceCounter);
+                try {
+                    const response = await axios.post('http://localhost:3001/acceptance', {
+                        username,
+                        currentDateTime,
+                        name,
+                        quantity,
+                        selectedProvider,
+                        acceptanceCounter
+                    })
+                    const id = response.data
+                    console.log(id)
+                } catch (error) {
+                    console.error(error)
+                }
                 // await window.api.addDetail(name, quantity, selectedProvider);
             }
             // const acceptanceResult = await window.api.getStuff(); 
