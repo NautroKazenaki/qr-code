@@ -123,10 +123,6 @@ const AcceptancePage = ({userLevel}) => {
                 const isExistingProvider = providersList.some(provider => provider.trim() === trimmedName);
                 if (!isExistingProvider) {
                     try {
-                        // await window.api.addProvider(trimmedName);
-                        // const result = await window.api.getAllProviders();
-                        // setProvidersList(result.map(provider => provider.name));
-                        // setNewProviderName('');
                         await axios.post('http://localhost:3001/providers', {trimmedName})
                         const result = await axios.get('http://localhost:3001/providers')
                         setProvidersList(result.data.map(provider => provider.name))
@@ -149,9 +145,9 @@ const AcceptancePage = ({userLevel}) => {
 
 const handleRemoveProvider = async (providerNameToRemove) => {
     try {
-        // await window.api.deleteProvider(providerNameToRemove);
-        // const updatedProvidersList = providersList.filter(provider => provider !== providerNameToRemove);
-        // setProvidersList(updatedProvidersList);
+        await axios.delete(`http://localhost:3001/providers/${providerNameToRemove}`);
+        const updatedProvidersList = providersList.filter(provider => provider !== providerNameToRemove)
+        setProvidersList(updatedProvidersList)
     } catch (error) {
         console.error('Error deleting provider:', error);
         toast.error('Произошла ошибка при удалении поставщика');
