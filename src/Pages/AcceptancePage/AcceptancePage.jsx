@@ -73,9 +73,11 @@ const AcceptancePage = ({userLevel}) => {
         const fetchData = async () => {
             try {
                 // const acceptanceResult = await window.api.getStuff(); 
-                // setAcceptanceData(acceptanceResult);
-                // const usersResult = await window.api.getAllUsers();
-                // setUsersData(usersResult);
+                const acceptanceResult = await axios.get('http://localhost:3001/acceptance')
+                debugger
+                 setAcceptanceData(acceptanceResult);
+                 const usersResult = await axios.get('http://localhost:3001/users');
+                 setUsersData(usersResult);
                 const savedRows = JSON.parse(localStorage.getItem('rows'));
                 if (savedRows) {
                     setRows(savedRows);
@@ -209,9 +211,21 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                     console.error(error)
                 }
                 // await window.api.addDetail(name, quantity, selectedProvider);
+                try {
+                    const response = await axios.post('http://localhost:3001/details', {
+                        name,
+                        quantity,
+                        selectedProvider,
+                    })
+                    console.log(response)
+                } catch (error) {
+                    console.error(error)
+                }
             }
             // const acceptanceResult = await window.api.getStuff(); 
             // setAcceptanceData(acceptanceResult);
+            const acceptanceResult = await axios.get('http://localhost:3001/acceptance')
+            setAcceptanceData(acceptanceResult);
             setRows(prevRows => prevRows.filter(row => !selected.includes(row.id)));
             toast.success('Приёмка успешно завершена');
             setSelected([]);

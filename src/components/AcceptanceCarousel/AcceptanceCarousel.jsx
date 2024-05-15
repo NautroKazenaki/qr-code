@@ -25,19 +25,22 @@ function SwipeableTextMobileStepper({ acceptanceData, providersList, usersData }
 
 
     useEffect(() => {
-        setActiveStep(0);
-        const groupedData = acceptanceData.reduce((acc, item) => {
-            acc[item.acceptanceNumber] = acc[item.acceptanceNumber] || [];
-            acc[item.acceptanceNumber].push(item);
-            return acc;
-        }, {});
-        const reversedData = Object.values(groupedData).reverse();
-        setReversedGroupedData(reversedData);
-        setFilteredData(reversedData); 
-        if((selectedStartDate && selectedEndDate) || userNameFilter || selectedProvider) {
-            sortData();
+        if (acceptanceData.length > 0 || acceptanceData?.data?.length > 0) {
+            setActiveStep(0);
+            const groupedData = acceptanceData?.data?.reduce((acc, item) => {
+                acc[item.acceptanceNumber] = acc[item.acceptanceNumber] || [];
+                acc[item.acceptanceNumber].push(item);
+                return acc;
+            }, {});
+            const reversedData = Object.values(groupedData).reverse();
+            setReversedGroupedData(reversedData);
+            setFilteredData(reversedData);
+            if ((selectedStartDate && selectedEndDate) || userNameFilter || selectedProvider) {
+                sortData();
+            }
+            console.log(acceptanceData);
         }
-        console.log(acceptanceData);
+
     }, [acceptanceData, selectedStartDate, selectedEndDate, userNameFilter, selectedProvider]);
 
     const handleNext = () => {
@@ -101,17 +104,17 @@ function SwipeableTextMobileStepper({ acceptanceData, providersList, usersData }
     const handleStartDateChange = (e) => {
         const selectedDate = e.target.value;
         const today = new Date().toISOString().substr(0, 10);
-        
+
         if (selectedEndDate && selectedDate > selectedEndDate) {
-          setSelectedStartDate(selectedEndDate);
-          toast.error("Выбранная дата больше конечной даты!");
+            setSelectedStartDate(selectedEndDate);
+            toast.error("Выбранная дата больше конечной даты!");
         } else if (selectedDate > today) {
-          setSelectedStartDate(today);
-          toast.error("Выбранная дата больше сегодняшней даты!");
+            setSelectedStartDate(today);
+            toast.error("Выбранная дата больше сегодняшней даты!");
         } else {
-          setSelectedStartDate(selectedDate);
+            setSelectedStartDate(selectedDate);
         }
-      };
+    };
 
     const handleEndDateChange = (e) => {
         const selectedDate = e.target.value;
@@ -138,7 +141,7 @@ function SwipeableTextMobileStepper({ acceptanceData, providersList, usersData }
     };
 
     useEffect(() => {
-        if((selectedStartDate && selectedEndDate) || userNameFilter || selectedProvider) {
+        if ((selectedStartDate && selectedEndDate) || userNameFilter || selectedProvider) {
             sortData();
         }
     }, [selectedStartDate, selectedEndDate, userNameFilter, selectedProvider]);
@@ -195,7 +198,7 @@ function SwipeableTextMobileStepper({ acceptanceData, providersList, usersData }
                             fullWidth
                         >
                             <MenuItem value="">Все</MenuItem>
-                            {usersData.map((user, index) => (
+                            {usersData.data?.map((user, index) => (
                                 <MenuItem key={index} value={user.name}>
                                     {user.name}
                                 </MenuItem>
@@ -223,7 +226,7 @@ function SwipeableTextMobileStepper({ acceptanceData, providersList, usersData }
 
                 </div>
                 {isSorted ? (
-                    <Button  className={ACStyles.blackButton} onClick={resetFilter}>Сбросить фильтр</Button>
+                    <Button className={ACStyles.blackButton} onClick={resetFilter}>Сбросить фильтр</Button>
                 ) : (
                     <>
                         <Button className={ACStyles.blackButton} onClick={sortData}>Применить фильтр</Button>
@@ -232,71 +235,71 @@ function SwipeableTextMobileStepper({ acceptanceData, providersList, usersData }
             </div>
 
             <div>
-      <Paper
-        square
-        elevation={0}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          alignText: 'center',
-          height: 15,
-          pl: 2,
-          bgcolor: 'background.default',
-        }}
-      >
-        {filteredData[activeStep] && filteredData[activeStep].length > 0 ? (
-          <Typography>
-            Приемка от {filteredData[activeStep][0]?.userName}{' '}
-            {filteredData[activeStep][0]?.date}
-          </Typography>
-        ) : (
-          <Typography>Нет данных для отображения</Typography>
-        )}
-      </Paper>
-        
-            
-      <TableContainer className={ACStyles.carouselTable}>
-    <Table>
-        <TableHead>
-            <TableRow>
-                <TableCell style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>Имя продукта</TableCell>
-                <TableCell align="center" style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>Количество</TableCell>
-                <TableCell align="center" style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>Поставщик</TableCell>
-            </TableRow>
-        </TableHead>
-        <TableBody>
-            {filteredData[activeStep]?.map((item, itemIndex) => (
-                <TableRow key={itemIndex}>
-                    <TableCell>{item.productName}</TableCell>
-                    <TableCell align="center">{item.quantity} шт</TableCell>
-                    <TableCell align="center">{item.provider}</TableCell>
-                </TableRow>
-            ))}
-        </TableBody>
-    </Table>
-</TableContainer>
+                <Paper
+                    square
+                    elevation={0}
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        alignText: 'center',
+                        height: 15,
+                        pl: 2,
+                        bgcolor: 'background.default',
+                    }}
+                >
+                    {filteredData[activeStep] && filteredData[activeStep].length > 0 ? (
+                        <Typography>
+                            Приемка от {filteredData[activeStep][0]?.userName}{' '}
+                            {filteredData[activeStep][0]?.date}
+                        </Typography>
+                    ) : (
+                        <Typography>Нет данных для отображения</Typography>
+                    )}
+                </Paper>
 
-    </div>
-    <div className={ACStyles.buttonContainer}>
-        <Button
-            style={{ padding: '10px 20px 30px 40px' }}
-            className={` ${activeStep === 0 ? ACStyles.customClass : ACStyles.blackButton}`}
-            disabled={activeStep === 0}
-            onClick={handleBack}
-        >
-            Последующий товар
-        </Button>
 
-        <Button
-            style={{ padding: '10px 20px 30px 40px' }}
-            className={`${ACStyles.blackButton} ${activeStep === filteredData.length - 1 || filteredData.length === 0 ? ACStyles.customClass : ''}`}
-            disabled={activeStep === filteredData.length - 1 || filteredData.length === 0}
-            onClick={handleNext}
-        >
-            Предыдущий товар
-        </Button>
-    </div>
-    </Box>
+                <TableContainer className={ACStyles.carouselTable}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>Имя продукта</TableCell>
+                                <TableCell align="center" style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>Количество</TableCell>
+                                <TableCell align="center" style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>Поставщик</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {filteredData[activeStep]?.map((item, itemIndex) => (
+                                <TableRow key={itemIndex}>
+                                    <TableCell>{item.productName}</TableCell>
+                                    <TableCell align="center">{item.quantity} шт</TableCell>
+                                    <TableCell align="center">{item.provider}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
+            </div>
+            <div className={ACStyles.buttonContainer}>
+                <Button
+                    style={{ padding: '10px 20px 30px 40px' }}
+                    className={` ${activeStep === 0 ? ACStyles.customClass : ACStyles.blackButton}`}
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                >
+                    Последующий товар
+                </Button>
+
+                <Button
+                    style={{ padding: '10px 20px 30px 40px' }}
+                    className={`${ACStyles.blackButton} ${activeStep === filteredData.length - 1 || filteredData.length === 0 ? ACStyles.customClass : ''}`}
+                    disabled={activeStep === filteredData.length - 1 || filteredData.length === 0}
+                    onClick={handleNext}
+                >
+                    Предыдущий товар
+                </Button>
+            </div>
+        </Box>
     );
 }
 
