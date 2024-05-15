@@ -9,6 +9,7 @@ import { TextField, IconButton, Button, InputAdornment, Tooltip } from '@mui/mat
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Clear from '@mui/icons-material/Clear';
+import axios from 'axios';
 
 const SettingsPage = ({userLevel}) => {
     const [name, setName] = useState('');
@@ -28,7 +29,7 @@ const SettingsPage = ({userLevel}) => {
     const fetchAllUsers = async () => {
         try {
             // Fetch all users from the API
-            const response = await window.api.getAllUsers();
+            const response = await axios.get('http://localhost:3001/users');
             setUsers(response);
         } catch (error) {
             console.error('Error occurred while fetching users:', error);
@@ -62,7 +63,7 @@ const SettingsPage = ({userLevel}) => {
 
         try {
             if (option === 'createUser') {
-                const userId = await window.api.addUser(name, password, level);
+                const userId = await axios.post(`http://localhost:3001/users/${name}`, {name, password, level})
                 toast.success("Пользователь успешно добавлен!")
                 console.log('User registered with ID:', userId);
             } else if (option === 'createProduct') {
@@ -82,7 +83,6 @@ const SettingsPage = ({userLevel}) => {
 
 
     const handleDeleteUser = async (e) => {
-        // debugger
         e.preventDefault();
         if (currentUser.level >= selectedUser.level) {
             toast.error("У вас мало прав!");
@@ -101,7 +101,9 @@ const SettingsPage = ({userLevel}) => {
 
         try {
             // Call the API to delete the selected user
-            await window.api.deleteUser(selectedUser.name);
+            // await window.api.deleteUser(selectedUser.name);
+            let name = selectedUser.name
+            await axios.delete(`http://localhost:3001/users/${name}`);
             toast.success('Пользователь успешно удалён');
             // Refetch the users after deletion
             fetchAllUsers();
@@ -260,7 +262,7 @@ const SettingsPage = ({userLevel}) => {
                                                     <Autocomplete
                                                         disablePortal
                                                         id="combo-box-demo"
-                                                        options={users}
+                                                        options={users?.data}
                                                         getOptionLabel={(user) => user.name.toString()}
                                                         value={selectedUser}
                                                         onChange={(event, newValue) => {

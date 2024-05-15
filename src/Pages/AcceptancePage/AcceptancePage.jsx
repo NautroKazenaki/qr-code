@@ -72,7 +72,6 @@ const AcceptancePage = ({userLevel}) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // const acceptanceResult = await window.api.getStuff(); 
                 const acceptanceResult = await axios.get('http://localhost:3001/acceptance')
                 debugger
                  setAcceptanceData(acceptanceResult);
@@ -195,7 +194,6 @@ const handleRemoveProvider = async (providerNameToRemove) => {
             for (const row of selectedRows) {
                 const { name, quantity, selectedProvider } = row;
                 let username = JSON.parse(localStorage.getItem('user')).name
-                // await window.api.setStuff(userName.name, currentDateTime, name, quantity, selectedProvider, acceptanceCounter);
                 try {
                     const response = await axios.post('http://localhost:3001/acceptance', {
                         username,
@@ -210,7 +208,6 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                 } catch (error) {
                     console.error(error)
                 }
-                // await window.api.addDetail(name, quantity, selectedProvider);
                 try {
                     const response = await axios.post('http://localhost:3001/details', {
                         name,
@@ -222,8 +219,6 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                     console.error(error)
                 }
             }
-            // const acceptanceResult = await window.api.getStuff(); 
-            // setAcceptanceData(acceptanceResult);
             const acceptanceResult = await axios.get('http://localhost:3001/acceptance')
             setAcceptanceData(acceptanceResult);
             setRows(prevRows => prevRows.filter(row => !selected.includes(row.id)));
