@@ -15,7 +15,7 @@ const Header = ({isLoggedIn, setIsLoggedIn}) => {
     useEffect(() => {
         if (isLoggedIn) {
             const userData = JSON.parse(localStorage.getItem('user'));
-            setUserName(userData.email);
+            setUserName(userData.name);
         }
     }, [isLoggedIn]);
 

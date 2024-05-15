@@ -8,6 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
+import axios from 'axios'
 
 
 const getCurrentDateTime = () => {
@@ -54,27 +55,41 @@ const AcceptancePage = ({userLevel}) => {
     const [usersData, setUsersData] = useState([]);
     const [selected, setSelected] = useState('');
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             // const providersResult = await window.api.getAllProviders();
+    //             // setProvidersList(providersResult.map(provider => provider.name));
+    //         } catch (error) {
+    //             console.error('Error fetching providers:', error);
+    //             toast.error('Произошла ошибка при загрузке списка поставщиков');
+    //         }
+    //     };
+    
+    //     fetchData();
+    // }, []);
+
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchProviders = async () => {
             try {
-                const providersResult = await window.api.getAllProviders();
-                setProvidersList(providersResult.map(provider => provider.name));
+                const response = await axios.get('http://localhost:3001/providers')
+                setProvidersList(response.data.map(provider => provider.name))
             } catch (error) {
-                console.error('Error fetching providers:', error);
-                toast.error('Произошла ошибка при загрузке списка поставщиков');
+                console.log(error)
+                toast.error("Произошла ошибка при загрузке поставщиков")
             }
-        };
-    
-        fetchData();
-    }, []);
+        }
+
+        fetchProviders()
+    }, [])
     
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const acceptanceResult = await window.api.getStuff(); 
-                setAcceptanceData(acceptanceResult);
-                const usersResult = await window.api.getAllUsers();
-                setUsersData(usersResult);
+                // const acceptanceResult = await window.api.getStuff(); 
+                // setAcceptanceData(acceptanceResult);
+                // const usersResult = await window.api.getAllUsers();
+                // setUsersData(usersResult);
                 const savedRows = JSON.parse(localStorage.getItem('rows'));
                 if (savedRows) {
                     setRows(savedRows);
@@ -108,10 +123,14 @@ const AcceptancePage = ({userLevel}) => {
                 const isExistingProvider = providersList.some(provider => provider.trim() === trimmedName);
                 if (!isExistingProvider) {
                     try {
-                        await window.api.addProvider(trimmedName);
-                        const result = await window.api.getAllProviders();
-                        setProvidersList(result.map(provider => provider.name));
-                        setNewProviderName('');
+                        // await window.api.addProvider(trimmedName);
+                        // const result = await window.api.getAllProviders();
+                        // setProvidersList(result.map(provider => provider.name));
+                        // setNewProviderName('');
+                        await axios.post('http://localhost:3001/providers', {trimmedName})
+                        const result = await axios.get('http://localhost:3001/providers')
+                        setProvidersList(result.data.map(provider => provider.name))
+                        setNewProviderName('')
                     } catch (error) {
                         console.error('Error adding provider:', error);
                         toast.error('Произошла ошибка при добавлении поставщика');
@@ -130,9 +149,9 @@ const AcceptancePage = ({userLevel}) => {
 
 const handleRemoveProvider = async (providerNameToRemove) => {
     try {
-        await window.api.deleteProvider(providerNameToRemove);
-        const updatedProvidersList = providersList.filter(provider => provider !== providerNameToRemove);
-        setProvidersList(updatedProvidersList);
+        // await window.api.deleteProvider(providerNameToRemove);
+        // const updatedProvidersList = providersList.filter(provider => provider !== providerNameToRemove);
+        // setProvidersList(updatedProvidersList);
     } catch (error) {
         console.error('Error deleting provider:', error);
         toast.error('Произошла ошибка при удалении поставщика');
@@ -191,11 +210,11 @@ const handleRemoveProvider = async (providerNameToRemove) => {
 
             for (const row of selectedRows) {
                 const { name, quantity, selectedProvider } = row;
-                await window.api.setStuff(userName.email, currentDateTime, name, quantity, selectedProvider, acceptanceCounter);
-                await window.api.addDetail(name, quantity, selectedProvider);
+                // await window.api.setStuff(userName.name, currentDateTime, name, quantity, selectedProvider, acceptanceCounter);
+                // await window.api.addDetail(name, quantity, selectedProvider);
             }
-            const acceptanceResult = await window.api.getStuff(); 
-            setAcceptanceData(acceptanceResult);
+            // const acceptanceResult = await window.api.getStuff(); 
+            // setAcceptanceData(acceptanceResult);
             setRows(prevRows => prevRows.filter(row => !selected.includes(row.id)));
             toast.success('Приёмка успешно завершена');
             setSelected([]);
@@ -233,7 +252,7 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                                 InputProps={{
                                     readOnly: true,
                                 }} />
-                            <TextField color="success" id="standard-basic" label="Имя" variant="standard" value={userName?.email} />
+                            <TextField color="success" id="standard-basic" label="Имя" variant="standard" value={userName?.name} />
                         </div>
                         <div className={APStyles.bottomNewAcceptanceInputsContainer}>
                             <TextField
