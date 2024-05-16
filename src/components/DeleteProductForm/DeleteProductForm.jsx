@@ -5,6 +5,7 @@ import { TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, T
 // import withStyles from '@mui/styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
+import axios from 'axios';
 
 const DeleteProductForm = ({ currentUser, userLevel }) => {
     const [products, setProducts] = useState([]);
@@ -12,7 +13,7 @@ const DeleteProductForm = ({ currentUser, userLevel }) => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const result = await window.api.getProducts();
+                const result = await axios.get('http://localhost:3001/products');
                 setProducts(result);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -35,9 +36,11 @@ const DeleteProductForm = ({ currentUser, userLevel }) => {
 
         if (selectedProduct && selectedProduct.productName) {
             try {
-                await window.api.deleteProduct(selectedProduct.productName);
+                let id = selectedProduct.productName
+                // await window.api.deleteProduct(selectedProduct.productName);
+                await axios.delete(`http://localhost:3001/products/${id}`);
                 setSelectedProduct(null);
-                const updatedProducts = await window.api.getProducts();
+                const updatedProducts = await axios.get('http://localhost:3001/products');
                 setProducts(updatedProducts);
                 toast.success("Плата успешно удалена");
             } catch (error) {
@@ -58,7 +61,7 @@ const DeleteProductForm = ({ currentUser, userLevel }) => {
                         disablePortal
                         disabled={userLevel > 0}
                         id="productSelect"
-                        options={products}
+                        options={products.data}
                         getOptionLabel={(product) => product.productName} // Функция для отображения наименования продукта в автокомплекте
                         value={selectedProduct}
                         onChange={(event, newValue) => {
