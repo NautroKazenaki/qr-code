@@ -5,10 +5,11 @@ import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Autocomplete, TextField, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
+import axios from 'axios';
 
 const CreateOrderForm = ({ currentUser }) => {
     let userFormLocalStorage = JSON.parse(localStorage.getItem("user"));
-    let userName = userFormLocalStorage ? userFormLocalStorage.email : '';
+    let userName = userFormLocalStorage ? userFormLocalStorage.name : '';
 
     const getCurrentDateTimeString = () => {
         const now = new Date();
@@ -35,7 +36,7 @@ const CreateOrderForm = ({ currentUser }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await window.api.getProducts();
+            const result = await axios.get('http://localhost:3001/products')
             setProducts(result);
         };
         fetchData();
@@ -57,10 +58,11 @@ const CreateOrderForm = ({ currentUser }) => {
 
     const handleAddProduct = async () => {
         try {
-            const orders = await window.api.getAllOrders(); // Ожидаем разрешения обещания
+            // const orders = await window.api.getAllOrders(); // Ожидаем разрешения обещания
+            const orders = await axios.get('http://localhost:3001/orders')
 
-            if (!Array.isArray(orders)) {
-                console.error('Orders is not an array:', orders);
+            if (!Array.isArray(orders.data)) {
+                console.error('Orders is not an array:', orders.data);
                 toast.error("Ошибка при получении данных о заказах");
                 return;
             }
@@ -100,9 +102,10 @@ const CreateOrderForm = ({ currentUser }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const orders = await window.api.getAllOrders(); // Получаем все заказы перед обработкой формы
-            if (!Array.isArray(orders)) {
-                console.error('Orders is not an array:', orders);
+            // const orders = await window.api.getAllOrders(); // Получаем все заказы перед обработкой формы
+            const orders = await axios.get('http://localhost:3001/orders') 
+            if (!Array.isArray(orders.data)) {
+                console.error('Orders is not an array:', orders.data);
                 toast.error("Ошибка при получении данных о заказах");
                 return;
             }
@@ -117,7 +120,14 @@ const CreateOrderForm = ({ currentUser }) => {
 
             if (selectedProducts.length > 0) {
                 try {
-                    await window.api.addOrder(startDate, orderTo, selectedProducts, userName);
+                    let username = userFormLocalStorage ? userFormLocalStorage.name : '';
+                    // await window.api.addOrder(startDate, orderTo, selectedProducts, userName);
+                    await axios.post('http://localhost:3001/orders', {
+                        startDate,
+                        orderTo,
+                        selectedProducts,
+                        username 
+                    })
                     setStartDate(getCurrentDateTimeString());
                     setOrderTo('');
                     setQuantity('');
@@ -198,7 +208,7 @@ const CreateOrderForm = ({ currentUser }) => {
                     <div>
                         <Autocomplete
                             id="productSelect"
-                            options={products.map((product) => product.productName)}
+                            options={products.data?.map((product) => product.productName)}
                             value={selectedProduct}
                             onChange={handleProductChange}
                             renderInput={(params) => <TextField color="success" {...params} label="Выберите продукт" />}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DPFStyles from './DeleteOrderForm.module.css';
 import { toast } from 'react-toastify';
 import { Autocomplete, TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
+import axios from 'axios';
 
 const DeleteOrderForm = ({ currentUser, userLevel }) => {
     const [orders, setOrders] = useState([]);
@@ -11,7 +12,8 @@ const DeleteOrderForm = ({ currentUser, userLevel }) => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const result = await window.api.getAllOrders();
+                // const result = await window.api.getAllOrders();
+                const result = await axios.get('http://localhost:3001/orders');
                 setOrders(result);
             } catch (error) {
                 console.error('Error fetching orders:', error);
@@ -27,8 +29,9 @@ const DeleteOrderForm = ({ currentUser, userLevel }) => {
                 const productName = product.productName;
 
                 try {
-                    const details = await window.api.getProducts();
-                    const foundProduct = details.find(product => product.productName === productName);
+                    // const details = await window.api.getProducts();
+                    const details = await axios.get('http://localhost:3001/products');
+                    const foundProduct = details.data.find(product => product.productName === productName);
 
                     if (foundProduct) {
                         const includedDetails = JSON.parse(foundProduct.includedDetails);
@@ -55,9 +58,10 @@ const DeleteOrderForm = ({ currentUser, userLevel }) => {
         }
         if (selectedOrder) {
             try {
-                await window.api.deleteOrder(selectedOrder.id);
+                // await window.api.deleteOrder(selectedOrder.id);
+                await axios.delete(`http://localhost:3001/orders/${selectedOrder.id}`);
                 // Remove the deleted order from the state
-                setOrders(orders.filter(order => order.id !== selectedOrder.id));
+                setOrders(orders.data.filter(order => order.id !== selectedOrder.id));
                 setSelectedOrder(null);
                 setSelectedProductDetails(null);
                 console.log('Order deleted successfully!');
@@ -77,7 +81,7 @@ const DeleteOrderForm = ({ currentUser, userLevel }) => {
               disabled={userLevel > 0}
                 style={{ width: '600px' }}
                 id="orderSelect"
-                options={orders}
+                options={orders.data}
                 getOptionLabel={(order) => `Id заказа: ${order.id}, Время начала: ${order.startDate}, Заказ для: ${order.orderTo}`}
                 value={selectedOrder}
                 onChange={handleOrderChange}
