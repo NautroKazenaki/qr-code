@@ -3,6 +3,7 @@ import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, Tab
 import PAStyles from './ProductsAssembly.module.css';
 import { toast } from 'react-toastify';
 import { Slider } from '@mui/material';
+import axios from 'axios';
 
 const ProductsAssembly = ({ selectedOrder, userLevel }) => {
     const [productsAssembly, setProductsAssembly] = useState([]);
@@ -32,7 +33,8 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
 
     const handleSupplierCheckboxChange = (detailName, provider, checked, quantity) => {
         setSelectedSuppliers(prevState => {
-            const detail = window.api.getDetails();
+            // const detail = window.api.getDetails();
+            const detail = axios.get('http://localhost:3001/details').then(response => response.data);
             const updatedSelectedSuppliers = { ...prevState };
             const existingDetailSuppliers = updatedSelectedSuppliers[detailName] || [];
             
@@ -137,8 +139,12 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
         if (!selectedProduct || !isQuantityAvailable(selectedProduct)) return; // Check if enough quantity is available
         // if (!selectedProduct) return;
         try {
-            await window.api.subtractDetails(selectedOrder, selectedProduct.productName, filteredSuppliers.includedDetails);
-            await window.api.updateProductManufactured(selectedOrder, selectedProduct.productName, true);
+            let productName = selectedProduct.productName;
+            let includedDetails = filteredSuppliers.includedDetails
+            // await window.api.subtractDetails(selectedOrder, selectedProduct.productName, filteredSuppliers.includedDetails);
+            await axios.post('http://localhost:3001/products/subtract-details', {selectedOrder, productName, includedDetails});
+            // await window.api.updateProductManufactured(selectedOrder, selectedProduct.productName, true);
+            await axios.post('http://localhost:3001/products/update-product-manufactured', {selectedOrder, productName, manufactured: true});
             toast.success('Продукт отправлен в разработку')
             fetchData();
             setSelectedSuppliers({});
@@ -151,9 +157,9 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
 
     const getManufactureStatus = useCallback((productName) => {
         selectedOrder = parseInt(selectedOrder, 10);
-        const order = orders.find(order => order.id === selectedOrder);
+        const order = orders.data.find(order => order.id === selectedOrder);
         if (order && order.includedProducts) {
-            const includedProduct = order.includedProducts.find(product => product.productName === productName);
+            const includedProduct = JSON.parse(order.includedProducts).find(product => product.productName === productName);
             return includedProduct ? includedProduct.manufactured : false;
 
         }
@@ -167,6 +173,7 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
         statusTexts[getManufactureStatus(productName) ? 1 : 0];
 
     const getRowBorderClass = (product) => {
+        debugger
         const manufactured = getManufactureStatus(product.productName);
         return manufactured ? PAStyles.greenBorder : PAStyles.redBorder;
     };
@@ -176,29 +183,34 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
         try {
             if (selectedOrder) {
                 const [products, details, manufacturingStatus, orderData] = await Promise.all([
-                    window.api.getProducts(),
-                    window.api.getDetails(),
-                    window.api.getManufacturingStatusForOrder(selectedOrder),
-                    window.api.getOrderById(selectedOrder),
+                    // window.api.getProducts(),
+                    axios.get('http://localhost:3001/products'),
+                    // window.api.getDetails(),
+                    axios.get('http://localhost:3001/details'),
+                    // window.api.getManufacturingStatusForOrder(selectedOrder),
+                    axios.get('http://localhost:3001/orders/get-manufacturing-status', {params: {selectedOrder}}),
+                    // window.api.getOrderById(selectedOrder),
+                    axios.get('http://localhost:3001/orders/get-order-by-id', {params: {selectedOrder}}),
                 ]);
-    
-                const ordersData = await window.api.getAllOrders();
+                
+                const ordersData = await axios.get('http://localhost:3001/orders');
+                // const ordersData = await window.api.getAllOrders();
                 setOrders(ordersData);
     
                 const orderId = parseInt(selectedOrder, 10);
-                const order = ordersData.find(order => order.id === orderId);
+                const order = ordersData.data.find(order => order.id === orderId);
     
                 if (!order || !order.includedProducts) {
                     setIsLoading(false);
                     return;
                 }
-    
-                const orderProducts = new Map(order.includedProducts.map(({ productName, quantity }) => [productName, parseInt(quantity, 10)]));
-                const includedProducts = new Set(order.includedProducts.map(({ productName }) => productName));
+                console.log(order.includedProducts)
+                const orderProducts = new Map(JSON.parse(order.includedProducts).map(({ productName, quantity }) => [productName, parseInt(quantity, 10)]));
+                const includedProducts = new Set(JSON.parse(order.includedProducts).map(({ productName }) => productName));
     
                 const assembledProducts = Array.from(includedProducts).reduce((assembled, productName) => {
                     const orderQuantity = orderProducts.get(productName);
-                    const product = products.find(p => p.productName === productName);
+                    const product = products.data.find(p => p.productName === productName);
     
                     if (product) {
                         const includedDetails = typeof product.includedDetails === 'string' ? JSON.parse(product.includedDetails) : product.includedDetails;
@@ -206,7 +218,7 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
     
                         const productDetails = Array.from(includedDetailsMap.values());
     
-                        const manufacturingStatusForProduct = manufacturingStatus.find(status => status.productId === product.id);
+                        const manufacturingStatusForProduct = manufacturingStatus.data.find(status => status.productId === product.id);
                         assembled.push({
                             ...product,
                             totalQuantityNeeded: orderQuantity,
@@ -218,7 +230,7 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
                     return assembled;
                 }, []);
     
-                details.forEach(detail => {
+                details.data.forEach(detail => {
                     const { detailName, provider, quantity } = detail;
     
                     assembledProducts.forEach(product => {
@@ -267,7 +279,7 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
                 id: selectedOrder + 'ltd' + Math.random().toString(8).substr(1, 9) + "|",
                 productName: selectedProduct.productName,
                 part: selectedProduct.totalQuantityNeeded,
-                manufacturer: userName?.email,
+                manufacturer: userName?.name,
                 startDateOfManufacturer: getCurrentDateTimeString(),
                 endDateOfManufacturer: null,
                 comments: [],
@@ -275,7 +287,10 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
                 phase: 1,
                 partOfOrder: selectedOrder
             };
-            await window.api.setManufacturingData(manufacturingData);
+            // await window.api.setManufacturingData(manufacturingData);
+            debugger
+            await axios.post('http://localhost:3001/productsInDevelopment', manufacturingData);
+
 
         } catch (error) {
             console.error('Error saving manufacturing data:', error);
@@ -361,7 +376,7 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
                         <DialogActions className={PAStyles.dialogActions}>
                             <Tooltip title="Если кнопка заблокирована, значит плата уже в разработке или вам не хватает компонентов">
                                 <Button disabled={!selectedProduct ||
-                                    orders.find(order => order.id === selectedOrder).includedProducts.find(product => product.productName === selectedProduct.productName).manufactured ||
+                                    orders.data.find(order => order.id === selectedOrder).includedProducts && JSON.parse(orders.data.find(order => order.id === selectedOrder).includedProducts).find(product => product.productName === selectedProduct.productName).manufactured ||
                                     !isQuantityAvailable(selectedProduct)} onClick={() => { handleStartManufacturing(); saveManufacturingData(); }}>Начать разработку
                                 </Button>
                             </Tooltip>

@@ -2,6 +2,7 @@ import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import React, { useState, useEffect, useRef } from 'react';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import OAStyles from './OrdersAssembly.module.css';
+import axios from 'axios';
 
 const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
     const [orders, setOrders] = useState([]);
@@ -17,7 +18,8 @@ const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const result = await window.api.getAllOrders();
+                // const result = await window.api.getAllOrders();
+                const result = await axios.get('http://localhost:3001/orders');
                 setOrders(result);
                 setIsLoading(false);
             } catch (error) {
@@ -97,15 +99,15 @@ const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
                 ) : (
                     <FormControl component="fieldset">
                         <RadioGroup aria-label="orders" name="orders" value={selectedOrder} onChange={(e) => handleOrderSelect(e.target.value)}>
-                            {orders.length === 0 ? (
+                            {orders.data.length === 0 ? (
                                 <p>На данный момент нет заказов</p>
                             ) : (
                                 <div className={OAStyles.scrollableContainer}>
-                                    {orders.map((order, index) => (
+                                    {orders.data.map((order, index) => (
                                         <div
                                             key={order.id}
                                             className={`${OAStyles.orderCard} ${selectedOrder === order.id ? OAStyles.selected : ''}`}
-                                            ref={index === 0 ? firstOrderRef : index === orders.length - 1 ? lastOrderRef : null}
+                                            ref={index === 0 ? firstOrderRef : index === orders.data.length - 1 ? lastOrderRef : null}
                                             onClick={() => handleOrderSelect(order.id)}
                                         >
                                             <FormControlLabel
