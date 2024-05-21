@@ -7,6 +7,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, M
 import { Menu, Item, Separator, useContextMenu, } from "react-contexify";
 import 'react-contexify/dist/ReactContexify.css';
 import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
 
 const ItemTypes = {
     CARD: 'card',
@@ -30,7 +31,7 @@ const Card = ({ data, className }) => {
     );
 };
 let cardIdTest = 0
-const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDrop, details, userLevel }) => {
+const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDrop, details, userLevel, fetchData }) => {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [addPartDialog, setAddPartDialog] = React.useState(false);
     const [selectedCardId, setSelectedCardId] = React.useState(null);
@@ -89,9 +90,10 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
         try {
             const userData = localStorage.getItem('user');
             const user = JSON.parse(userData);
-            if (user && user.email) {
-                const newComment = `${user.email}: ${comment[selectedCardId]}`;
-                await window.api.addCommentToDatabase(cardIdTest, newComment);
+            if (user && user.name) {
+                const newComment = `${user.name}: ${comment[selectedCardId]}`;
+                // await window.api.addCommentToDatabase(cardIdTest, newComment);
+                await axios.put(`http://localhost:3001/productsInDevelopment/${cardIdTest}/comment`, { comment: newComment });
                 const newCommentArray = [...comment];
                 newCommentArray[selectedCardId] = '';
                 setComment(newCommentArray);
@@ -131,7 +133,7 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
             toast.error('Укажите причину');
             return;
         } else {
-            modifiedReason = `${user.email}: Причина добавления детали ${selectedDetail.detailName}: ${reason}`;
+            modifiedReason = `${user.name}: Причина добавления детали ${selectedDetail.detailName}: ${reason}`;
         }
         await window.api.subtractAdditionalDetails(selectedDetail.detailName, selectedDetailQuantity);
         await window.api.addAdditionalDetails(cardIdTest, selectedDetail.detailName, selectedDetailQuantity);
@@ -145,44 +147,61 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
 
     const handleMoveToNextPhase = async (cardId) => {
         try {
-            const card = dataForCards.find(card => card.id === cardId);
+            const card = dataForCards?.find(card => card.id === cardId);
             if (!card) throw new Error('Card not found');
-
+    
             const nextPhase = Math.min(card.phase + 1, 4);
-            const updatedDataForCards = dataForCards.map(card => card.id === cardId ? { ...card, phase: nextPhase } : card);
-            setDataForContainers(updatedDataForCards);
-            await window.api.updatePhase(cardId, nextPhase);
+    
+            await axios.put(`http://localhost:3001/productsInDevelopment/${cardId}/phase`, { phase: nextPhase });
+    
+            setDataForContainers(prevData => {
+                const updatedData = prevData.data.map(card => 
+                    card.id === cardId ? { ...card, phase: nextPhase } : card
+                );
+                return { ...prevData, data: updatedData };
+            });
+    
         } catch (error) {
             console.error('Error moving card to next phase:', error);
+        } finally {
+            fetchData();
         }
-    }
+    };
 
     const handleMoveToPreviousPhase = React.useCallback(async (cardIdTest) => {
         try {
-            const cardIndex = dataForCards.findIndex(card => card.id === cardIdTest);
+            const cardIndex = dataForCards?.findIndex(card => card.id === cardIdTest);
             if (cardIndex === -1) {
                 console.error('Card not found');
                 return;
             }
             setCardBack(false);
-
-            const card = dataForCards[cardIndex];
+    
+            const card = dataForCards?.[cardIndex];
             const previousPhase = Math.max(1, card.phase - 1);
             if (previousPhase === card.phase) return;
-
+    
             // Create a copy of dataForCards and update the specific card's phase
             const updatedDataForCards = [...dataForCards];
             updatedDataForCards[cardIndex] = { ...card, phase: previousPhase };
-
+    
+            // Call the API to update the phase in the database
+            await axios.put(`http://localhost:3001/productsInDevelopment/${cardIdTest}/phase`, { phase: previousPhase });
+    
             // Update state with the new data
-            setDataForContainers(updatedDataForCards);
-
-            // Now, call the API to update the phase in the database
-            await window.api.updatePhase(cardIdTest, previousPhase);
+            setDataForContainers(prevData => {
+                const updatedData = prevData.data.map(card => 
+                    card.id === cardIdTest ? { ...card, phase: previousPhase } : card
+                );
+                return { ...prevData, data: updatedData };
+            });
+    
         } catch (error) {
             console.error('Error moving card to previous phase:', error);
+        } finally {
+            fetchData();
         }
-    }, [dataForCards, setDataForContainers]);
+    }, [dataForCards, setDataForContainers, fetchData]);
 
 
 
@@ -194,7 +213,7 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
         }
     }, [phase, onDrop]);
 
-    const filteredCards = React.useMemo(() => dataForCards.filter(card => card.phase === phase), [dataForCards, phase]);
+    const filteredCards = React.useMemo(() => dataForCards?.filter(card => card.phase === phase), [dataForCards, phase]);
     const [, drop] = useDrop({
         accept: ItemTypes.CARD,
         drop: onDropCallback,
@@ -202,7 +221,7 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
 
     return (
         <div ref={drop} className={DPStyles.lower_section}>
-            {filteredCards.map((card) => (
+            {filteredCards?.map((card) => (
 
                 <div onContextMenu={displayMenu(card.id)} key={card.id}>
                     <Card data={card} className={DPStyles.card} />
@@ -339,7 +358,8 @@ const DevelopmentPage = ({userLevel}) => {
 
     const fetchData = async () => {
         try {
-            const result = await window.api.getManufacturedData();
+            // const result = await window.api.getManufacturedData();
+            const result = await axios.get('http://localhost:3001/productsInDevelopment');
             setDataForContainers(result);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -348,7 +368,8 @@ const DevelopmentPage = ({userLevel}) => {
 
     const fetchDetails = async () => {
         try {
-            const result = await window.api.getDetails();
+            // const result = await window.api.getDetails();
+            const result = await axios.get('http://localhost:3001/details');
             setDetails(result);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -384,11 +405,12 @@ const DevelopmentPage = ({userLevel}) => {
 
     const saveManufacturingData = async (_cardIdTest) => {
         try {
-            const manufacturingData = {
-                id: _cardIdTest,
+            const response = await axios.put(`http://localhost:3001/productsInDevelopment/${_cardIdTest}`, {
                 endDateOfManufacturer: getCurrentDateTimeString(),
-            };
-            await window.api.setManufacturingData(manufacturingData);
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save manufacturing data');
+            }
 
         } catch (error) {
             console.error('Error saving manufacturing data:', error);
@@ -398,7 +420,7 @@ const DevelopmentPage = ({userLevel}) => {
     const handleDrop = async (_cardIdTest, newPhase, isDragNDrop) => {
         console.log(`кардАйдиТест после дропа/вызова: ${cardIdTest}`)
         // debugger
-        const card = dataForContainers.find(c => c.id === _cardIdTest);
+        const card = dataForContainers.data.find(c => c.id === _cardIdTest);
         if (!card) return;
 
         let qrData, qrCode;
@@ -428,7 +450,9 @@ const DevelopmentPage = ({userLevel}) => {
                 toast.error('Плата еще не изготовлена');
             }
             if (newPhase !== undefined) {
-                await window.api.updatePhase(_cardIdTest, newPhase);
+                let cardId = _cardIdTest
+                await axios.put(`http://localhost:3001/productsInDevelopment/${cardId}/phase`, { phase: newPhase });
+                // await window.api.updatePhase(_cardIdTest, newPhase);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -506,13 +530,14 @@ const DevelopmentPage = ({userLevel}) => {
                                 <div className={DPStyles.lower_section}>
                                     <Container
                                         key={index}
-                                        dataForCards={dataForContainers}
+                                        dataForCards={dataForContainers.data}
                                         phase={index}
                                         onDrop={handleDrop}
                                         setDataForContainers={setDataForContainers}
                                         handleDrop={handleDrop}
-                                        details={details}
+                                        details={details.data}
                                         userLevel={userLevel}
+                                        fetchData={fetchData}
                                     />
                                 </div>
                             </div>
