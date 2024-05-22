@@ -135,7 +135,8 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
         } else {
             modifiedReason = `${user.name}: Причина добавления детали ${selectedDetail.detailName}: ${reason}`;
         }
-        await window.api.subtractAdditionalDetails(selectedDetail.detailName, selectedDetailQuantity);
+        // await window.api.subtractAdditionalDetails(selectedDetail.detailName, selectedDetailQuantity);
+        await axios.put(`http://localhost:3001/details/${selectedDetail.detailName}`, { quantity: selectedDetailQuantity });
         await window.api.addAdditionalDetails(cardIdTest, selectedDetail.detailName, selectedDetailQuantity);
         await window.api.addAdditionalComment(cardIdTest, modifiedReason);
         toast.success('Деталь успешно добавлена');
