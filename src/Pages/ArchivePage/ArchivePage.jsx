@@ -8,6 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import SearchIcon from '@mui/icons-material/Search';
 import DownloadPDFButton from '../../components/tableForPDF/TableForPDF';
 import ImageUploader from '../../components/ImageUploader/ImageUploader';
+import axios from 'axios';
 
 
 const averageRowHeight = 50; 
@@ -42,16 +43,17 @@ const ArchivePage = ({userLevel}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const acceptanceResult = await window.api.getManufacturedData();
-        setAcceptanceData(acceptanceResult);
+        // const acceptanceResult = await window.api.getManufacturedData();
+        const acceptanceResult = await axios.get('http://localhost:3001/productsInDevelopment');
+        setAcceptanceData(acceptanceResult.data);
         setFilteredData(acceptanceResult);
   
         // const usersResult = await window.api.getAllUsers();
         // setUsersData(usersResult);
   
-        const uniqueProductNames = [...new Set(acceptanceResult.map(item => item.productName))];
+        const uniqueProductNames = [...new Set(acceptanceResult.data.map(item => item.productName))];
         setAllProducts(uniqueProductNames);
-        const uniqueUsers = [...new Set(acceptanceResult.map(item => item.manufacturer))];
+        const uniqueUsers = [...new Set(acceptanceResult.data.map(item => item.manufacturer))];
         setAllUsers(uniqueUsers);
   
       } catch (error) {
