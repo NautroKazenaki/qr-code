@@ -44,7 +44,8 @@ const ArchivePage = ({userLevel}) => {
     const fetchData = async () => {
       try {
         // const acceptanceResult = await window.api.getManufacturedData();
-        const acceptanceResult = await axios.get('http://localhost:3001/productsInDevelopment');
+        // const acceptanceResult = await axios.get('http://localhost:3001/productsInDevelopment');
+        const acceptanceResult = await axios.get('http://192.168.0.100:3001/productsInDevelopment');
         setAcceptanceData(acceptanceResult.data);
         setFilteredData(acceptanceResult);
   

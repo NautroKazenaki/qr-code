@@ -36,7 +36,8 @@ const CreateOrderForm = ({ currentUser }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await axios.get('http://localhost:3001/products')
+            // const result = await axios.get('http://localhost:3001/products')
+            const result = await axios.get('http://192.168.0.100:3001/products')
             setProducts(result);
         };
         fetchData();
@@ -59,7 +60,8 @@ const CreateOrderForm = ({ currentUser }) => {
     const handleAddProduct = async () => {
         try {
             // const orders = await window.api.getAllOrders(); // Ожидаем разрешения обещания
-            const orders = await axios.get('http://localhost:3001/orders')
+            // const orders = await axios.get('http://localhost:3001/orders')
+            const orders = await axios.get('http://192.168.0.100:3001/orders')
 
             if (!Array.isArray(orders.data)) {
                 console.error('Orders is not an array:', orders.data);
@@ -103,7 +105,8 @@ const CreateOrderForm = ({ currentUser }) => {
         e.preventDefault();
         try {
             // const orders = await window.api.getAllOrders(); // Получаем все заказы перед обработкой формы
-            const orders = await axios.get('http://localhost:3001/orders') 
+            // const orders = await axios.get('http://localhost:3001/orders') 
+            const orders = await axios.get('http://192.168.0.100:3001/orders') 
             if (!Array.isArray(orders.data)) {
                 console.error('Orders is not an array:', orders.data);
                 toast.error("Ошибка при получении данных о заказах");
@@ -122,7 +125,13 @@ const CreateOrderForm = ({ currentUser }) => {
                 try {
                     let username = userFormLocalStorage ? userFormLocalStorage.name : '';
                     // await window.api.addOrder(startDate, orderTo, selectedProducts, userName);
-                    await axios.post('http://localhost:3001/orders', {
+                    // await axios.post('http://localhost:3001/orders', {
+                    //     startDate,
+                    //     orderTo,
+                    //     selectedProducts,
+                    //     username 
+                    // })
+                    await axios.post('http://192.168.0.100:3001/orders', {
                         startDate,
                         orderTo,
                         selectedProducts,

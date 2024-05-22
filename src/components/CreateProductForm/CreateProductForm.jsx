@@ -29,10 +29,12 @@ const CreateProductForm = ({ currentUser }) => {
     const fetchDetailsData = async () => {
         try {
             // const result = await window.api.getDetails();
-            const result = await axios.get('http://localhost:3001/details')
+            // const result = await axios.get('http://localhost:3001/details')
+            const result = await axios.get('http://192.168.0.100:3001/details')
             setDetailsToSelect(result);
             // const result1 = await window.api.getProducts();
-            const result1 = await axios.get('http://localhost:3001/products')
+            // const result1 = await axios.get('http://localhost:3001/products')
+            const result1 = await axios.get('http://192.168.0.100:3001/products')
             setUpdatedProducts(result1);
         } catch (error) {
             console.log(error);
@@ -98,7 +100,8 @@ const CreateProductForm = ({ currentUser }) => {
     const handleUpload = async () => {
         if (fileData) {
             // await window.api.sendDataFromExcel(fileData);
-            await axios.post(`http://localhost:3001/products/excel`, fileData);
+            // await axios.post(`http://localhost:3001/products/excel`, fileData);
+            await axios.post(`http://192.168.0.100:3001/products/excel`, fileData);
             fileData = null
         } else {
             console.error("No file selected");
@@ -192,7 +195,8 @@ const CreateProductForm = ({ currentUser }) => {
             
             if (flagReduct === true) {
                 setFlagReduct(false);
-                await axios.put(`http://localhost:3001/products/${selectedName}`, {nameToSend, savedDetails})
+                // await axios.put(`http://localhost:3001/products/${selectedName}`, {nameToSend, savedDetails})
+                await axios.put(`http://192.168.0.100:3001/products/${selectedName}`, {nameToSend, savedDetails})
                 toast.success('Плата успешно обновлена в базе данных');
                 localStorage.removeItem('selectedDetails');
                 localStorage.removeItem('isEditMode');
@@ -204,7 +208,8 @@ const CreateProductForm = ({ currentUser }) => {
                 return;
             }
             
-            await axios.post('http://localhost:3001/products', {nameToSend, savedDetails })
+            // await axios.post('http://localhost:3001/products', {nameToSend, savedDetails })
+            await axios.post('http://192.168.0.100:3001/products', {nameToSend, savedDetails })
             localStorage.removeItem('selectedDetails');
             localStorage.removeItem('isEditMode');
             setName('');

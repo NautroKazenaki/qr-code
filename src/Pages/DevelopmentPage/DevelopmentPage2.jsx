@@ -93,7 +93,8 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
             if (user && user.name) {
                 const newComment = `${user.name}: ${comment[selectedCardId]}`;
                 // await window.api.addCommentToDatabase(cardIdTest, newComment);
-                await axios.put(`http://localhost:3001/productsInDevelopment/${cardIdTest}/comment`, { comment: newComment });
+                // await axios.put(`http://localhost:3001/productsInDevelopment/${cardIdTest}/comment`, { comment: newComment });
+                await axios.put(`http://192.168.0.100:3001/productsInDevelopment/${cardIdTest}/comment`, { comment: newComment });
                 const newCommentArray = [...comment];
                 newCommentArray[selectedCardId] = '';
                 setComment(newCommentArray);
@@ -136,11 +137,14 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
             modifiedReason = `${user.name}: Причина добавления детали ${selectedDetail.detailName}: ${reason}`;
         }
         // await window.api.subtractAdditionalDetails(selectedDetail.detailName, selectedDetailQuantity);
-        await axios.put(`http://localhost:3001/details/${selectedDetail.detailName}`, { quantity: selectedDetailQuantity });
+        // await axios.put(`http://localhost:3001/details/${selectedDetail.detailName}`, { quantity: selectedDetailQuantity });
+        await axios.put(`http://192.168.0.100:3001/details/${selectedDetail.detailName}`, { quantity: selectedDetailQuantity });
         // await window.api.addAdditionalDetails(cardIdTest, selectedDetail.detailName, selectedDetailQuantity);
-        await axios.put('http://localhost:3001/productsInDevelopment', { cardId: cardIdTest, detail: selectedDetail.detailName, quantity: selectedDetailQuantity });
+        // await axios.put('http://localhost:3001/productsInDevelopment', { cardId: cardIdTest, detail: selectedDetail.detailName, quantity: selectedDetailQuantity });
+        await axios.put('http://192.168.0.100:3001/productsInDevelopment', { cardId: cardIdTest, detail: selectedDetail.detailName, quantity: selectedDetailQuantity });
         // await window.api.addAdditionalComment(cardIdTest, modifiedReason);
-        await axios.put('http://localhost:3001/productsInDevelopment/additionalComments', { cardId: cardIdTest, comment: modifiedReason });
+        // await axios.put('http://localhost:3001/productsInDevelopment/additionalComments', { cardId: cardIdTest, comment: modifiedReason });
+        await axios.put('http://192.168.0.100:3001/productsInDevelopment/additionalComments', { cardId: cardIdTest, comment: modifiedReason });
         toast.success('Деталь успешно добавлена');
         setSelectedDetail(null);
         setSelectedDetailQuantity(1)
@@ -155,7 +159,8 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
     
             const nextPhase = Math.min(card.phase + 1, 4);
     
-            await axios.put(`http://localhost:3001/productsInDevelopment/${cardId}/phase`, { phase: nextPhase });
+            // await axios.put(`http://localhost:3001/productsInDevelopment/${cardId}/phase`, { phase: nextPhase });
+            await axios.put(`http://192.168.0.100:3001/productsInDevelopment/${cardId}/phase`, { phase: nextPhase });
     
             setDataForContainers(prevData => {
                 const updatedData = prevData.data.map(card => 
@@ -189,7 +194,8 @@ const Container = ({ dataForCards, phase, onDrop, setDataForContainers, handleDr
             updatedDataForCards[cardIndex] = { ...card, phase: previousPhase };
     
             // Call the API to update the phase in the database
-            await axios.put(`http://localhost:3001/productsInDevelopment/${cardIdTest}/phase`, { phase: previousPhase });
+            // await axios.put(`http://localhost:3001/productsInDevelopment/${cardIdTest}/phase`, { phase: previousPhase });
+            await axios.put(`http://192.168.0.100:3001/productsInDevelopment/${cardIdTest}/phase`, { phase: previousPhase });
     
             // Update state with the new data
             setDataForContainers(prevData => {
@@ -362,7 +368,8 @@ const DevelopmentPage = ({userLevel}) => {
     const fetchData = async () => {
         try {
             // const result = await window.api.getManufacturedData();
-            const result = await axios.get('http://localhost:3001/productsInDevelopment');
+            // const result = await axios.get('http://localhost:3001/productsInDevelopment');
+            const result = await axios.get('http://192.168.0.100:3001/productsInDevelopment');
             setDataForContainers(result);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -372,7 +379,8 @@ const DevelopmentPage = ({userLevel}) => {
     const fetchDetails = async () => {
         try {
             // const result = await window.api.getDetails();
-            const result = await axios.get('http://localhost:3001/details');
+            // const result = await axios.get('http://localhost:3001/details');
+            const result = await axios.get('http://192.168.0.100:3001/details');
             setDetails(result);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -408,7 +416,10 @@ const DevelopmentPage = ({userLevel}) => {
 
     const saveManufacturingData = async (_cardIdTest) => {
         try {
-            const response = await axios.put(`http://localhost:3001/productsInDevelopment/${_cardIdTest}`, {
+            // const response = await axios.put(`http://localhost:3001/productsInDevelopment/${_cardIdTest}`, {
+            //     endDateOfManufacturer: getCurrentDateTimeString(),
+            // });
+            const response = await axios.put(`http://192.168.0.100:3001/productsInDevelopment/${_cardIdTest}`, {
                 endDateOfManufacturer: getCurrentDateTimeString(),
             });
             if (!response.ok) {
@@ -454,7 +465,8 @@ const DevelopmentPage = ({userLevel}) => {
             }
             if (newPhase !== undefined) {
                 let cardId = _cardIdTest
-                await axios.put(`http://localhost:3001/productsInDevelopment/${cardId}/phase`, { phase: newPhase });
+                // await axios.put(`http://localhost:3001/productsInDevelopment/${cardId}/phase`, { phase: newPhase });
+                await axios.put(`http://192.168.0.100:3001/productsInDevelopment/${cardId}/phase`, { phase: newPhase });
                 // await window.api.updatePhase(_cardIdTest, newPhase);
             }
         } catch (error) {

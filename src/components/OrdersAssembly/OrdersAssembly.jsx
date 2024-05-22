@@ -19,7 +19,8 @@ const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
         const fetchOrders = async () => {
             try {
                 // const result = await window.api.getAllOrders();
-                const result = await axios.get('http://localhost:3001/orders');
+                // const result = await axios.get('http://localhost:3001/orders');
+                const result = await axios.get('http://192.168.0.100:3001/orders');
                 setOrders(result);
                 setIsLoading(false);
             } catch (error) {

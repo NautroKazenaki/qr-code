@@ -29,7 +29,8 @@ const SettingsPage = ({userLevel}) => {
     const fetchAllUsers = async () => {
         try {
             // Fetch all users from the API
-            const response = await axios.get('http://localhost:3001/users');
+            // const response = await axios.get('http://localhost:3001/users');
+            const response = await axios.get('http://192.168.0.100:3001/users');
             setUsers(response);
         } catch (error) {
             console.error('Error occurred while fetching users:', error);
@@ -63,7 +64,8 @@ const SettingsPage = ({userLevel}) => {
 
         try {
             if (option === 'createUser') {
-                const userId = await axios.post(`http://localhost:3001/users/${name}`, {name, password, level})
+                // const userId = await axios.post(`http://localhost:3001/users/${name}`, {name, password, level})
+                const userId = await axios.post(`http://192.168.0.100:3001/users/${name}`, {name, password, level})
                 toast.success("Пользователь успешно добавлен!")
                 console.log('User registered with ID:', userId);
             } else if (option === 'createProduct') {
@@ -103,7 +105,8 @@ const SettingsPage = ({userLevel}) => {
             // Call the API to delete the selected user
             // await window.api.deleteUser(selectedUser.name);
             let name = selectedUser.name
-            await axios.delete(`http://localhost:3001/users/${name}`);
+            // await axios.delete(`http://localhost:3001/users/${name}`);
+            await axios.delete(`http://192.168.0.100:3001/users/${name}`);
             toast.success('Пользователь успешно удалён');
             // Refetch the users after deletion
             fetchAllUsers();

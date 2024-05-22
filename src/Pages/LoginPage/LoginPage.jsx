@@ -24,7 +24,11 @@ const Login = ({ setIsLoggedIn }) => {
         e.preventDefault();
         try {
           if (email !== '' && password !== '') {
-            const response = await axios.post('http://localhost:3001/users', {
+            // const response = await axios.post('http://localhost:3001/users', {
+            //   name: email,
+            //   password: password
+            // });
+            const response = await axios.post('http://192.168.0.100:3001/users', {
               name: email,
               password: password
             });
