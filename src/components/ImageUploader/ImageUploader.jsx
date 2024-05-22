@@ -20,8 +20,8 @@ function ImageUploader({searchID, setSearchID, userLevel}) {
             // }).catch(error => {
             //     console.error('Error processing image:', error);
             // });
-            // const response = await axios.post('http://localhost:3001/archieve/image', { image: imageData});
-            const response = await axios.post('http://192.168.0.100:3001/archieve/image', { image: imageData});
+            // const response = await axios.post('https://localhost:3001/archieve/image', { image: imageData});
+            const response = await axios.post('https://192.168.0.100:3001/archieve/image', { image: imageData});
             const result = response.data.result;
             setSearchID(result);
         };
