@@ -13,8 +13,8 @@ const DeleteOrderForm = ({ currentUser, userLevel }) => {
         const fetchOrders = async () => {
             try {
                 // const result = await window.api.getAllOrders();
-                // const result = await axios.get('https://localhost:3001/orders');
-                const result = await axios.get('https://192.168.0.100:3001/orders');
+                // const result = await axios.get('http://localhost:3001/orders');
+                const result = await axios.get('http://192.168.0.100:3001/orders');
                 setOrders(result);
             } catch (error) {
                 console.error('Error fetching orders:', error);
@@ -31,8 +31,8 @@ const DeleteOrderForm = ({ currentUser, userLevel }) => {
 
                 try {
                     // const details = await window.api.getProducts();
-                    // const details = await axios.get('https://localhost:3001/products');
-                    const details = await axios.get('https://192.168.0.100:3001/products');
+                    // const details = await axios.get('http://localhost:3001/products');
+                    const details = await axios.get('http://192.168.0.100:3001/products');
                     const foundProduct = details.data.find(product => product.productName === productName);
 
                     if (foundProduct) {
@@ -61,8 +61,8 @@ const DeleteOrderForm = ({ currentUser, userLevel }) => {
         if (selectedOrder) {
             try {
                 // await window.api.deleteOrder(selectedOrder.id);
-                // await axios.delete(`https://localhost:3001/orders/${selectedOrder.id}`);
-                await axios.delete(`https://192.168.0.100:3001/orders/${selectedOrder.id}`);
+                // await axios.delete(`http://localhost:3001/orders/${selectedOrder.id}`);
+                await axios.delete(`http://192.168.0.100:3001/orders/${selectedOrder.id}`);
                 // Remove the deleted order from the state
                 setOrders(orders.data.filter(order => order.id !== selectedOrder.id));
                 setSelectedOrder(null);

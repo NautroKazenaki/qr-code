@@ -14,7 +14,7 @@ const Login = ({ setIsLoggedIn }) => {
     //     e.preventDefault();
 
     //     try {
-    //         const response = await axios.get('https://192.168.0.124:3001/users')
+    //         const response = await axios.get('http://192.168.0.124:3001/users')
     //         console.log(response.data)
     //     } catch (error) {
     //         console.error('Error fetching users:', error);
@@ -24,7 +24,7 @@ const Login = ({ setIsLoggedIn }) => {
         e.preventDefault();
         try {
           if (email !== '' && password !== '') {
-            // const response = await axios.post('https://localhost:3001/users', {
+            // const response = await axios.post('http://localhost:3001/users', {
             //   name: email,
             //   password: password
             // });
@@ -57,7 +57,7 @@ const Login = ({ setIsLoggedIn }) => {
           throw error; // Rethrow the error for handling elsewhere
         }
       };
-                // axios.post('https://192.168.0.139:3001/users', { email, password }).then(
+                // axios.post('http://192.168.0.139:3001/users', { email, password }).then(
                 //     res => {
                 //         console.log(res.data)
                 //     }

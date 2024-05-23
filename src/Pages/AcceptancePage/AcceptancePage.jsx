@@ -58,8 +58,8 @@ const AcceptancePage = ({userLevel}) => {
     useEffect(() => {
         const fetchProviders = async () => {
             try {
-                // const response = await axios.get('https://localhost:3001/providers')
-                const response = await axios.get('https://192.168.0.100:3001/providers')
+                // const response = await axios.get('http://localhost:3001/providers')
+                const response = await axios.get('http://192.168.0.100:3001/providers')
                 setProvidersList(response.data.map(provider => provider.name))
             } catch (error) {
                 console.log(error)
@@ -73,12 +73,12 @@ const AcceptancePage = ({userLevel}) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // const acceptanceResult = await axios.get('https://localhost:3001/acceptance')
-                const acceptanceResult = await axios.get('https://192.168.0.100:3001/acceptance')
+                // const acceptanceResult = await axios.get('http://localhost:3001/acceptance')
+                const acceptanceResult = await axios.get('http://192.168.0.100:3001/acceptance')
                 debugger
                  setAcceptanceData(acceptanceResult);
-                //  const usersResult = await axios.get('https://localhost:3001/users');
-                 const usersResult = await axios.get('https://192.168.0.100:3001/users');
+                //  const usersResult = await axios.get('http://localhost:3001/users');
+                 const usersResult = await axios.get('http://192.168.0.100:3001/users');
                  setUsersData(usersResult);
                 const savedRows = JSON.parse(localStorage.getItem('rows'));
                 if (savedRows) {
@@ -113,10 +113,10 @@ const AcceptancePage = ({userLevel}) => {
                 const isExistingProvider = providersList.some(provider => provider.trim() === trimmedName);
                 if (!isExistingProvider) {
                     try {
-                        // await axios.post('https://localhost:3001/providers', {trimmedName})
-                        await axios.post('https://192.168.0.100:3001/providers', {trimmedName})
-                        // const result = await axios.get('https://localhost:3001/providers')
-                        const result = await axios.get('https://192.168.0.100:3001/providers')
+                        // await axios.post('http://localhost:3001/providers', {trimmedName})
+                        await axios.post('http://192.168.0.100:3001/providers', {trimmedName})
+                        // const result = await axios.get('http://localhost:3001/providers')
+                        const result = await axios.get('http://192.168.0.100:3001/providers')
                         setProvidersList(result.data.map(provider => provider.name))
                         setNewProviderName('')
                     } catch (error) {
@@ -137,8 +137,8 @@ const AcceptancePage = ({userLevel}) => {
 
 const handleRemoveProvider = async (providerNameToRemove) => {
     try {
-        // await axios.delete(`https://localhost:3001/providers/${providerNameToRemove}`);
-        await axios.delete(`https://192.168.0.100:3001/providers/${providerNameToRemove}`);
+        // await axios.delete(`http://localhost:3001/providers/${providerNameToRemove}`);
+        await axios.delete(`http://192.168.0.100:3001/providers/${providerNameToRemove}`);
         const updatedProvidersList = providersList.filter(provider => provider !== providerNameToRemove)
         setProvidersList(updatedProvidersList)
     } catch (error) {
@@ -201,7 +201,7 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                 const { name, quantity, selectedProvider } = row;
                 let username = JSON.parse(localStorage.getItem('user')).name
                 try {
-                    // const response = await axios.post('https://localhost:3001/acceptance', {
+                    // const response = await axios.post('http://localhost:3001/acceptance', {
                     //     username,
                     //     currentDateTime,
                     //     name,
@@ -209,7 +209,7 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                     //     selectedProvider,
                     //     acceptanceCounter
                     // })
-                    const response = await axios.post('https://192.168.0.100:3001/acceptance', {
+                    const response = await axios.post('http://192.168.0.100:3001/acceptance', {
                         username,
                         currentDateTime,
                         name,
@@ -223,12 +223,12 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                     console.error(error)
                 }
                 try {
-                    // const response = await axios.post('https://localhost:3001/details', {
+                    // const response = await axios.post('http://localhost:3001/details', {
                     //     name,
                     //     quantity,
                     //     selectedProvider,
                     // })
-                    const response = await axios.post('https://192.168.0.100:3001/details', {
+                    const response = await axios.post('http://192.168.0.100:3001/details', {
                         name,
                         quantity,
                         selectedProvider,
@@ -238,8 +238,8 @@ const handleRemoveProvider = async (providerNameToRemove) => {
                     console.error(error)
                 }
             }
-            // const acceptanceResult = await axios.get('https://localhost:3001/acceptance')
-            const acceptanceResult = await axios.get('https://192.168.0.100:3001/acceptance')
+            // const acceptanceResult = await axios.get('http://localhost:3001/acceptance')
+            const acceptanceResult = await axios.get('http://192.168.0.100:3001/acceptance')
             setAcceptanceData(acceptanceResult);
             setRows(prevRows => prevRows.filter(row => !selected.includes(row.id)));
             toast.success('Приёмка успешно завершена');

@@ -13,8 +13,8 @@ const DeleteProductForm = ({ currentUser, userLevel }) => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                // const result = await axios.get('https://localhost:3001/products');
-                const result = await axios.get('https://192.168.0.100:3001/products');
+                // const result = await axios.get('http://localhost:3001/products');
+                const result = await axios.get('http://192.168.0.100:3001/products');
                 setProducts(result);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -39,11 +39,11 @@ const DeleteProductForm = ({ currentUser, userLevel }) => {
             try {
                 let id = selectedProduct.productName
                 // await window.api.deleteProduct(selectedProduct.productName);
-                // await axios.delete(`https://localhost:3001/products/${id}`);
-                await axios.delete(`https://192.168.0.100:3001/products/${id}`);
+                // await axios.delete(`http://localhost:3001/products/${id}`);
+                await axios.delete(`http://192.168.0.100:3001/products/${id}`);
                 setSelectedProduct(null);
-                // const updatedProducts = await axios.get('https://localhost:3001/products');
-                const updatedProducts = await axios.get('https://192.168.0.100:3001/products');
+                // const updatedProducts = await axios.get('http://localhost:3001/products');
+                const updatedProducts = await axios.get('http://192.168.0.100:3001/products');
                 setProducts(updatedProducts);
                 toast.success("Плата успешно удалена");
             } catch (error) {

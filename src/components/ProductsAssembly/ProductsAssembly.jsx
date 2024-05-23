@@ -34,8 +34,8 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
     const handleSupplierCheckboxChange = (detailName, provider, checked, quantity) => {
         setSelectedSuppliers(prevState => {
             // const detail = window.api.getDetails();
-            // const detail = axios.get('https://localhost:3001/details').then(response => response.data);
-            const detail = axios.get('https://192.168.0.100:3001/details').then(response => response.data);
+            // const detail = axios.get('http://localhost:3001/details').then(response => response.data);
+            const detail = axios.get('http://192.168.0.100:3001/details').then(response => response.data);
             const updatedSelectedSuppliers = { ...prevState };
             const existingDetailSuppliers = updatedSelectedSuppliers[detailName] || [];
             
@@ -143,11 +143,11 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
             let productName = selectedProduct.productName;
             let includedDetails = filteredSuppliers.includedDetails
             // await window.api.subtractDetails(selectedOrder, selectedProduct.productName, filteredSuppliers.includedDetails);
-            // await axios.post('https://localhost:3001/products/subtract-details', {selectedOrder, productName, includedDetails});
-            await axios.post('https://192.168.0.100:3001/products/subtract-details', {selectedOrder, productName, includedDetails});
+            // await axios.post('http://localhost:3001/products/subtract-details', {selectedOrder, productName, includedDetails});
+            await axios.post('http://192.168.0.100:3001/products/subtract-details', {selectedOrder, productName, includedDetails});
             // await window.api.updateProductManufactured(selectedOrder, selectedProduct.productName, true);
-            // await axios.post('https://localhost:3001/products/update-product-manufactured', {selectedOrder, productName, manufactured: true});
-            await axios.post('https://192.168.0.100:3001/products/update-product-manufactured', {selectedOrder, productName, manufactured: true});
+            // await axios.post('http://localhost:3001/products/update-product-manufactured', {selectedOrder, productName, manufactured: true});
+            await axios.post('http://192.168.0.100:3001/products/update-product-manufactured', {selectedOrder, productName, manufactured: true});
             toast.success('Продукт отправлен в разработку')
             fetchData();
             setSelectedSuppliers({});
@@ -187,21 +187,21 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
             if (selectedOrder) {
                 const [products, details, manufacturingStatus, orderData] = await Promise.all([
                     // window.api.getProducts(),
-                    // axios.get('https://localhost:3001/products'),
-                    axios.get('https://192.168.0.100:3001/products'),
+                    // axios.get('http://localhost:3001/products'),
+                    axios.get('http://192.168.0.100:3001/products'),
                     // window.api.getDetails(),
-                    // axios.get('https://localhost:3001/details'),
-                    axios.get('https://192.168.0.100:3001/details'),
+                    // axios.get('http://localhost:3001/details'),
+                    axios.get('http://192.168.0.100:3001/details'),
                     // window.api.getManufacturingStatusForOrder(selectedOrder),
-                    // axios.get('https://localhost:3001/orders/get-manufacturing-status', {params: {selectedOrder}}),
-                    axios.get('https://192.168.0.100:3001/orders/get-manufacturing-status', {params: {selectedOrder}}),
+                    // axios.get('http://localhost:3001/orders/get-manufacturing-status', {params: {selectedOrder}}),
+                    axios.get('http://192.168.0.100:3001/orders/get-manufacturing-status', {params: {selectedOrder}}),
                     // window.api.getOrderById(selectedOrder),
-                    // axios.get('https://localhost:3001/orders/get-order-by-id', {params: {selectedOrder}}),
-                    axios.get('https://192.168.0.100:3001/orders/get-order-by-id', {params: {selectedOrder}}),
+                    // axios.get('http://localhost:3001/orders/get-order-by-id', {params: {selectedOrder}}),
+                    axios.get('http://192.168.0.100:3001/orders/get-order-by-id', {params: {selectedOrder}}),
                 ]);
                 
-                // const ordersData = await axios.get('https://localhost:3001/orders');
-                const ordersData = await axios.get('https://192.168.0.100:3001/orders');
+                // const ordersData = await axios.get('http://localhost:3001/orders');
+                const ordersData = await axios.get('http://192.168.0.100:3001/orders');
                 // const ordersData = await window.api.getAllOrders();
                 setOrders(ordersData);
     
@@ -297,8 +297,8 @@ const ProductsAssembly = ({ selectedOrder, userLevel }) => {
             };
             // await window.api.setManufacturingData(manufacturingData);
             debugger
-            // await axios.post('https://localhost:3001/productsInDevelopment', manufacturingData);
-            await axios.post('https://192.168.0.100:3001/productsInDevelopment', manufacturingData);
+            // await axios.post('http://localhost:3001/productsInDevelopment', manufacturingData);
+            await axios.post('http://192.168.0.100:3001/productsInDevelopment', manufacturingData);
 
 
         } catch (error) {
