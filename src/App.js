@@ -12,18 +12,15 @@ import ArchivePage from "./Pages/ArchivePage/ArchivePage";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userLevel, setUserLevel] = useState(null)
-  const firstTimeStart = async () => {
-    await window.api.addDefaultUserIfNeeded()
-  }
 
-  // useEffect(() => {
-  //   firstTimeStart()
-  //   // Check if user is already logged in (e.g., by checking local storage)
-  //   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-  //   setIsLoggedIn(isLoggedIn);
-  //   const user = JSON.parse(localStorage.getItem('user'));
-  //   setUserLevel(user?.level)
-  // }, []);
+
+   useEffect(() => {
+     // Check if user is already logged in (e.g., by checking local storage)
+     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+     setIsLoggedIn(isLoggedIn);
+     const user = JSON.parse(localStorage.getItem('user'));
+     setUserLevel(user?.level)
+   }, []);
 
   return (
     <div className="App">
