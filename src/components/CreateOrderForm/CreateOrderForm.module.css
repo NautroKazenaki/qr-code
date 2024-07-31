@@ -1,22 +1,29 @@
 .mainContainer {
     display: flex;
-    flex-direction: row;
-    width: 700px;
+    flex-direction: column;
+    width: 90%;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 5%;
     max-height: 750px;
+    margin-left: 7%;
+}
+.contentContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 .formContainer {
     /* flex: 1; */
     margin-right: 20px;
+    margin-top: 5%;
 }
 .formGroup {
     margin-bottom: 15px;
 }
-.formGroup label {
+.formGroup div label {
     display: block;
     font-weight: bold;
-    margin-bottom: 5px;
+    font-size: 10px;
 }
 .formGroup input {
     width: 250px;
@@ -69,29 +76,26 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin-left: 15px;
+    margin-top: 5%;
+    background-color: white;
+    border-radius: 10px;
+    height: 88.5%;
+    overflow-y: auto;
 }
 
 .detailsList {
-    
-    background-color: #f9f9f9;
+    background-color: rgb(245, 245, 245);
     padding: 20px;
-    max-height: 300px;
-    max-width: 300px;
-    
-    height: 30vh;
-    width: 30vh;
-
-
+    max-height: 500px;
+    max-width: 500px;
+    height: 50vh;
+    width: 50vh;
     overflow-y: auto;
     overflow-x: hidden;
-
-    margin-top: 0;
+    margin-top: 5%;
     border-radius: 10px;
-    border: 1px solid #ccc;
-    box-shadow: 3px 2px 4px rgba(0, 0, 0, 0.1); /* Добавление тени */
-
+    /* border: 1px solid #ccc; */
+    /* /* box-shadow: 3px 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 .detailItem {
@@ -101,18 +105,23 @@
     margin-bottom: 5px;
 }
 
-.deleteButton {
-    min-width: 0;
-    padding: 0; /* Убираем внутренние отступы */
-    width: 2px; /* Задаем ширину кнопки */
-    height: 10px; /* Задаем высоту кнопки */
-    margin-left: 10px; /* Регулируем отступ слева */
+.blackButton {
+    width: 23vh !important;
+    font-size: 16px;
+    border-radius: 10px;
+    margin-left: 7%;
+    background-color: #1C1E1B !important;
+    color: white !important;
+    border: none;
+    cursor: pointer;
 }
 
-.deleteButton:hover {
-    background-color: transparent; /* Убираем фон при наведении */
+.blackButton:hover {
+    background-color: #3c4139 !important;
+    /* width: 100%; */
+    border-radius: 10px;
+    transition: .2s;
 }
-
 .opacity {
     /*opacity: 0.6;*/
     display: flex;
@@ -120,12 +129,11 @@
     align-content: center;
 }
 
-.blackButton {
-    background-color: #172D13 !important;
-    color: #d2e0c9 !important;
+/* .blackButton {
+    background-color: black;
+    color: white ;
     width: 19vh !important;
     transition: background-color 0.5s, color 0.5s !important;
-    border: 2px solid #d2e0c9 !important;
 }
 
 .blackButton:active {
@@ -139,7 +147,7 @@
 
 .blackButton.clicked {
     animation: clickEffect 0.5s linear;
-}
+} */
 
 @keyframes clickEffect {
     0% {
@@ -151,4 +159,16 @@
     100% {
         transform: scale(1);
     }
+}
+
+.submitButtonContainer {
+    width: 84%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.orderDetailsContainer {
+    background-color: white;
+    padding: 5%;
+    border-radius: 10px;
 }

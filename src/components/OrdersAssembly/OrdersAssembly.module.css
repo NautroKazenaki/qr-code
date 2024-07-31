@@ -3,7 +3,7 @@
     justify-content: space-around;
     /* padding: 20px; */
     border-radius: 12px;
-    width: 40vh;
+    width: 100%;
     margin-top: 5vh;
     margin-bottom: 5vh;
     height: 60vh;
@@ -36,54 +36,69 @@
     margin-bottom: 16px;
 }
 
-    .orderCard {
-        background-color: #fff;
-        border-radius: 8px;
-        padding: 0.5vh;
-        margin-bottom: 16px;
-        width: 36vh;
-        transition: background-color 0.3s ease; /* Анимация перехода цвета */
-        border: 1px solid #dddada; /* Исправил свойство border */
-    }
+.orderCard {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 0.5vh;
+    /* margin-bottom: 16px; */
+    width: 36vh;
+    transition: background-color 0.3s ease;
+    /* Анимация перехода цвета */
+    border: 1px solid #726e6e;
+    /* Исправил свойство border */
+    color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .orderCard:hover {
-        background-color: #f0f0f0; /* Изменение цвета при наведении */
-        border: 1px solid #333; /* Исправил свойство border */
-    }
+.orderCard:hover {
+    background-color: #f0f0f0;
+    /* Изменение цвета при наведении */
+    border: 1px solid #030303;
+    /* Исправил свойство border */
+}
 
-   
-    .selected {
-        background-color: #fff;
-        border-radius: 8px;
-        padding: 0.5vh;
-        margin-bottom: 16px;
-        width: 36vh;
-        border: 1px solid #dddada; /* Исправил свойство border */
-        margin-left: vh;
-        
-    }
-    
-    .orderCard.selected label span {
-        color: green;
 
-    }
-    .orderCard.selected {
-        background-color: #172D13; /* Цвет выбранной карты */
-        border: 3px solid #0e0c0c; /* Исправил свойство border */
-        color: green;
+.selected {
+    background-color: #fff;
+    border-radius: 1px;
+    padding: 0.5vh;
+    /* margin-bottom: 16px; */
+    width: 36vh;
+    border: 1px solid #dddada;
+    /* Исправил свойство border */
+    margin-left: vh;
 
-    }
-    
-    .orderLabel {
-        font-size: 16px;
-        color: #555;
-    }
-    
-    .orderLabel.selected {
-        font-weight: bold; /* Увеличение шрифта для выбранного чекбокса */
-        color: #fff; /* Изменение цвета текста для выбранного чекбокса */
-    }
-    
+}
+
+.orderCard.selected label span {
+    color: rgb(0, 0, 0);
+
+}
+
+.orderCard.selected {
+    background-color: #172D13;
+    /* Цвет выбранной карты */
+    border: 3px solid #0e0c0c;
+    /* Исправил свойство border */
+    color: green;
+
+}
+
+.orderLabel {
+    font-size: 16px;
+    color: #555;
+}
+
+.orderLabel.selected {
+    font-weight: bold;
+    /* Увеличение шрифта для выбранного чекбокса */
+    color: #fff;
+    /* Изменение цвета текста для выбранного чекбокса */
+}
+
 
 .orderTable {
     width: 100%;
@@ -97,7 +112,8 @@
     background-color: rgb(77, 72, 72);
 }
 
-.arrowTop, .arrowBottom {
+.arrowTop,
+.arrowBottom {
     position: absolute;
     cursor: pointer;
     z-index: 2;
@@ -126,11 +142,81 @@
     opacity: 0;
     pointer-events: none;
 }
+
 .arrowTop {
     margin-left: -6vh;
 }
+
 .arrowBottom {
     margin-left: -6vh;
     margin-bottom: 3vh;
 
+}
+
+.cardsDiv {
+    position: relative;
+}
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    top: 5px;
+    position: absolute;
+    color: black;
+}
+
+
+.orderCard {
+    padding: 8px;
+    /* border: 1px solid #b6abab;
+    border-radius: 4px; */
+    cursor: pointer;
+}
+
+
+.orderCard.selected {
+    background-color: #f0f0f0;
+}
+
+.arrowTop,
+.arrowBottom {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+}
+
+.arrowTop {
+    top: 0;
+}
+
+.arrowBottom {
+    bottom: 0;
+}
+
+.fieldDiv fieldset {
+    padding-top: 2%;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    /* background-color: #f0f0f0; */
+    padding: 2%;
+    padding-bottom: 2%;
+
+}
+
+/* .orderIconContainer {
+    width: 20%;
+    height: 40%;
+} */
+
+.orderInfoContainer {
+    display: flex;
+    flex-direction: column;
+}
+.orderStatusContainer {
+    width: 5%;
+    height: 90%;
+    /* background-color: yellow; */
+    border-radius: 50% / 10%;
 }

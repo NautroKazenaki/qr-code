@@ -1,0 +1,83 @@
+.customTableHead {
+    background-color: rgb(46,170,89);
+    color: black !important;
+    max-height: 92vh; /* Максимальная высота контейнера таблицы */
+    position: sticky;
+    top: 0;
+    z-index: 1; /* Поднимаем шапку над содержимым таблицы */
+}
+
+.sticky {
+    position: sticky;
+    top: 0;
+    color: black !important;
+    z-index: 1;
+    font-weight: bold !important;
+    cursor: pointer !important;
+}
+
+.tableDiv {
+    max-height: 92vh;
+    overflow-y: auto !important;
+    user-select: none;
+}
+
+.removeErrorButton
+{
+    margin-left: 10px !important;
+    background-color: #419b33 !important;
+    top: 0;
+}
+
+.removeErrorButton:hover {
+    background-color: #419b33 !important;
+}
+
+.addErrorButton
+{
+    margin-left: 10px !important;
+    background-color: black !important;
+    top: 0;
+}
+
+.addErrorButton:hover {
+    background-color: black !important;
+}
+
+.normalRow {
+    background-color: white !important;
+    color: black; 
+}
+
+.errorRow {
+    background-color: rgb(200, 58, 58) !important;
+    color: white;
+}
+
+th label {
+    color: black !important;
+}
+th div div input {
+    color: black !important;
+}
+
+.tableContainer {
+  max-height: 90vh; /* Максимальная высота контейнера таблицы */
+  overflow-y: auto; /* Включение вертикальной прокрутки */
+}
+
+.tableDiv td:nth-child(4) {
+    /* display: flex; */
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    /* border-bottom: none !important; */
+}
+.tableDiv td:nth-child(4) td {
+    border-bottom: none !important;
+    cursor: grab;
+}
+
+.searchField {
+    color: black !important;
+}

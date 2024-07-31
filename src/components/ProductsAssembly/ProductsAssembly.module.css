@@ -1,6 +1,6 @@
 .productsAssemblyContainer {
     margin: 20px;
-    margin-top: 5%
+    margin-top: 5%;
 }
 
 .title {
@@ -10,6 +10,8 @@
 
 .tableContainer {
     margin-bottom: 20px !important;
+    overflow-y: auto;
+    max-height: 70vh;
 }
 
 .table {
@@ -33,12 +35,17 @@
 }
 
 .dialogContent {
-    margin-top: 20px;
+    margin-top: 10px;
+    width: max-content;
+    padding: 0px 0px !important;
+    user-select:text;
 }
 
 .dialogTable {
-    width: 100%;
+    width: max-content;
     border-collapse: collapse;
+
+    
 }
 
 .dialogTable th,
@@ -49,8 +56,8 @@
 }
 
 .dialogActions {
-    margin-top: 20px;
-    padding: 16px;
+    /* margin-top: 0vh; */
+    /* padding: 16px; */
 }
 
 .dialogButton {
@@ -58,9 +65,50 @@
 }
 
 .redBorder {
-    border: 5px solid red;
+    border-bottom: 5px solid red;
+    border-top: 5px solid red;
+    border-left: 1px solid red;
+    border-right: 1px solid red;
+}
+
+.yellowBorder {
+    border-bottom: 5px solid yellow;
+    border-top: 5px solid yellow;
+    border-left: 1px solid yellow;
+    border-right: 1px solid yellow;
 }
 
 .greenBorder {
-    border: 5px solid green;
+    border-bottom: 5px solid green;
+    border-top: 5px solid green;
+    border-left: 1px solid green;
+    border-right: 1px solid green;}
+
+.stickyHeader {
+    position: sticky;
+    top: 0;
+    /* background-color: rgb(236, 235, 235); */
+}
+
+.productsAssemblyContainer tbody {
+    background-color: rgb(218, 218, 218) !important;
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.greenCircle {
+    background-color: green;
+}
+
+.redCircle {
+    background-color: red;
+}
+
+.yellowCircle {
+    background-color: yellow;
 }

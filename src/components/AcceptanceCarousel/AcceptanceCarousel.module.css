@@ -3,10 +3,10 @@
 
 
 .acceptanceCarouselTitle {
-    color: #d2e0c9 !important; /* Заменяем синий на зеленый */
-    background-color: #172D13 !important;
+    color: black;
+    background-color: rgb(218, 218, 218) !important;
     width: 100%;
-
+    margin-top: 10%;
 }
 
 .acceptanceCarouselContainer {
@@ -15,13 +15,8 @@
 
 .containerFilter {
     width: 400px;
-    max-width: 100%;
-    color: black; /* Заменяем темно-синий на черный */
-    border-radius: 8px;
-    border: 1px solid #222; /* Уточняем цвет границы */
-    line-height: 1.125em;
-    padding: 5px;
-
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -34,9 +29,12 @@
     align-items: center;
     margin-top: 3%;
 }
+.filter div label {
+    font-size: 14px;
+}
 
 .filterSelect {
-    width: 160px;
+    width: 150px !important;
 }
 
 .buttonContainer {
@@ -44,10 +42,15 @@
     flex-direction: row;
     width: 100%;
     justify-content: space-evenly;
+    align-items: baseline;
+    margin-bottom: 2%;
 }
 
 .buttonContainer button {
-    padding: 5px !important;
+    color: white !important;
+    background-color: black !important;
+    transition: background-color 0.5s, color 0.5s !important;
+    width: 47%;
 }
 
 .table {
@@ -64,38 +67,38 @@
 
 .carouselTable {
     width: 40vh;
-    height: 30vh;
+    height: 45vh;
     overflow-y: auto;
-    background-color: #f4f5f4;
+    /* background-color: #f4f5f4; */
 }
 
 .button {
     border: 1px solid black !important;
     margin-bottom: 2% !important;
 }
+.blackButtonContainer {
+    display: flex;
+    width: 80%;
+    margin-top: 5%;
+    margin-left: 8%;
+}
+
 
 .blackButton {
-    color: #d2e0c9 !important; /* Заменяем синий на зеленый */
-    background-color: #172D13 !important;
-    transition: background-color 0.5s, color 0.5s !important; /* Увеличиваем время анимации до 0.5 секунды */
-    border: 2px solid #d2e0c9 !important;
-    margin-bottom: 20px !important;
-    text-transform: none !important;
-    margin: 5px;
-    
+    width: 48%;
+    font-size: 14px;
+    border-radius: 10px;
+    background-color: #1C1E1B !important;
+    color: white !important;
+    border: none;
+    cursor: pointer;
+    margin: 0;
 }
 
-.blackButton:active {
-    background-color: green !important; /* При нажатии изменяем цвет фона на зеленый */
-    color: black !important; /* При нажатии изменяем цвет текста на черный */
-}
-
-.blackButton:focus {
-    outline: none; /* Убираем стандартный контур фокуса */
-}
-
-.blackButton.clicked {
-    animation: clickEffect 0.5s linear; /* Изменяем время анимации для эффекта нажатия */
+.blackButton:hover {
+    background-color: #3c4139 !important;
+    border-radius: 10px;
+    transition: .2s;
 }
 
 @keyframes clickEffect {
@@ -109,26 +112,33 @@
         transform: scale(1); /* Возвращаем масштаб к исходному */
     }
 }
+.lastAcceptanceTableContainer {
+    width: 100%;
+}
+
+    .lastAcceptanceTableContainer div table tbody tr {
+        background-color: rgb(218, 218, 218);
+    }
+
+
   .customClass {
     color: #0a0a09 !important; /* Заменяем синий на зеленый */
+
+    width: 65%;
+    font-size: 14px;
+    border-radius: 10px;
+    /* margin-left: 7%; */
     background-color: #abadab !important;
-    transition: background-color 0.5s, color 0.5s !important; /* Увеличиваем время анимации до 0.5 секунды */
-    border: 2px solid #d2e0c9 !important;
-    margin-bottom: 20px !important;
-    text-transform: none !important;
-    margin: 5px;
+    color: white !important;
+    border: none;
+    cursor: pointer;
+    margin: 0;
     
 }
 
-.customClass:active {
-    background-color: green !important; /* При нажатии изменяем цвет фона на зеленый */
-    color: black !important; /* При нажатии изменяем цвет текста на черный */
-}
-
-.customClass:focus {
-    outline: none; /* Убираем стандартный контур фокуса */
-}
-
-.customClass.clicked {
-    animation: clickEffect 0.5s linear; /* Изменяем время анимации для эффекта нажатия */
+.customClass:hover {
+    background-color: #abadab !important;
+    /* width: 100%; */
+    border-radius: 10px;
+    transition: .2s;
 }

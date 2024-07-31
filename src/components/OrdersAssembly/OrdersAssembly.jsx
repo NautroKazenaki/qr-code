@@ -1,27 +1,37 @@
-import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import React, { useState, useEffect, useRef } from 'react';
-import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { FormControl, FormControlLabel, Radio, RadioGroup, Select, MenuItem } from '@mui/material';
 import OAStyles from './OrdersAssembly.module.css';
 import axios from 'axios';
+import OrderIcon from '../../images/orderIcon.svg';
 
-const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
+/**
+ * Order Assembly компонент
+ * Отображает список заказов на основе выбранного состояния и значения поиска.
+ * Позволяет пользователю выбрать заказ и отобразить его детали.
+ *
+ * @param {object} props - Свойства компонента
+ * @param {string} props.statusCard - Выбранное состояние заказов
+ * @param {string} props.searchValue - Значение поиска
+ * @param {string} props.selectedOrder - ID выбранного заказа
+ * @param {function} props.onOrderSelect - Функция обратного вызова для обработки выбора заказа
+ * @returns {JSX.Element} - Отрисованный компонент OrdersAssembly
+ */
+const OrdersAssembly = ({ statusCard, searchValue, selectedOrder, onOrderSelect }) => {
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [isFirstOrderVisible, setIsFirstOrderVisible] = useState(false);
-    const [isLastOrderVisible, setIsLastOrderVisible] = useState(true);
-    const [scrollPosition, setScrollPosition] = useState(0);
 
     const containerRef = useRef(null);
     const firstOrderRef = useRef(null);
     const lastOrderRef = useRef(null);  
 
+    /**
+     * Получает заказы с сервера и обновляет состояние компонента.
+     */
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                // const result = await window.api.getAllOrders();
-                // const result = await axios.get('http://localhost:3001/orders');
-                const result = await axios.get('http://192.168.0.100:3001/orders');
-                setOrders(result);
+                const result = await axios.get('http://192.168.0.123:3001/orders');
+                setOrders(result.data); // Предполагая, что result.data представляет собой массив заказов.
                 setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching orders:', error);
@@ -30,88 +40,112 @@ const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
         fetchOrders();
     }, []);
 
-
-    useEffect(() => {
-        // Функция обработки события прокрутки
-        const handleScroll = () => {
-            // Получаем ссылку на контейнер
-            const container = containerRef.current;
-            if (container) {
-                // Проверяем видимость первого элемента
-                if (firstOrderRef.current) {
-                    // Получаем прямоугольник (bounding rect) первого элемента и контейнера
-                    const firstOrderRect = firstOrderRef.current.getBoundingClientRect();
-                    const containerRect = container.getBoundingClientRect();
-                    // Устанавливаем состояние isFirstOrderVisible в зависимости от видимости первого элемента в контейнере
-                    setIsFirstOrderVisible(
-                        !(firstOrderRect.top >= containerRect.top && firstOrderRect.bottom <= containerRect.bottom)
-                    );
-                }
-                // Проверяем видимость последнего элемента
-                if (lastOrderRef.current) {
-                    // Получаем прямоугольник (bounding rect) последнего элемента и контейнера
-                    const lastOrderRect = lastOrderRef.current.getBoundingClientRect();
-
-                    const containerRect = container.getBoundingClientRect();
-                    // Устанавливаем состояние isLastOrderVisible в зависимости от видимости последнего элемента в контейнере
-                    setIsLastOrderVisible(
-                        !(lastOrderRect.top >= containerRect.top && lastOrderRect.bottom <= containerRect.bottom)
-                    );
-                }
-            }
-        };
-        // Получаем ссылку на контейнер
-        const container = containerRef.current;
-        if (container) {
-            // Добавляем слушатель события прокрутки к контейнеру
-            container.addEventListener('scroll', handleScroll);
-            // Возвращаем функцию очистки слушателя события при размонтировании компонента или обновлении зависимостей
-            return () => {
-                container.removeEventListener('scroll', handleScroll);
-            };
-        }
-    }, [orders]); // Зависимость от изменения переменной orders
-    
-
+    /**
+     * Обрабатывает событие выбора заказа
+     * @param {string} orderId - ID выбранного заказа
+     */
     const handleOrderSelect = (orderId) => {
         onOrderSelect(orderId);
     };
 
-    const scrollToTop = () => {
-        containerRef.current.scrollTo({ top: scrollPosition - 100, behavior: 'smooth' });
-    }
+    /**
+     * Вычисляет цвет фона заказа на основе предполагаемой даты окончания.
+     * @param {string | null} awaitEndDate -Предполагаемая дата окончания заказа
+     * @returns {string} - Цвет фона заказа
+     */
+    const getOrderBackgroundColor = (order) => {
+        if (order.isDone === 1) {
+            return 'rgb(46,170,89)';
+        }
+        else {
+            if (!order.awaitEndDate) return '#FFCC00'; // FFCC00
 
-    const scrollToBottom = () => {
-        const container = containerRef.current;
-        const containerHeight = container.clientHeight;
-        container.scrollTo({ top: container.scrollHeight - containerHeight, behavior: 'smooth' });
-    }
-    
-    return (
-        <div>
-            {isFirstOrderVisible &&
-                <div className={OAStyles.arrowTop} onClick={scrollToTop}>
-                <ArrowUpward  />
-                </div>
+            const endDate = new Date(order.awaitEndDate);
+            const dayDiff = (endDate - Date.now()) / (1000 * 3600 * 24);
+
+            if (dayDiff < 0) {
+                return '#575D59';  // 575D59
+            } else if (dayDiff <= 3) {
+                return '#FF3B30';  // FF3B30
+            } else {
+                return '#FFCC00';  // FFCC00
             }
-            <div className={OAStyles.container} ref={containerRef}>
+        }
+    };
+
+    /**
+     * Фильтрует заказы на основе поискового значения и выбранного состояния.
+     * @returns {Array} - Отфильтрованные заказы
+     */
+    const filteredOrders = orders.filter(order =>
+        order.orderTo.toLowerCase().includes(searchValue.toLowerCase())
+    );
+
+    /**
+     * Сортирует заказы по предполагаемой дате окончания.
+     * @returns {Array} - Отсортированные заказы
+     */
+    const sortedOrders = filteredOrders.sort((a, b) => {
+        const aDate = new Date(a.awaitEndDate);
+        const bDate = new Date(b.awaitEndDate);
+        const currentDate = new Date();
+
+        const aDiff = aDate.getTime() - currentDate.getTime();
+        const bDiff = bDate.getTime() - currentDate.getTime();
+
+        return aDiff - bDiff;
+    });
+
+    /**
+     * Фильтрует заказы на основе выбранного состояния
+     * @returns {Array} - Отфильтрованные заказы
+     */
+    const filteredByStatusOrders = sortedOrders.filter(order => {
+        const backgroundColor = getOrderBackgroundColor(order);
+        if (statusCard === "1" && backgroundColor === '#575D59') return true;
+        if (statusCard === "2" && backgroundColor === '#FF3B30') return true;
+        if (statusCard === "3" && backgroundColor === '#FFCC00') return true;
+        if (statusCard === "4" && backgroundColor === 'rgb(46,170,89)') return true;
+        if (statusCard === "Выберете состояние") return true;
+        return false;
+    });
+
+    return (
+        <div className={OAStyles.cardsDiv}>
+            
+            <div className={OAStyles.fieldDiv}>
                 {isLoading ? (
                     <p>Загружаю...</p>
                 ) : (
-                    <FormControl component="fieldset">
+                    <FormControl component="fieldset" className={OAStyles.container}>
                         <RadioGroup aria-label="orders" name="orders" value={selectedOrder} onChange={(e) => handleOrderSelect(e.target.value)}>
-                            {orders.data.length === 0 ? (
-                                <p>На данный момент нет заказов</p>
+                            {filteredByStatusOrders.length === 0 ? (
+                                <div className={OAStyles.gridContainer}>
+                                    <p>На данный момент таких заказов нет</p>
+                                </div>
                             ) : (
-                                <div className={OAStyles.scrollableContainer}>
-                                    {orders.data.map((order, index) => (
+                                <div className={OAStyles.gridContainer}>
+                                    {filteredByStatusOrders.map((order, index) => (
                                         <div
                                             key={order.id}
                                             className={`${OAStyles.orderCard} ${selectedOrder === order.id ? OAStyles.selected : ''}`}
-                                            ref={index === 0 ? firstOrderRef : index === orders.data.length - 1 ? lastOrderRef : null}
+                                            // style={{ backgroundColor: getOrderBackgroundColor(order.awaitEndDate) }}
+                                            ref={index === 0 ? firstOrderRef : index === filteredByStatusOrders.length - 1 ? lastOrderRef : null}
                                             onClick={() => handleOrderSelect(order.id)}
                                         >
-                                            <FormControlLabel
+                                            <div className={OAStyles.orderIconContainer}> 
+                                                <img src={OrderIcon} /> 
+                                            </div>
+                                            <div className={OAStyles.orderInfoContainer}> 
+                                                <span>{order.userName}</span>
+                                                <span>{order.startDate}</span>
+                                                <span>{order.orderTo}</span>
+                                                <span>{order.awaitEndDate}</span>
+                                            </div>
+                                            <div className={OAStyles.orderStatusContainer} style={{ backgroundColor: getOrderBackgroundColor(order) }}> 
+                                                <div> </div>    
+                                            </div>
+                                            {/* <FormControlLabel
                                                 control={<Radio />}
                                                 value={order.id}
                                                 label={
@@ -129,10 +163,14 @@ const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
                                                                 <td>Получатель:</td>
                                                                 <td>{order.orderTo}</td>
                                                             </tr>
+                                                            <tr>
+                                                                <td>Ожидаемая дата завершения:</td>
+                                                                <td>{order.awaitEndDate}</td>
+                                                            </tr>
                                                         </tbody>
                                                     </table>
                                                 }
-                                            />
+                                            /> */}
                                         </div>
                                     ))}
                                 </div>
@@ -141,11 +179,7 @@ const OrdersAssembly = ({ selectedOrder, onOrderSelect }) => {
                     </FormControl>
                 )}
             </div>
-            {isLastOrderVisible &&
-                <div className={OAStyles.arrowBottom} onClick={scrollToBottom}>
-                    <ArrowDownward  />
-                </div>
-            }
+            
         </div>
     );
 };

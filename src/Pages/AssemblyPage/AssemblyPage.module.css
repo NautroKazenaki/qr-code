@@ -9,6 +9,7 @@
   justify-content: space-evenly;
   align-items: center;
   margin-top: 3%;
+  user-select: none;
 }
 
 .topContentContainer {
@@ -16,7 +17,7 @@
   flex-direction: row;
   width: 100%;
   height: 100%;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
 
 .newAssemblyContainer {
@@ -66,11 +67,24 @@
 .newAssemblyContainerTitle {
   width: 100%;
   display: flex;
-  justify-content: center;
-  border-bottom: 1px solid rgb(17 24 39);
-  background-color: #172D13;
-  color: #d2e0c9;
+  justify-content: flex-start;
+  color: black;
 }
+
+.newAssemblyContainerTitleOrder {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: black;
+  align-items: center;
+
+}
+
+
+.newAssemblyContainerTitleOrder h1 {
+  margin: 30px;
+}
+
 
 .newAssemblyInputsContainer {
   display: flex;
@@ -172,6 +186,43 @@
 }
 
 .newContainer {
-  border: 1px solid rgb(17 24 39);
-
+  /*border: 1px solid rgb(17 24 39);*/
+  width: 80vh;
+  height: 85vh;
+  border-radius: 10px;
+  background: rgb(46,170,89);
+  padding: 1%;
 }
+.newContainerProducts {
+   /*border: 1px solid rgb(17 24 39);*/
+   width: 80vh;
+   height: 85vh;
+   border-radius: 10px;
+   background-color: rgb(218, 218, 218) !important;
+   padding: 3%;
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  
+}
+
+.blackButton {
+  width: 15vh !important;
+  font-size: 16px;
+  border-radius: 10px;
+  background-color: #1C1E1B !important;
+  color: white !important;
+  border: none;
+  cursor: pointer;
+}
+
+.blackButton:hover {
+  background-color: #3c4139 !important;
+  /* width: 100%; */
+  border-radius: 10px;
+  transition: .2s;
+}
+

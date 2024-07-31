@@ -5,93 +5,106 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { sendDataToHistory } from '../../utils/addHistory';
 
+/**
+ * Компонент входа в систему для аутентификации пользователя.
+ * @param {function} setIsLoggedIn - Функция для установки регистрации в состоянии.
+ * @returns {JSX.Element} компонент входа в систему.
+ */
 const Login = ({ setIsLoggedIn }) => {
+    // Переменные для электронной почты и пароля
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [capsLockOn, setCapsLockOn] = useState(false);
     const navigate = useNavigate();
-    // const testFunc = async (e) => {
-    //     e.preventDefault();
 
-    //     try {
-    //         const response = await axios.get('http://192.168.0.124:3001/users')
-    //         console.log(response.data)
-    //     } catch (error) {
-    //         console.error('Error fetching users:', error);
-    //     }
-    // };
+    const handleKeyUp = (e) => {
+      setCapsLockOn(e.getModifierState('CapsLock'));
+  };
+
+    const dataToHistory = async () => {
+      const action = `Пользователь ${email} вошел в систему`;
+      debugger
+      await sendDataToHistory(action);
+    }
+
+    /**
+     * Функция для аутентификации пользователя и перехода на страницу приемки, в случае успеха.
+     * @param {Event} e - Событие отправки формы.
+     * @param {string} email - Электронная почта пользователя.
+     * @param {string} password - Пароль пользователя.
+     */
     const getUsersAndAuthenticate = async (e, email, password) => {
         e.preventDefault();
         try {
           if (email !== '' && password !== '') {
-            // const response = await axios.post('http://localhost:3001/users', {
-            //   name: email,
-            //   password: password
-            // });
-            const response = await axios.post('http://192.168.0.100:3001/users', {
+            // Отправка запроса на сервер для аутентификации пользователя
+            const response = await axios.post('http://192.168.0.123:3001/users', {
               name: email,
               password: password
             });
-      
-            // Check if response is successful (status code 2xx)
+
+            
+
+            
+
+            // Проверка, является ли ответ успешным (код состояния 2xx)
             if (response.status >= 200 && response.status < 300) {
               const data = response.data;
               if (data.length > 0) {
+                    // Установка пользовательских данных в локальном хранилище
                     localStorage.setItem("user", JSON.stringify(data[0]));
                     localStorage.setItem('isLoggedIn', 'true')
-                  setIsLoggedIn(true)
-                  navigate("/acceptance-page");
+                    dataToHistory();
+                    // Установка прохождения аутентификации 
+                    setIsLoggedIn(true);
+                    // Переход на страницу приемок
+                    navigate("/acceptance-page");
               } else {
+                // Показать сообщение об ошибке, если аутентификация не удалась
                 toast.error('Неверный email или пароль!');
               }
             } else {
-              // Handle unsuccessful response
+              // Обработка неудачного ответа
               throw new Error('Network response was not ok');
             }
           } else {
-            // Authentication failed
+            // Показать сообщение об ошибке, если электронная почта или пароль пусты
             toast.error('Неверный email или пароль!');
           }
         } catch (error) {
+          // логирование ошибки в консоль
           console.error('Ошибка при аутентификации пользователя:', error);
-          throw error; // Rethrow the error for handling elsewhere
+          throw error;
         }
       };
-                // axios.post('http://192.168.0.139:3001/users', { email, password }).then(
-                //     res => {
-                //         console.log(res.data)
-                //     }
-                // )
-                // // Authentication successful
-                // toast.success('Вы успешно вошли!');
-                // // localStorage.setItem("user", JSON.stringify({ email, password, level }));
-                // // localStorage.setItem('isLoggedIn', 'true');
-                // setIsLoggedIn(true);
-                // setEmail("");
-                // setPassword("");
-                // navigate("/acceptance-page");
-           
-
+          
     return (
         <>
             <div className={LPStyles.container}>
                 <div className={LPStyles.screen}>
                     <div className={LPStyles.screen__content}>
-                         <form className={LPStyles.login} onSubmit={(e) => getUsersAndAuthenticate(e, email, password)}>
-                         {/* <form className={LPStyles.login} onSubmit={(e) => testFunc(e)}> */}
+                        {/* Форма для авторизации пользователя */}
+                        <form className={LPStyles.login} onSubmit={(e) => getUsersAndAuthenticate(e, email, password)}>
+                            <h2>Вход в систему</h2>
                             <div className={LPStyles.login__field}>
-                                <input type="text" className={LPStyles.login__input} placeholder="ВВЕДИТЕ ФИО" onChange={(e) => setEmail(e.target.value)} />
+                                <input type="text" className={LPStyles.login__input} placeholder="Логин" onChange={(e) => setEmail(e.target.value)} onKeyUp={handleKeyUp} />
+                                {capsLockOn && <span className={LPStyles.capsLockWarning}>Caps Lock включен</span>}
                             </div>
                             <div className={LPStyles.login__field}>
-                                <input type="password" className={LPStyles.login__input} placeholder="ВВЕДИТЕ ПАРОЛЬ" onChange={(e) => setPassword(e.target.value)} />
+                                <input type="password" className={LPStyles.login__input} placeholder="Пароль" onChange={(e) => setPassword(e.target.value)} onKeyUp={handleKeyUp} />
+                                {capsLockOn && <span className={LPStyles.capsLockWarning}>Caps Lock включен</span>}
                             </div>
                             <Button type="submit" variant="contained" color="primary" className={LPStyles.loginSubmitButton}>
-                                Войти
+                                Вход
                             </Button>
                         </form>
+                        {/* Контейнер для уведомлений */}
                         <ToastContainer position="bottom-right" />
                     </div>
-                    <div className={LPStyles.screen__background}>.
+                    <div className={LPStyles.screen__background}>
+                        {/* Кажется, этой поеботы больше нет*/}
                         <span class="screen__background__shape screen__background__shape4"></span>
                         <span class="screen__background__shape screen__background__shape3"></span>
                         <span class="screen__background__shape screen__background__shape2"></span>

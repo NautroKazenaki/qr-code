@@ -42,8 +42,35 @@ a {
 }
 
 .formContainer {
-    z-index: 99;
-    margin-left: 20px;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: start;
+    background-color: rgb(218, 218, 218);
+    height: 38vh;
+    margin-left: 7%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.formContainer h1 {
+    margin: 5% 0;
+}
+
+.formContainer2 {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: start;
+    background-color: rgb(218, 218, 218);
+    height: 23vh;
+    margin-left: 7%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.formContainer2 h1 {
+    margin: 5% 0;
 }
 
 .loginContainer form input {
@@ -88,31 +115,6 @@ a {
     box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.2);
     animation: wobble 0.3s ease-in;
     -webkit-animation: wobble 0.3s ease-in;
-}
-
-.loginContainer form button {
-    background-color: var(--primary-color);
-    color: var(--color);
-    display: block;
-    padding: 13px;
-    border-radius: 5px;
-    outline: none;
-    font-size: 18px;
-    letter-spacing: 1.5px;
-    font-weight: bold;
-    width: 100%;
-    cursor: pointer;
-    margin-bottom: 2rem;
-    transition: all 0.1s ease-in-out;
-    border: none;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    -o-border-radius: 5px;
-    -webkit-transition: all 0.1s ease-in-out;
-    -moz-transition: all 0.1s ease-in-out;
-    -ms-transition: all 0.1s ease-in-out;
-    -o-transition: all 0.1s ease-in-out;
 }
 
 .loginContainer form button:hover {
@@ -174,6 +176,7 @@ a {
 .opacity {
     display: flex;
     align-content: center;
+    user-select: none;
 }
 
 .themeBtnContainer {
@@ -228,13 +231,10 @@ a {
 
 
 .assemblyPageContainer {
-    display: flex;
-    flex-direction: column;
     width: 100%;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 3%;
-    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
 }
 
 
@@ -247,23 +247,85 @@ a {
     justify-content: space-around;
 }
 
-.LeftContainer {
+.leftContainer {
     display: flex;
+    width: 35%;
     flex-direction: column;
-    width: 25%;
-    height: 700px;
-    align-items: center;
-    border: 1px solid rgb(17 24 39);
+    align-items: end;
+    background-color: rgb(46,170,89);
+    height: 80vh;
+    margin-top: 3%;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
-.RightContainer {
-    padding: 2%;
+.navContainer {
     display: flex;
+    width: 60%;
     flex-direction: column;
-    width: 100vh;
-    height: 700px;
+    align-items: flex-start; /* Align items to the left */
+    background: linear-gradient(to right, rgb(46,170,89), rgb(46,170,89)), 
+                radial-gradient(circle at left, transparent 10px, rgb(46,170,89) 10px); 
+    background-size: 100% 100%, 10px 100%;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+    border-top-right-radius: 50px; /* Outer curve on right side */
+    border-bottom-right-radius: 50px; /* Outer curve on right side */
+}
+
+.navItemContainer {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    position: relative;
+    background-color: rgba(0, 108, 42, 1); /* Match container background */
+    height: 32%;
+    margin: 5% 2% 5% 0;
+    border-radius: 10px 0px 0px 10px; /* Rounded corners on right side */
+    z-index: 2; /* Ensure content is above pseudo-elements */
+}
+.navItemContainer:hover {
+    cursor: pointer;
+    background-color: rgb(218, 218, 218);
+}
+
+.navItemIconContainer {
+    display: flex;
     align-items: center;
-    border: 1px solid rgb(17 24 39);
+    padding: 1%;
+    margin-left: 3%;
+}
+
+.navItemIconContainer svg {
+    font-size: 30px;
+    margin-right: 15px;
+}
+.navItemTextContainer {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-grow: 1; /* Expand to fill available space */
+   
+}
+.navItemTextContainer span {
+    font-size: 18px;
+}
+
+
+.RightContainer {
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+    align-items: start;
+    background-color: rgb(218, 218, 218);
+    height: 80vh;
+    margin-top: 3%;
+    margin-left: 3%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    border-radius: 10px;
 }
 
 .newAssemblyContainerInContainer {
@@ -332,7 +394,7 @@ a {
     background-color: #172D13;
     /* Прозрачный фон */
     color: green;
-    border-color: rgb(228, 231, 233);
+    border-color: rgb(218, 218, 218);
     /* Цвет границы при наведении */
     border-radius: 0%;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
@@ -382,6 +444,7 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* width: 400px; */
 }
 
 .createUserBackground {
@@ -417,11 +480,38 @@ a {
 
 }
 
+.imagelogo{
+    width: 400px;
+    height: 300px;
+    position: absolute;
+    /* Позиционируем изображение абсолютно внутри контейнера */
+    top: 115px;
+    /* Помещаем изображение вверху контейнера */
+    right: -82px;
+    /* Помещаем изображение вправо контейнера */
+    transform: translate(50%, -50%);
+    /* Центрируем изображение относительно правого верхнего угла */
+    z-index: 50;
+    /* Помещаем изображение ниже содержимого формы регистрации */
+    margin-bottom: 5px;
+    margin-left: 5px;  
+}
+
 .column {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     margin-bottom: 10px;
+    /* background-color: white; */
+    width: 35vh;
+}
+
+.column div div {
+    background-color: white;
+}
+
+.column div div:hover {
+    background-color: rgb(218, 218, 218);
 }
 
 @media only screen and (min-width: 960px) and (min-height: 540px) {
@@ -448,25 +538,45 @@ a {
 }
 
 .blackButton {
-    background-color: #172D13 !important;
-    color: #d2e0c9 !important;
-    width: 222px !important;
-    transition: background-color 0.5s, color 0.5s !important; /* Увеличиваем время анимации до 0.5 секунды */
-    border: 2px solid #d2e0c9 !important; /* Добавляем зеленый бордер */
-    margin-left: 20px !important;
-    
+    width: 25%;
+    font-size: 18px;
+    border-radius: 10px;
+    margin-left: 7%;
+    background-color: #1C1E1B !important;
+    color: white !important;
+    border: none;
+    cursor: pointer;
 }
 
-.blackButton:active {
+.blackButton:hover {
+    background-color: #3c4139 !important;
+    /* width: 100%; */
+    border-radius: 10px;
+    transition: .2s;
+}
+
+.deleteButton {
+    width: 15%;
+    color: white;
+    font-size: 20px;
+    border-radius: 10px;
+    margin-left: 10%;
+}
+
+.deleteButton:hover{
+    background-color: red !important;
+}
+
+.deleteButton:active {
     background-color: green !important; /* При нажатии изменяем цвет фона на зеленый */
     color: black !important; /* При нажатии изменяем цвет текста на черный */
 }
 
-.blackButton:focus {
+.deleteButton:focus {
     outline: none; /* Убираем стандартный контур фокуса */
 }
 
-.blackButton.clicked {
+.deleteButton.clicked {
     animation: clickEffect 0.5s linear; /* Изменяем время анимации для эффекта нажатия */
 }
 
@@ -482,15 +592,75 @@ a {
     }
 }
 
-
 .textFieldStyled {
-    margin-bottom: 1vh !important;
-    max-width: 222px !important; 
-    border-color: green !important; /* Зеленый цвет обводки TextField */
-
-}
-.textFieldStyled .Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: green !important; /* Зеленый цвет обводки TextField в активном состоянии */
+    width: 100%;
+    background-color: rgb(245,245,245);
+    border-top-left-radius: 5px !important;
+    border-top-right-radius: 5px !important;
+    user-select: none;
 }
 
+.menuItem {
+    background: rgb(245, 245, 245) !important;
+}
+.menuItem:hover {
+    background: rgb(46,170,89) !important;
+}
 
+.filterData {
+    display: flex;
+    width: 100%;
+    border-top-left-radius: 5px !important;
+    border-top-right-radius: 5px !important;
+    margin-bottom: 2vh;
+}
+
+.updateContainer {
+    margin: 5vh;
+    height: 20vh;
+    width: 70%;
+    background-color: white;
+    border-radius: 1vh;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.updateHeader {
+    margin: 2vh;
+    align-self: center;
+    display: flex;
+    user-select: none;
+}
+
+.updateSecondHeader {
+    margin: 0vh;
+    align-self: center;
+    display: flex;
+    color: gray;
+    font-weight: lighter;
+    user-select: none;
+}
+
+.updateButton {
+    user-select: none;
+    width: 30%;
+    font-size: 18px;
+    border-radius: 10px;
+    background-color: #1C1E1B !important;
+    color: white !important;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 2vh;
+    align-self: center;
+    display: flex;
+    text-align: center;
+}
+
+.updateButton:hover {
+    user-select: none;
+    background-color: #3c4139 !important;
+    border-radius: 10px;
+    transition: .2s;
+}
